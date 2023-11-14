@@ -14,9 +14,9 @@ import reactor.core.publisher.Mono;
 public class RequestRateLimiterConfig {
 
     /**
-     * ip地址限流
      *
      * @return 限流key
+     * ip地址限流
      */
     @Bean
     @Primary

@@ -21,4 +21,6 @@
             <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
+
+    <!-- 移除spring-boot-maven-plugin的配置，因为这是一个库项目 -->
 </project>
