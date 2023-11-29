@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.zmu.cloud</groupId>
     <artifactId>tower-emq-handler</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <name>tower-emq-handler</name>
    
 
@@ -40,7 +40,7 @@
     </dependencies>
 
     <build>
-        <finalName>zmu-cloud-tower-2.0-SNAPSHOT</finalName>
+        <finalName>zmu-tower-emq-handler-2.0.0-SNAPSHOT</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
