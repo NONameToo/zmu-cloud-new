@@ -121,7 +121,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <!-- Provide the base class for your auto-generated tests -->
-                    <baseClassForTests>com.springboot.cloud.demos.producer.MvcMockTest</baseClassForTests>
+                    <baseClassForTests>MvcMockTest</baseClassForTests>
                 </configuration>
             </plugin>
             <!--docker镜像build插件-->
