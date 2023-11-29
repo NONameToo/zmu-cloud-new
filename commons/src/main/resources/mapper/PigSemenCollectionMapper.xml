@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigSemenCollectionMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigSemenCollection">
+        <!--@mbg.generated-->
+        <!--@Table pig_semen_collection-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="pig_breeding_id" jdbcType="BIGINT" property="pigBreedingId"/>
+        <result column="collection_date" jdbcType="DATE" property="collectionDate"/>
+        <result column="pig_house_id" jdbcType="DATE" property="pigHouseId"/>
+        <result column="pig_house_name" jdbcType="DATE" property="pigHouseName"/>
+        <result column="volume" jdbcType="DECIMAL" property="volume"/>
+        <result column="color" jdbcType="INTEGER" property="color"/>
+        <result column="smell" jdbcType="INTEGER" property="smell"/>
+        <result column="vitality" jdbcType="DECIMAL" property="vitality"/>
+        <result column="density" jdbcType="DECIMAL" property="density"/>
+        <result column="deformity" jdbcType="DECIMAL" property="deformity"/>
+        <result column="dilution_fraction" jdbcType="DECIMAL" property="dilutionFraction"/>
+        <result column="ph" jdbcType="DECIMAL" property="ph"/>
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, pig_breeding_id, collection_date, pig_house_id, pig_house_name, volume, color, smell,
+        vitality, density, deformity, dilution_fraction, ph, operator_id, del, remark, create_by,
+        update_by, create_time, update_time
+    </sql>
+
+    <select id="selectEventId" resultType="com.zmu.cloud.commons.vo.EventSemenCollectionVO">
+        select c.id,
+               collection_date     collectionDate,
+               volume,
+               c.color,
+               c.smell,
+               c.vitality,
+               c.density,
+               c.deformity,
+               c.dilution_fraction dilutionFraction,
+               c.ph,
+               c.operator_id       operatorId,
+               u.real_name         operatorName,
+               c.remark,
+               c.pig_house_name    pigHouseName,
+               c.create_time       createTime
+        from pig_semen_collection c
+                     left join sys_user u on u.id = c.operator_id
+        where pig_breeding_id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="event" resultType="com.zmu.cloud.commons.vo.EventPigSemenCollectionVO">
+        select b.ear_number        earNumber,
+               u.real_name         operatorName,
+               p.create_time       createTime,
+               p.collection_date   collectionDate,
+               p.volume,
+               p.color,
+               p.smell,
+               p.remark,
+               p.vitality,
+               p.density,
+               p.deformity,
+               p.dilution_fraction dilutionFraction,
+               p.ph,
+               p.pig_house_name             pigHouse
+        from pig_semen_collection p
+                     left join pig_breeding b on p.pig_breeding_id = b.id
+                     left join sys_user u on u.id = p.operator_id
+        <where>
+            <if test="earNumber != null and earNumber != ''">
+                and b.ear_number like concat('%', #{earNumber}, '%')
+            </if>
+            <if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+                and p.collection_date BETWEEN #{startTime,jdbcType=VARCHAR} AND #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="pigHouseId != null">
+                and p.pig_house_id = #{pigHouseId,jdbcType=BIGINT}
+            </if>
+            <if test="approachType != null">
+                and b.approach_type = #{approachType,jdbcType=INTEGER}
+            </if>
+            and p.del = 0
+        </where>
+        order by p.collection_date desc
+    </select>
+
+    <select id="selectEventById" resultType="com.zmu.cloud.commons.vo.EventBoarDetailVO">
+        select p.vitality,
+               p.dilution_fraction dilutionFraction,
+               p.volume,
+               p.create_time       createTime,
+               u.real_name         operatorName,
+               p.collection_date   operatorDate
+        from pig_semen_collection p
+                     left join sys_user u on u.id = p.operator_id
+        where p.id = #{id,jdbcType=BIGINT} order by p.create_time desc
+    </select>
+</mapper>

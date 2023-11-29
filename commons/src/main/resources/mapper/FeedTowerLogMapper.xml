@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeedTowerLogMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeedTowerLog">
+    <!--@mbg.generated-->
+    <!--@Table feed_tower_log-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="tower_id" jdbcType="BIGINT" property="towerId" />
+    <result column="tower_capacity" jdbcType="BIGINT" property="towerCapacity" />
+    <result column="tower_density" jdbcType="BIGINT" property="towerDensity" />
+    <result column="tower_volume" jdbcType="BIGINT" property="towerVolume" />
+    <result column="device_no" jdbcType="VARCHAR" property="deviceNo" />
+    <result column="task_no" jdbcType="VARCHAR" property="taskNo" />
+    <result column="start_mode" jdbcType="VARCHAR" property="startMode" />
+    <result column="lid_status" jdbcType="INTEGER" property="lidStatus" />
+    <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+    <result column="humidity" jdbcType="VARCHAR" property="humidity" />
+    <result column="network" jdbcType="VARCHAR" property="network" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="volume_yang" jdbcType="BIGINT" property="volumeYang" />
+    <result column="volume_matlab" jdbcType="BIGINT" property="volumeMatlab" />
+    <result column="volume_third" jdbcType="BIGINT" property="volumeThird" />
+    <result column="volume_base" jdbcType="BIGINT" property="volumeBase" />
+    <result column="volume" jdbcType="BIGINT" property="volume" />
+    <result column="weight" jdbcType="BIGINT" property="weight" />
+    <result column="variation" jdbcType="BIGINT" property="variation" />
+    <result column="modified" jdbcType="INTEGER" property="modified" />
+    <result column="data" jdbcType="LONGVARCHAR" property="data" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="completed_time" jdbcType="TIMESTAMP" property="completedTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="too_full" jdbcType="INTEGER" property="tooFull" />
+    <result column="empty_tower" jdbcType="INTEGER" property="emptyTower" />
+    <result column="too_much_dust" jdbcType="INTEGER" property="tooMuchDust" />
+    <result column="caking" jdbcType="INTEGER" property="caking" />
+    <result column="aging_id" jdbcType="BIGINT" property="agingId" />
+    <result column="init_id" jdbcType="BIGINT" property="initId" />
+
+    <result column="cal_volume" jdbcType="BIGINT" property="calVolume" />
+    <result column="cal_real_volume" jdbcType="BIGINT" property="calRealVolume" />
+    <result column="cal_compensate_percent" jdbcType="INTEGER" property="calCompensatePercent" />
+    <result column="cal_density" jdbcType="BIGINT" property="calDensity" />
+    <result column="cal_cavity_volume" jdbcType="BIGINT" property="calCavityVolume" />
+    <result column="cal_feed_volume" jdbcType="BIGINT" property="calFeedVolume" />
+    <result column="cal_distance_left_right" jdbcType="BIGINT" property="calDistanceLeftRight" />
+    <result column="cal_distance_before_after" jdbcType="BIGINT" property="calDistanceBeforeAfter" />
+    <result column="cal_distance_up_down" jdbcType="BIGINT" property="calDistanceUpDown" />
+    <result column="cal_weight" jdbcType="BIGINT" property="calWeight" />
+    <result column="cal_note" jdbcType="VARCHAR" property="calNote" />
+    <result column="cal_weight_prediction" jdbcType="BIGINT" property="calWeightPrediction" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, pig_farm_id, tower_id, tower_capacity, tower_density, tower_volume, 
+    device_no, task_no, start_mode, lid_status, temperature, humidity, network, `status`, 
+    volume_yang, volume_matlab, volume_third, volume_base, volume, weight, variation, 
+    modified, `data`, create_time, completed_time, remark, too_full, empty_tower, too_much_dust, 
+    caking, aging_id, init_id,
+    cal_volume,
+    cal_real_volume,
+    cal_compensate_percent,
+    cal_density,
+    cal_cavity_volume,
+    cal_feed_volume,
+    cal_distance_left_right,
+    cal_distance_before_after,
+    cal_distance_up_down,
+    cal_weight,
+    cal_note,
+    cal_weight_prediction
+  </sql>
+
+  <select id="getTowerMonthsOfYearUseORAnd" resultType="com.zmu.cloud.commons.vo.TowerLogReportVo">
+    select date_format(completed_time, '%Y-%m') dayStr, sum(variation) variation, count(*) variationModifyTimes
+    from feed_tower_log
+    where 1=1
+      and modified = #{statusEnum.type}
+      and variation != 0
+      and date_format(completed_time, '%Y') = date_format(sysdate(), '%Y')
+      and status = 'completed'
+      and tower_id in
+      <foreach close=")" collection="towerIds" index="index" item="item" open="(" separator=",">
+            #{item}
+      </foreach>
+    group by date_format(completed_time, '%Y-%m')
+  </select>
+
+  <select id="lastSomeDayUseFeedByHouseType" resultType="com.zmu.cloud.commons.vo.LastSomeDayUseFeedByHouseType">
+    select days.dayOrMonth, ifnull(data.used,0) used
+    from (select date_format(date_add(sysdate(), interval - num.nm day), '%Y-%m-%d') dayOrMonth
+                    from (select 0 nm union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6) num) days
+    left join (select date_format(log.create_time, '%Y-%m-%d') dayOrMonth, sum(ifnull(log.variation, 0)) used
+        from feed_tower t left join feed_tower_log log on t.id = log.tower_id
+        where t.pig_farm_id = #{farmId,jdbcType=BIGINT} and t.houses != 'ZZLT' and t.house_type = #{houseType,jdbcType=INTEGER} and log.modified = -1
+        group by date_format(log.create_time, '%Y-%m-%d')) data on days.dayOrMonth = data.dayOrMonth
+    order by days.dayOrMonth
+  </select>
+  <select id="lastSomeMonthUseFeedByHouseType" resultType="com.zmu.cloud.commons.vo.LastSomeDayUseFeedByHouseType">
+    select days.dayOrMonth, ifnull(data.used,0) used
+    from (select date_format(date_add(sysdate(), interval - num.nm month), '%Y-%m') dayOrMonth
+                    from (select 0 nm union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) num) days
+    left join (select date_format(log.create_time, '%Y-%m') dayOrMonth, sum(ifnull(log.variation, 0)) used
+        from feed_tower t left join feed_tower_log log on t.id = log.tower_id
+        where t.pig_farm_id = #{farmId,jdbcType=BIGINT} and t.houses != 'ZZLT' and t.house_type = #{houseType,jdbcType=INTEGER} and log.modified = -1
+        group by date_format(log.create_time, '%Y-%m')) data on days.dayOrMonth = data.dayOrMonth
+    order by days.dayOrMonth
+  </select>
+
+  <select id="allUseFeedForDay" resultType="com.zmu.cloud.commons.vo.LastSomeDayUseFeedByHouseType">
+    select days.dayOrMonth, ifnull(data.used,0) used
+    from (select date_format(date_add(sysdate(), interval - num.nm day), '%Y-%m-%d') dayOrMonth
+                    from (select 0 nm union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6) num) days
+    left join (select date_format(log.create_time, '%Y-%m-%d') dayOrMonth, sum(ifnull(log.variation, 0)) used
+        from feed_tower t left join feed_tower_log log on t.id = log.tower_id
+        where t.pig_farm_id = #{farmId,jdbcType=BIGINT} and (t.houses != 'ZZLT' or t.houses is null) and log.modified = -1
+        group by date_format(log.create_time, '%Y-%m-%d')) data on days.dayOrMonth = data.dayOrMonth
+    order by days.dayOrMonth
+  </select>
+  <select id="allUseFeedForMonth" resultType="com.zmu.cloud.commons.vo.LastSomeDayUseFeedByHouseType">
+    select days.dayOrMonth, ifnull(data.used,0) used
+    from (select date_format(date_add(sysdate(), interval - num.nm month), '%Y-%m') dayOrMonth
+                    from (select 0 nm union all select 1 union all select 2 union all select 3 union all select 4 union all select 5) num) days
+    left join (select date_format(log.create_time, '%Y-%m') dayOrMonth, sum(ifnull(log.variation, 0)) used
+        from feed_tower t left join feed_tower_log log on t.id = log.tower_id
+        where t.pig_farm_id = #{farmId,jdbcType=BIGINT} and (t.houses != 'ZZLT' or t.houses is null) and log.modified = -1
+        group by date_format(log.create_time, '%Y-%m')) data on days.dayOrMonth = data.dayOrMonth
+    order by days.dayOrMonth
+  </select>
+
+  <select id="last5DayUseFeedByTower" resultType="com.zmu.cloud.commons.vo.Last5DayUseFeedByTowerVo">
+    select days.day, ifnull(data.used,0) used
+    from (select date_format(date_add(sysdate(), interval - num.nm day), '%Y-%m-%d') day
+                    from (select 0 nm union all select 1 union all select 2 union all select 3 union all select 4) num) days
+    left join (select date_format(log.create_time, '%Y-%m-%d') day, sum(ifnull(log.variation, 0)) used
+        from feed_tower t left join feed_tower_log log on t.id = log.tower_id where t.id = #{towerId,jdbcType=BIGINT} and log.modified = -1
+        group by date_format(log.create_time, '%Y-%m-%d')) data on days.day = data.day
+    order by days.day
+  </select>
+
+  <select id="selectTaskNoByIdAging" parameterType="long" resultType="string">
+    select a.task_no from feed_tower_log a where a.aging_id = #{agingId} order by a.id desc limit 1
+  </select>
+
+  <select id="selectRunCountByAgingId" parameterType="long" resultType="java.lang.Long">
+    select count(*) from feed_tower_log a where a.aging_id = #{agingId}
+  </select>
+
+  <select id="selectTaskNoByIdInit" parameterType="long" resultType="string">
+    select a.task_no from feed_tower_log a where a.init_id = #{initId} order by a.id desc limit 1
+  </select>
+
+  <select id="selectRunCountByInitId" parameterType="long" resultType="java.lang.Long">
+    select count(*) from feed_tower_log a where a.init_id = #{initId}
+  </select>
+
+  <select id="selectRunCountByInitIdToCom" parameterType="long" resultType="java.lang.Long">
+    select count(*) from feed_tower_log a where status = 'completed' and a.init_id = #{initId}
+  </select>
+
+  <select id="getMaterByFarmId" parameterType="long" resultType="long">
+    select sum(variation) from feed_tower_log a
+    left join feed_tower b on a.tower_id = b.id
+    where a.modified = -1 and  (b.houses != 'ZZLT' or b.houses is null)  and a.pig_farm_id = #{farmId}
+  </select>
+
+  <select id="towerFarmLogDetailList" parameterType="long" resultMap="BaseResultMap">
+    select * from feed_tower_log where
+    ${status}
+    <if test="startTime != null">
+      and IFNULL(completed_time,create_time) &gt; #{startTime,jdbcType=VARCHAR}
+    </if>
+    <if test="endTime != null">
+      and IFNULL(completed_time,create_time) &lt; DATE_ADD(#{endTime,jdbcType=VARCHAR},INTERVAL 1 DAY)
+    </if>
+     and tower_id = #{towerId} order by IFNULL(completed_time,create_time) desc
+  </select>
+
+  <select id="selectExportList" resultType="com.zmu.cloud.commons.vo.TowerLogExportVo">
+    SELECT
+	a.id AS 'towerId',
+	a.NAME AS 'towerName',
+	a.init_volume AS 'towerVolume',
+	b.device_no AS 'deviceNo',
+	a.density AS 'density',
+	b.create_time AS 'startTime',
+	b.completed_time AS 'endTime',
+	b.start_mode AS 'startMode',
+	b.id AS 'logId'
+FROM
+	feed_tower_log b
+	LEFT JOIN feed_tower a ON b.tower_id = a.id
+WHERE
+	a.del = 0
+	AND b.STATUS = 'completed'
+    AND a.device_no = b.device_no
+	AND a.id = #{towerId}
+    <if test="startTime != null">
+      and b.completed_time &gt; #{startTime,jdbcType=VARCHAR}
+    </if>
+    <if test="endTime != null">
+      and b.completed_time &lt; DATE_ADD(#{endTime,jdbcType=VARCHAR},INTERVAL 1 DAY)
+    </if>
+	ORDER BY b.id desc
+  </select>
+
+  <select id="selectExporMoretList" resultType="com.zmu.cloud.commons.vo.TowerLogExportVo">
+    SELECT
+	a.id AS 'towerId',
+	a.NAME AS 'towerName',
+    b.tower_volume AS 'towerVolume',
+	b.device_no AS 'deviceNo',
+	b.tower_density AS 'density',
+	b.create_time AS 'startTime',
+	b.completed_time AS 'endTime',
+	b.start_mode AS 'startMode',
+	b.id AS 'logId',
+	b.cal_volume AS 'calVolume',
+	b.cal_feed_volume AS 'calFeedVolume',
+	b.cal_density AS 'calDensity',
+	b.cal_weight_prediction AS 'calWeightPrediction',
+	b.cal_weight AS 'calWeight'
+FROM
+	feed_tower_log b
+	LEFT JOIN feed_tower a ON b.tower_id = a.id
+WHERE
+	a.del = 0
+	AND b.STATUS = 'completed'
+    AND a.device_no = b.device_no
+    <if test="startTime != null">
+      and b.completed_time &gt; #{startTime,jdbcType=VARCHAR}
+    </if>
+    <if test="endTime != null">
+      and b.completed_time &lt; DATE_ADD(#{endTime,jdbcType=VARCHAR},INTERVAL 1 DAY)
+    </if>
+	AND a.id in
+	<foreach collection="towerIds" index="index" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+	ORDER BY a.id , b.id desc
+  </select>
+
+  <update id="updateLogById">
+    update feed_tower_log set variation = #{variation},modified = #{modified} where id = #{id}
+  </update>
+
+  <select id="selectErrList" parameterType="long" resultMap="BaseResultMap">
+    select * from feed_tower_log where aging_id = #{agingId} and status not in ('completed','running','starting','invalid')
+    order by create_time desc
+  </select>
+
+  <select id="selectOneIn" resultMap="BaseResultMap">
+    select * from feed_tower_log where 1=1
+    <if test="towerId != null">
+      and tower_id = #{towerId}
+    </if>
+    <if test="deviceNo != null and deviceNo != ''">
+      and device_no = #{deviceNo}
+    </if>
+    <if test="status != null and status != ''">
+      and status = #{status}
+    </if>
+    <if test="modified != null">
+      and modified = #{modified}
+    </if>
+    <if test="startModes != null">
+      and start_mode in
+      <foreach collection="startModes" index="index" item="mid" open="(" separator="," close=")">
+        #{mid}
+      </foreach>
+    </if>
+    order by create_time desc limit 1
+  </select>
+
+  <select id="selectListIn" resultMap="BaseResultMap">
+    select * from feed_tower_log where modified != 0 and create_time &gt; #{createTime}
+    <if test="towerId != null">
+      and tower_id = #{towerId}
+    </if>
+    <if test="status != null and status != ''">
+      and status = #{status}
+    </if>
+    order by create_time desc
+  </select>
+
+  <select id="selectLastOneGoInByTowerId" resultMap="BaseResultMap">
+    select * from feed_tower_log where modified = 1 and tower_id = #{towerId} and create_time BETWEEN CONCAT(CURDATE(),' 00:00:00') AND CONCAT(CURDATE(),' 23:59:59') order by create_time desc limit 1
+  </select>
+
+  <update id="updateLogWeightById">
+    update feed_tower_log set variation = #{variation},weight = #{weight},tower_density =#{towerDensity} where id = #{id}
+  </update>
+
+  <select id="getComCountByAgingId" parameterType="long" resultType="int">
+    select count(*) from feed_tower_log where status in ('completed','invalid') and aging_id = #{agingId}
+  </select>
+
+  <select id="selectLogListByAgingId" parameterType="long" resultMap="BaseResultMap">
+    select * from feed_tower_log where aging_id = #{agingId}
+  </select>
+</mapper>

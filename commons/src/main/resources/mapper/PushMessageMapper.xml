@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PushMessageMapper">
+    <update id="updateStatus">
+        update push_message
+        set status      = 1,
+            update_time = #{time},
+            update_by   = #{userId}
+                where del = false
+                  and user_id = #{userId}
+        <if test="id != null">
+            and id = #{id}
+        </if>
+    </update>
+    <select id="unreadCount" resultType="int">
+        select count(id)
+        from push_message
+        where del = false
+          and user_id = #{userId}
+          and status = 0
+    </select>
+</mapper>

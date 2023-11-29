@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.AreaMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.Area">
+        <!--@Table area-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="short_name" jdbcType="VARCHAR" property="shortName"/>
+        <result column="level" jdbcType="INTEGER" property="level"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,
+        `name`,
+        parent_id,
+        short_name,
+        `level`,
+        sort
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from area
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectNameByPrimaryKey" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select ifnull(`name`, '') as name
+        from area
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="listAllProvince" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from area a
+        where a.level = 1
+    </select>
+    <select id="listAllCity" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from area a
+        where a.level = 2
+        <if test="provinceId != null">
+            and a.parent_id = #{provinceId}
+        </if>
+    </select>
+    <select id="listAllArea" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from area a
+        where a.level = 3
+        <if test="cityId != null">
+            and a.parent_id = #{cityId}
+        </if>
+    </select>
+</mapper>

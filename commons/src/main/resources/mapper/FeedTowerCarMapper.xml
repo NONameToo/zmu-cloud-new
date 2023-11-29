@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeedTowerCarMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeedTowerCar">
+    <!--@mbg.generated-->
+    <!--@Table feed_tower_car-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="car_code" jdbcType="VARCHAR" property="carCode" />
+    <result column="driver_name" jdbcType="VARCHAR" property="driverName" />
+    <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="speed" jdbcType="BIGINT" property="speed" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, car_code, driver_name, id_card, mobile, start_time, end_time, speed, create_time, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from feed_tower_car
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from feed_tower_car
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zmu.cloud.commons.entity.FeedTowerCar" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into feed_tower_car (car_code, driver_name, id_card, 
+      mobile, start_time, end_time, 
+      speed, create_time, update_time
+      )
+    values (#{carCode,jdbcType=VARCHAR}, #{driverName,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, 
+      #{mobile,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{speed,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zmu.cloud.commons.entity.FeedTowerCar" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into feed_tower_car
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="carCode != null">
+        car_code,
+      </if>
+      <if test="driverName != null">
+        driver_name,
+      </if>
+      <if test="idCard != null">
+        id_card,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="speed != null">
+        speed,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="carCode != null">
+        #{carCode,jdbcType=VARCHAR},
+      </if>
+      <if test="driverName != null">
+        #{driverName,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null">
+        #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="speed != null">
+        #{speed,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zmu.cloud.commons.entity.FeedTowerCar">
+    <!--@mbg.generated-->
+    update feed_tower_car
+    <set>
+      <if test="carCode != null">
+        car_code = #{carCode,jdbcType=VARCHAR},
+      </if>
+      <if test="driverName != null">
+        driver_name = #{driverName,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null">
+        id_card = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="speed != null">
+        speed = #{speed,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zmu.cloud.commons.entity.FeedTowerCar">
+    <!--@mbg.generated-->
+    update feed_tower_car
+    set car_code = #{carCode,jdbcType=VARCHAR},
+      driver_name = #{driverName,jdbcType=VARCHAR},
+      id_card = #{idCard,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      speed = #{speed,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+     <select id="page" resultType="com.zmu.cloud.commons.entity.FeedTowerCar">
+            SELECT
+            car.id,
+            car.car_code as carCode,
+            car.driver_name as driverName,
+            car.id_card as idCard,
+            car.mobile as mobile,
+            car.start_time as startTime,
+            car.end_time as endTime,
+            car.speed as speed,
+            car.create_time as createTime,
+            car.update_time as updateTime
+        FROM
+            feed_tower_car AS car
+        <where>
+            1=1
+             <if test="name != null and name != ''">
+                and concat(car_code like concat('%', #{name}, '%') or driver_name like concat('%', #{name}, '%') or id_card like concat('%', #{name}, '%') or mobile like concat('%', #{name}, '%'))
+            </if>
+        </where>
+        ORDER BY car.create_time desc
+    </select>
+</mapper>

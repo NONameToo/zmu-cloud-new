@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.SysRoleMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.admin.SysRole">
+        <!--@mbg.generated-->
+        <!--@Table sys_role-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="role_key" jdbcType="VARCHAR" property="roleKey"/>
+        <result column="role_sort" jdbcType="INTEGER" property="roleSort"/>
+        <result column="data_scope" jdbcType="INTEGER" property="dataScope"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <collection property="menuIds" select="selectMenuIdsByRoleId" column="{roleId=id}"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, role_name, role_key, role_sort, data_scope, `status`, del, remark,
+        create_by, update_by, create_time, update_time
+    </sql>
+
+    <select id="selectMenuIdsByRoleId" resultType="java.lang.Long">
+        select menu_id
+        from sys_role_menu
+        where role_id = #{roleId}
+    </select>
+
+    <select id="listSysRole" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_role sr
+        <where>
+            and sr.del = 0
+            <if test="query.roleName != null and query.roleName != ''">
+                and sr.role_name like concat('%', #{query.roleName}, '%')
+            </if>
+            <if test="query.status != null">
+                and sr.status = #{query.status}
+            </if>
+        </where>
+        order by role_sort
+    </select>
+    <select id="getRoleNameByUserId" resultType="java.lang.String">
+        select role_name
+        from sys_role
+                 join sys_user_role sur on sys_role.id = sur.role_id and sur.user_id = #{userId}
+        where sys_role.del = 0
+          and sys_role.status = 1
+        order by role_sort
+    </select>
+
+</mapper>

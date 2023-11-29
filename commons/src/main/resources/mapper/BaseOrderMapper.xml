@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.BaseOrderMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.BaseOrder">
+    <!--@mbg.generated-->
+    <!--@Table `base_order`-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="total" jdbcType="INTEGER" property="total" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="payment_type" jdbcType="VARCHAR" property="paymentType" />
+    <result column="pay_code" jdbcType="VARCHAR" property="payCode" />
+    <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
+    <result column="we_status" jdbcType="INTEGER" property="weStatus" />
+    <result column="other_percent" jdbcType="INTEGER" property="otherPercent" />
+    <result column="other" jdbcType="INTEGER" property="other" />
+    <result column="balance_before" jdbcType="INTEGER" property="balanceBefore" />
+    <result column="balance_after" jdbcType="INTEGER" property="balanceAfter" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, order_code, `type`, company_id, pig_farm_id, user_id, total, amount, payment_type,
+    pay_code, order_status, we_status, other_percent, other, balance_before, balance_after,
+    create_time, update_time
+  </sql>
+
+</mapper>

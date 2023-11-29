@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigMatingMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigMating">
+        <!--@mbg.generated-->
+        <!--@Table pig_mating-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="pig_breeding_id" jdbcType="BIGINT" property="pigBreedingId"/>
+        <result column="mating_date" jdbcType="DATE" property="matingDate"/>
+        <result column="pig_house_id" jdbcType="DATE" property="pigHouseId"/>
+        <result column="pig_house_name" jdbcType="DATE" property="pigHouseName"/>
+        <result column="before_pig_status" jdbcType="INTEGER" property="beforePigStatus"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="boar_id" jdbcType="BIGINT" property="boarId"/>
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId"/>
+        <result column="parity" jdbcType="INTEGER" property="parity"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, pig_breeding_id, mating_date, pig_house_id, pig_house_name, before_pig_status, `type`, boar_id, operator_id,
+        parity, del, remark, create_by, update_by, create_time, update_time
+    </sql>
+
+    <select id="selectEventById" resultType="com.zmu.cloud.commons.vo.EventMatingVO">
+        select b.id,
+               b.mating_date     matingDate,
+               b.boar_id         boarId,
+               b.type,
+               b.operator_id     operatorId,
+               u.real_name       operatorName,
+               b.create_time     createTime,
+               b.parity,
+               b.remark,
+               b1.ear_number     boarEarNumber,
+               b.pig_breeding_id pigBreedingId,
+               b.pig_house_name  pigHouseName
+        from pig_mating b
+                 left join pig_breeding b1 on b1.id = b.boar_id
+                 left join sys_user u on u.id = b.operator_id
+        where pig_breeding_id = #{id,jdbcType=BIGINT}
+        order by b.create_time desc
+    </select>
+
+    <select id="event" resultType="com.zmu.cloud.commons.vo.EventPigMatingVO">
+        select p.mating_date matingDate,
+               p.type,
+               bo.ear_number boarEarNumber,
+               b.ear_number  earNumber,
+               u.real_name   operatorName,
+               b.parity,
+               p.create_time createTime,
+               p.remark,
+               p.pig_house_name        pigHouse
+        from pig_mating p
+                 left join pig_breeding b on p.pig_breeding_id = b.id
+                 left join pig_breeding bo on p.boar_id = bo.id
+                 left join sys_user u on u.id = p.operator_id
+        <where>
+            <if test="earNumber != null and earNumber != ''">
+                and b.ear_number like concat('%', #{earNumber}, '%')
+            </if>
+            <if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+                and p.mating_date BETWEEN #{startTime,jdbcType=VARCHAR} AND #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="pigHouseId != null">
+                and p.pig_house_id = #{pigHouseId,jdbcType=BIGINT}
+            </if>
+            and p.del = 0
+        </where>
+        order by p.mating_date desc
+    </select>
+    <select id="selectByPigBreedingId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from pig_mating b
+        where b.pig_breeding_id = #{pigBreedingId,jdbcType=BIGINT}
+        order by b.create_time desc
+        limit 1
+    </select>
+
+    <select id="selectProductionTask" resultType="com.zmu.cloud.commons.vo.ProductionTaskVO">
+        SELECT (select count(*) from pig_piggy p
+        left join (select b.pig_house_id, count(*) sowNumber
+                    from pig_breeding b
+                    where b.pig_status = 7
+                      and b.presence_status = 1
+                      and b.del = '0'
+                    group by b.pig_house_id) sow on sow.pig_house_id = p.pig_house_id
+        where p.number != 0 and p.del = 0 and sow.sowNumber > 0)    AS weaned,
+               (SELECT count(id) FROM pig_mating_task WHERE del = 0 AND STATUS = 1)    AS mating,
+               (SELECT COUNT(id) FROM pig_pregnancy_task WHERE del = 0 AND STATUS = 1) AS pregnancy,
+               (SELECT COUNT(id) FROM pig_labor_task WHERE del = 0 AND STATUS = 1)     AS labor
+    </select>
+
+    <select id="statisticMating" resultType="com.zmu.cloud.commons.vo.FarmStatisticProductionTotalVO$Mating">
+        SELECT COUNT(*) count, pm.before_pig_status `type`
+        FROM pig_mating pm
+        WHERE pm.del = '0'
+          and pm.before_pig_status is not null
+        <if test="startTime != null and endTime != null">
+            and pm.create_time between #{startTime} and #{endTime}
+        </if>
+        GROUP BY pm.before_pig_status
+    </select>
+
+      <select id="HomeMating" resultType="com.zmu.cloud.commons.vo.HomeProductionReportOldVO$Mating">
+          SELECT
+        COALESCE(tc, 0) AS tc,
+        COALESCE(jc, 0) AS jc,
+        COALESCE(tc, 0) + COALESCE(jc, 0) AS `count`
+    FROM
+        (SELECT
+            SUM(CASE WHEN parity &lt; 2 THEN 1 ELSE 0 END) AS tc,
+            SUM(CASE WHEN parity &gt;= 2 THEN 1 ELSE 0 END) AS jc
+        FROM pig_mating where del = '0'
+        <if test="startTime != null and endTime != null">
+                and mating_date between #{startTime} and #{endTime}
+          </if>
+        ) AS counts;
+
+        </select>
+
+</mapper>

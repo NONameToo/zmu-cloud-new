@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.SummaryReportMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.SummaryReport">
+    <!--@mbg.generated-->
+    <!--@Table summary_report-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="farm_id" jdbcType="BIGINT" property="farmId" />
+    <result column="tower_count" jdbcType="INTEGER" property="towerCount" />
+    <result column="tower_device_count" jdbcType="INTEGER" property="towerDeviceCount" />
+    <result column="feeder_count" jdbcType="INTEGER" property="feederCount" />
+    <result column="feeder_ph_count" jdbcType="INTEGER" property="feederPhCount" />
+    <result column="feeder_hb_count" jdbcType="INTEGER" property="feederHbCount" />
+    <result column="feeder_gz_count" jdbcType="INTEGER" property="feederGzCount" />
+    <result column="feeder_fm_count" jdbcType="INTEGER" property="feederFmCount" />
+    <result column="feeder_by_count" jdbcType="INTEGER" property="feederByCount" />
+    <result column="today_feeding_amount_total" jdbcType="BIGINT" property="todayFeedingAmountTotal" />
+    <result column="today_feeding_amount_ph" jdbcType="BIGINT" property="todayFeedingAmountPh" />
+    <result column="today_feeding_amount_hb" jdbcType="BIGINT" property="todayFeedingAmountHb" />
+    <result column="today_feeding_amount_gz" jdbcType="BIGINT" property="todayFeedingAmountGz" />
+    <result column="today_feeding_amount_fm" jdbcType="BIGINT" property="todayFeedingAmountFm" />
+    <result column="today_feeding_amount_by" jdbcType="BIGINT" property="todayFeedingAmountBy" />
+    <result column="year_feeding_amount_total" jdbcType="BIGINT" property="yearFeedingAmountTotal" />
+    <result column="year_feeding_amount_ph" jdbcType="BIGINT" property="yearFeedingAmountPh" />
+    <result column="year_feeding_amount_hb" jdbcType="BIGINT" property="yearFeedingAmountHb" />
+    <result column="year_feeding_amount_gz" jdbcType="BIGINT" property="yearFeedingAmountGz" />
+    <result column="year_feeding_amount_fm" jdbcType="BIGINT" property="yearFeedingAmountFm" />
+    <result column="year_feeding_amount_by" jdbcType="BIGINT" property="yearFeedingAmountBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, farm_id, tower_count, tower_device_count, feeder_count, feeder_ph_count, 
+    feeder_hb_count, feeder_gz_count, feeder_fm_count, feeder_by_count, today_feeding_amount_total, 
+    today_feeding_amount_ph, today_feeding_amount_hb, today_feeding_amount_gz, today_feeding_amount_fm, 
+    today_feeding_amount_by, year_feeding_amount_total, year_feeding_amount_ph, year_feeding_amount_hb, 
+    year_feeding_amount_gz, year_feeding_amount_fm, year_feeding_amount_by
+  </sql>
+
+  <select id="findFeederCount" resultType="com.zmu.cloud.commons.dto.SummaryReportDto">
+    select c.company_id companyId, c.pig_farm_id farmId, h.type houseType, count(*) cnt
+    from pig_house_columns c left join pig_house h on c.pig_house_id = h.id
+    where c.client_id > 0
+        and c.feeder_code > 0
+        and c.company_id is not null
+        and c.pig_farm_id is not null
+        and h.type is not null
+    group by c.company_id, c.pig_farm_id, h.type
+  </select>
+
+</mapper>

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.SysMenuMapper">
+    <resultMap id="BaseResultMap_BACK_UP" type="com.zmu.cloud.commons.entity.admin.SysMenu">
+        <!--@mbg.generated-->
+        <!--@Table sys_menu-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="module_id" jdbcType="BIGINT" property="moduleId"/>
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="order_num" jdbcType="INTEGER" property="orderNum"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="target" jdbcType="VARCHAR" property="target"/>
+        <result column="hide_in_menu" jdbcType="INTEGER" property="hideInMenu"/>
+        <result column="menu_type" jdbcType="CHAR" property="menuType"/>
+        <result column="visible" jdbcType="INTEGER" property="visible"/>
+        <result column="perms" jdbcType="VARCHAR" property="perms"/>
+        <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.admin.SysMenu">
+        <!--@Table sys_menu-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="module_id" jdbcType="BIGINT" property="moduleId"/>
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="order_num" jdbcType="INTEGER" property="orderNum"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="target" jdbcType="VARCHAR" property="target"/>
+        <result column="hide_in_menu" jdbcType="INTEGER" property="hideInMenu"/>
+        <result column="menu_type" jdbcType="CHAR" property="menuType"/>
+        <result column="visible" jdbcType="INTEGER" property="visible"/>
+        <result column="perms" jdbcType="VARCHAR" property="perms"/>
+        <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <collection property="children" ofType="com.zmu.cloud.commons.entity.admin.SysMenu">
+            <id column="m_id" jdbcType="BIGINT" property="id"/>
+            <result column="m_module_id" jdbcType="BIGINT" property="moduleId"/>
+            <result column="m_menu_name" jdbcType="VARCHAR" property="menuName"/>
+            <result column="m_parent_id" jdbcType="BIGINT" property="parentId"/>
+            <result column="m_order_num" jdbcType="INTEGER" property="orderNum"/>
+            <result column="m_url" jdbcType="VARCHAR" property="url"/>
+            <result column="m_target" jdbcType="VARCHAR" property="target"/>
+            <result column="m_hide_in_menu" jdbcType="INTEGER" property="hideInMenu"/>
+            <result column="m_menu_type" jdbcType="CHAR" property="menuType"/>
+            <result column="m_visible" jdbcType="INTEGER" property="visible"/>
+            <result column="m_perms" jdbcType="VARCHAR" property="perms"/>
+            <result column="m_icon" jdbcType="VARCHAR" property="icon"/>
+            <result column="m_remark" jdbcType="VARCHAR" property="remark"/>
+            <result column="m_create_by" jdbcType="BIGINT" property="createBy"/>
+            <result column="m_update_by" jdbcType="BIGINT" property="updateBy"/>
+            <result column="m_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="m_del" jdbcType="CHAR" property="del"/>
+            <result column="m_update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+            <collection property="children" ofType="com.zmu.cloud.commons.entity.admin.SysMenu">
+                <id column="b_id" jdbcType="BIGINT" property="id"/>
+                <result column="b_module_id" jdbcType="BIGINT" property="moduleId"/>
+                <result column="b_menu_name" jdbcType="VARCHAR" property="menuName"/>
+                <result column="b_parent_id" jdbcType="BIGINT" property="parentId"/>
+                <result column="b_order_num" jdbcType="INTEGER" property="orderNum"/>
+                <result column="b_url" jdbcType="VARCHAR" property="url"/>
+                <result column="b_target" jdbcType="VARCHAR" property="target"/>
+                <result column="b_hide_in_menu" jdbcType="INTEGER" property="hideInMenu"/>
+                <result column="b_menu_type" jdbcType="CHAR" property="menuType"/>
+                <result column="b_visible" jdbcType="INTEGER" property="visible"/>
+                <result column="b_perms" jdbcType="VARCHAR" property="perms"/>
+                <result column="b_icon" jdbcType="VARCHAR" property="icon"/>
+                <result column="b_remark" jdbcType="VARCHAR" property="remark"/>
+                <result column="b_create_by" jdbcType="BIGINT" property="createBy"/>
+                <result column="b_update_by" jdbcType="BIGINT" property="updateBy"/>
+                <result column="b_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+                <result column="b_del" jdbcType="CHAR" property="del"/>
+                <result column="b_update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, module_id, menu_name, parent_id, order_num, url, target, hide_in_menu, menu_type, visible,
+        perms, icon, remark, create_by, update_by, create_time, del, update_time
+    </sql>
+
+    <select id="listManage" resultMap="BaseResultMap">
+        SELECT c.*,
+               m.id           m_id,
+               m.module_id    m_module_id,
+               m.menu_name    m_menu_name,
+               m.parent_id    m_parent_id,
+               m.order_num    m_order_num,
+               m.url          m_url,
+               m.target       m_target,
+               m.hide_in_menu m_hide_in_menu,
+               m.menu_type    m_menu_type,
+               m.visible      m_visible,
+               m.perms        m_perms,
+               m.icon         m_icon,
+               m.remark       m_remark,
+               m.create_by    m_create_by,
+               m.update_by    m_update_by,
+               m.create_time  m_create_time,
+               m.del          m_del,
+               m.update_time  m_update_time,
+               b.id           b_id,
+               b.module_id    b_module_id,
+               b.menu_name    b_menu_name,
+               b.parent_id    b_parent_id,
+               b.order_num    b_order_num,
+               b.url          b_url,
+               b.target       b_target,
+               b.hide_in_menu b_hide_in_menu,
+               b.menu_type    b_menu_type,
+               b.visible      b_visible,
+               b.perms        b_perms,
+               b.icon         b_icon,
+               b.remark       b_remark,
+               b.create_by    b_create_by,
+               b.update_by    b_update_by,
+               b.create_time  b_create_time,
+               b.del          b_del,
+               b.update_time  b_update_time
+        FROM sys_menu c
+                 LEFT JOIN sys_menu m ON c.id = m.parent_id and m.del = '0'
+                 LEFT JOIN sys_menu b ON m.id = b.parent_id and b.del = '0'
+        WHERE c.del = '0'
+          and c.menu_type = 'C'
+        order by c.order_num, m.order_num, b.order_num, c.id, m.id, b.id
+    </select>
+    <select id="listAllAvailable" resultMap="BaseResultMap">
+        SELECT c.*,
+               m.id           m_id,
+               m.module_id    m_module_id,
+               m.menu_name    m_menu_name,
+               m.parent_id    m_parent_id,
+               m.order_num    m_order_num,
+               m.url          m_url,
+               m.target       m_target,
+               m.hide_in_menu m_hide_in_menu,
+               m.menu_type    m_menu_type,
+               m.visible      m_visible,
+               m.perms        m_perms,
+               m.icon         m_icon,
+               m.remark       m_remark,
+               m.create_by    m_create_by,
+               m.update_by    m_update_by,
+               m.create_time  m_create_time,
+               m.del          m_del,
+               m.update_time  m_update_time,
+               b.id           b_id,
+               b.module_id    b_module_id,
+               b.menu_name    b_menu_name,
+               b.parent_id    b_parent_id,
+               b.order_num    b_order_num,
+               b.url          b_url,
+               b.target       b_target,
+               b.hide_in_menu b_hide_in_menu,
+               b.menu_type    b_menu_type,
+               b.visible      b_visible,
+               b.perms        b_perms,
+               b.icon         b_icon,
+               b.remark       b_remark,
+               b.create_by    b_create_by,
+               b.update_by    b_update_by,
+               b.create_time  b_create_time,
+               b.del          b_del,
+               b.update_time  b_update_time
+        FROM sys_menu c
+            LEFT JOIN sys_menu m ON c.id = m.parent_id and m.del = '0'
+        <if test="userRoleType != 'SUPER_ADMIN'">
+            and m.visible = 1
+            and m.id != 79
+        </if>
+        LEFT JOIN sys_menu b ON m.id = b.parent_id and b.del = '0'
+        <if test="userRoleType != 'SUPER_ADMIN'">
+            and b.visible = 1
+            and b.id != 79
+        </if>
+        WHERE c.del = '0'
+          and c.menu_type = 'C'
+        <if test="userRoleType != 'SUPER_ADMIN'">
+            and c.visible = 1
+            and c.id != 79
+        </if>
+        order by c.order_num, m.order_num, b.order_num, c.id, m.id, b.id
+    </select>
+
+    <select id="listByUserId" resultMap="BaseResultMap">
+        SELECT c.*,
+               m.id           m_id,
+               m.module_id    m_module_id,
+               m.menu_name    m_menu_name,
+               m.parent_id    m_parent_id,
+               m.order_num    m_order_num,
+               m.url          m_url,
+               m.target       m_target,
+               m.hide_in_menu m_hide_in_menu,
+               m.menu_type    m_menu_type,
+               m.visible      m_visible,
+               m.perms        m_perms,
+               m.icon         m_icon,
+               m.remark       m_remark,
+               m.create_by    m_create_by,
+               m.update_by    m_update_by,
+               m.create_time  m_create_time,
+               m.del          m_del,
+               m.update_time  m_update_time,
+               b.id           b_id,
+               b.module_id    b_module_id,
+               b.menu_name    b_menu_name,
+               b.parent_id    b_parent_id,
+               b.order_num    b_order_num,
+               b.url          b_url,
+               b.target       b_target,
+               b.hide_in_menu b_hide_in_menu,
+               b.menu_type    b_menu_type,
+               b.visible      b_visible,
+               b.perms        b_perms,
+               b.icon         b_icon,
+               b.remark       b_remark,
+               b.create_by    b_create_by,
+               b.update_by    b_update_by,
+               b.create_time  b_create_time,
+               b.del          b_del,
+               b.update_time  b_update_time
+        FROM sys_menu c
+            LEFT JOIN sys_menu m ON c.id = m.parent_id and m.del = '0'
+        <if test="userRoleType != 'SUPER_ADMIN'">
+            and m.visible = 1
+            and m.id != 79
+            and (m.module_id = 0 or m.module_id = #{moduleId})
+        </if>
+        LEFT JOIN sys_menu b ON m.id = b.parent_id and b.del = '0'
+        <if test="userRoleType != 'SUPER_ADMIN'">
+            and b.visible = 1
+            and b.id != 79
+        </if>
+        <if test="userRoleType != 'SUPER_ADMIN' and userRoleType != 'COMPANY_ADMIN'">
+            INNER JOIN sys_role_menu srm on (srm.menu_id = c.id or srm.menu_id = m.id or srm.menu_id = b.id)
+            INNER JOIN sys_user_role sur on sur.role_id = srm.role_id
+                and sur.user_id = #{userId}
+        </if>
+        WHERE c.del = '0'
+          and c.menu_type = 'C'
+        <if test="userRoleType != 'SUPER_ADMIN'">
+            and c.visible = 1
+            and c.id != 79
+            and (c.module_id = 0 or c.module_id = #{moduleId})
+        </if>
+        order by c.order_num, m.order_num, b.order_num, c.id, m.id, b.id
+    </select>
+    <select id="listPermissionByUserId" resultType="java.lang.String">
+        select perms
+        from sys_menu sm
+                 join sys_role_menu srm on sm.id = srm.menu_id
+                 join sys_user_role sur on sur.role_id = srm.role_id and sur.user_id = #{userId}
+        where sm.del = '0'
+          and sm.visible = 1
+          <if test="moduleId != null">
+            and (sm.module_id = 0 or sm.module_id = #{moduleId})
+          </if>
+        order by order_num
+    </select>
+
+    <select id="countByParentId" resultType="int">
+        select count(1)
+        from sys_menu sm
+        where sm.del = '0'
+          and sm.parent_id = #{id}
+    </select>
+
+    <select id="listPermissionForAdmin" resultType="java.lang.String">
+        select perms
+        from sys_menu sm
+        where sm.del = '0'
+        <if test="userRoleType != 'SUPER_ADMIN'">
+            and sm.visible = 1
+        </if>
+        order by order_num
+    </select>
+
+    <select id="getMenuNameByPerms" resultType="java.lang.String">
+        select menu_name
+        from sys_menu
+        where del = '0'
+          and perms = #{permission}
+        limit 1
+    </select>
+</mapper>

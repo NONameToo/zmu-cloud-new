@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigPorkMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigPork">
+        <!--@mbg.generated-->
+        <!--@Table pig_pork-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="approach_time" jdbcType="DATE" property="approachTime"/>
+        <result column="pig_house_columns_id" jdbcType="BIGINT" property="pigHouseColumnsId"/>
+        <result column="pig_group_id" jdbcType="BIGINT" property="pigHouseColumnsId"/>
+        <result column="approach_type" jdbcType="INTEGER" property="approachType"/>
+        <result column="birth_date" jdbcType="DATE" property="birthDate"/>
+        <result column="number" jdbcType="INTEGER" property="number"/>
+        <result column="variety" jdbcType="INTEGER" property="variety"/>
+        <result column="weight" jdbcType="DECIMAL" property="weight"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="pig_house_id" jdbcType="BIGINT" property="pigHouseId"/>
+        <result column="stock_id" jdbcType="BIGINT" property="stockId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, approach_time, pig_house_columns_id, approach_type,pig_group_id,
+        birth_date, `number`, variety, weight, price, operator_id, del, remark, create_by,
+        update_by, create_time, update_time, pig_house_id, stock_id
+    </sql>
+
+    <select id="event" resultType="com.zmu.cloud.commons.vo.EventPigPorkListVO">
+        select p.id                            id,
+               p.approach_time                            approachTime,
+               p.approach_type                            approachType,
+               p.birth_date                               birthDate,
+               p.number,
+               p.variety,
+               p.weight,
+               p.price,
+               u.real_name                                operatorName,
+               ph.name                                    pigHouse,
+               ph.id                                    pigHouseId,
+               phr.name                                   pigRows,
+               phc.name                                   pigColumns,
+               phc.position,
+               timestampdiff(DAY, p.birth_date, NOW()) dayAge,
+               p.create_time                              createTime,
+               p.remark,
+               pg.name                                    pigGroupName,
+               pg.id                                    pigGroupId
+        from pig_pork p
+                     left join pig_house_columns phc on p.pig_house_columns_id = phc.id
+                     left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                     left join pig_house ph on p.pig_house_id = ph.id
+                     left join sys_user u on u.id = p.operator_id
+                     left join pig_group pg on p.pig_group_id = pg.id
+        <where>
+            p.del = '0'
+            <if test="pigHouseId != null">
+                and ph.id = #{pigHouseId}
+            </if>
+            <if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+                and p.approach_time BETWEEN #{startTime,jdbcType=VARCHAR} AND #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="pigGroupId != null">
+                and pg.id = #{pigGroupId,jdbcType=BIGINT}
+            </if>
+            <if test="pigGroupName != null and pigGroupName != ''">
+                and pg.name like concat('%',#{pigGroupName,jdbcType=VARCHAR},'%')
+            </if>
+        </where>
+        <if test="dayAge != null">
+            having dayAge &gt;= #{dayAge}
+        </if>
+        order by p.approach_time desc ,p.create_time desc
+    </select>
+
+    <select id="hogCount" resultType="integer">
+        SELECT
+	sum( number )
+    FROM
+	pig_pork
+    WHERE
+	del = '0'
+    </select>
+</mapper>

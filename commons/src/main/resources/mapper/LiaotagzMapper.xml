@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.LiaotagzMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.Liaotagz">
+    <!--@mbg.generated-->
+    <!--@Table liaotagz-->
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="今日用料" jdbcType="DECIMAL" property="今日用料" />
+    <result column="今日加料" jdbcType="DECIMAL" property="今日加料" />
+    <result column="猪场名称" jdbcType="VARCHAR" property="猪场名称" />
+    <result column="料塔名称" jdbcType="VARCHAR" property="料塔名称" />
+    <result column="空腔体积" jdbcType="DECIMAL" property="空腔体积" />
+    <result column="余料体积" jdbcType="DECIMAL" property="余料体积" />
+    <result column="密度" jdbcType="DECIMAL" property="密度" />
+    <result column="余料重量" jdbcType="DECIMAL" property="余料重量" />
+    <result column="日期" jdbcType="TIMESTAMP" property="日期" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    Id, 今日用料, 今日加料, 猪场名称, 料塔名称, 空腔体积, 余料体积, 密度, 余料重量, 日期
+  </sql>
+</mapper>

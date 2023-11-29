@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.QrtzJobDetailsMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.QrtzJobDetails">
+    <!--@mbg.generated-->
+    <!--@Table qrtz_job_details-->
+    <id column="sched_name" jdbcType="VARCHAR" property="schedName" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="job_group" jdbcType="VARCHAR" property="jobGroup" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="job_class_name" jdbcType="VARCHAR" property="jobClassName" />
+    <result column="is_durable" jdbcType="VARCHAR" property="isDurable" />
+    <result column="is_nonconcurrent" jdbcType="VARCHAR" property="isNonconcurrent" />
+    <result column="is_update_data" jdbcType="VARCHAR" property="isUpdateData" />
+    <result column="requests_recovery" jdbcType="VARCHAR" property="requestsRecovery" />
+    <result column="job_data" jdbcType="BLOB" property="jobData" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    sched_name, job_name, job_group, description, job_class_name, is_durable, is_nonconcurrent, 
+    is_update_data, requests_recovery, job_data
+  </sql>
+</mapper>

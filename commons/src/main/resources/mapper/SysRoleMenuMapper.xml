@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.SysRoleMenuMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.admin.SysRoleMenu">
+        <!--@mbg.generated-->
+        <!--@Table sys_role_menu-->
+        <id column="role_id" jdbcType="BIGINT" property="roleId"/>
+        <id column="menu_id" jdbcType="BIGINT" property="menuId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        role_id, menu_id
+    </sql>
+    <delete id="deleteByPrimaryKey" parameterType="map">
+        <!--@mbg.generated-->
+        delete
+        from sys_role_menu
+        where role_id = #{roleId,jdbcType=BIGINT}
+          and menu_id = #{menuId,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="com.zmu.cloud.commons.entity.admin.SysRoleMenu">
+        <!--@mbg.generated-->
+        insert into sys_role_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="menuId != null">
+                menu_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="menuId != null">
+                #{menuId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <insert id="batchInsert">
+        insert into sys_role_menu
+                (role_id, menu_id)
+                values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.roleId,jdbcType=BIGINT}, #{item.menuId,jdbcType=BIGINT})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByRoleId">
+        delete
+        from sys_role_menu
+        where role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteByMenuId">
+        delete from sys_role_menu where menu_id = #{menuId}
+    </delete>
+</mapper>

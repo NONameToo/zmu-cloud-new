@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.SuppliesMapper">
+    
+    <resultMap type="com.zmu.cloud.commons.entity.Supplies" id="SuppliesResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="unit"    column="unit"    />
+        <result property="num"    column="num"    />
+        <result property="vender"    column="vender"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="del"    column="del"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="pigFarmId"    column="pig_farm_id"    />
+    </resultMap>
+
+    <sql id="selectSuppliesVo">
+        select id, name, unit, num, vender, create_by, create_time, update_by, update_time, remark, del, company_id, pig_farm_id from supplies
+    </sql>
+
+    <select id="selectSuppliesList" parameterType="com.zmu.cloud.commons.entity.Supplies" resultMap="SuppliesResult">
+        <include refid="selectSuppliesVo"/>
+        <where>
+          del = 0
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="num != null "> and num = #{num}</if>
+            <if test="vender != null  and vender != ''"> and vender = #{vender}</if>
+            <if test="startTime != null "> and create_time &gt;= #{startTime}</if>
+            <if test="endTime != null "> and create_time &lt;= DATE_ADD(#{endTime}, INTERVAL 1 DAY)</if>
+        </where>
+    </select>
+    
+    <select id="selectSuppliesById" parameterType="Long" resultMap="SuppliesResult">
+        <include refid="selectSuppliesVo"/>
+        where del = 0 and id = #{id}
+    </select>
+        
+    <insert id="insertSupplies" parameterType="com.zmu.cloud.commons.entity.Supplies" useGeneratedKeys="true" keyProperty="id">
+        insert into supplies
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="unit != null">unit,</if>
+            <if test="num != null">num,</if>
+            <if test="vender != null">vender,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="del != null">del,</if>
+            <if test="companyId != null">company_id,</if>
+            <if test="pigFarmId != null">pig_farm_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="num != null">#{num},</if>
+            <if test="vender != null">#{vender},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="del != null">#{del},</if>
+            <if test="companyId != null">#{companyId},</if>
+            <if test="pigFarmId != null">#{pigFarmId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSupplies" parameterType="com.zmu.cloud.commons.entity.Supplies">
+        update supplies
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="num != null">num = #{num},</if>
+            <if test="vender != null">vender = #{vender},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="del != null">del = #{del},</if>
+            <if test="companyId != null">company_id = #{companyId},</if>
+            <if test="pigFarmId != null">pig_farm_id = #{pigFarmId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSuppliesById" parameterType="Long">
+        update supplies set del = 1 where id = #{id}
+    </delete>
+
+    <delete id="deleteSuppliesByIds" parameterType="String">
+        update supplies set del = 1,update_by = #{userId},update_time = now() where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectSuppliesByNameAndVender" resultMap="SuppliesResult">
+        <include refid="selectSuppliesVo"/>
+        where
+            del = 0
+             and name = #{name}
+             and vender = #{vender}
+            limit 1
+    </select>
+
+    <select id="listed" parameterType="com.zmu.cloud.commons.entity.Supplies" resultType="com.zmu.cloud.commons.entity.Supplies">
+        select id, concat(name,'(',vender,')') as 'fullName',unit,name,num,vender from supplies
+        <where>
+            del = 0
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="num != null "> and num = #{num}</if>
+            <if test="vender != null  and vender != ''"> and vender = #{vender}</if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeedTowerGrowthAbilityMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeedTowerGrowthAbility">
+    <!--@mbg.generated-->
+    <!--@Table feed_tower_growth_ability-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="tower_id" jdbcType="BIGINT" property="towerId" />
+    <result column="begin_date" jdbcType="DATE" property="beginDate" />
+    <result column="end_date" jdbcType="DATE" property="endDate" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="avg_weight" jdbcType="VARCHAR" property="avgWeight" />
+    <result column="feed_efficiency" jdbcType="VARCHAR" property="feedEfficiency" />
+    <result column="avg_day_used" jdbcType="VARCHAR" property="avgDayUsed" />
+    <result column="operator" jdbcType="BIGINT" property="operator" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, pig_farm_id, tower_id, begin_date, end_date, amount, avg_weight, 
+    feed_efficiency, avg_day_used, `operator`, create_time
+  </sql>
+</mapper>

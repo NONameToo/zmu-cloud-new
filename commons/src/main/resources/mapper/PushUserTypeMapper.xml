@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PushUserTypeMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PushUserType">
+        <!--@mbg.generated-->
+        <!--@Table push_user_type-->
+        <id column="user_id" jdbcType="BIGINT" property="userId"/>
+        <id column="type_id" jdbcType="BIGINT" property="typeId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        user_id, type_id
+    </sql>
+
+    <sql id="Sys_User_Column_List">
+        id, company_id, login_name, nick_name, real_name, email, phone, sex,
+        avatar, `password`, `status`, user_role_type,del, remark, create_by, update_by, create_time, update_time,rid
+    </sql>
+    <delete id="deleteByPrimaryKey" parameterType="map">
+        <!--@mbg.generated-->
+        delete
+        from push_user_type
+        where user_id = #{userId,jdbcType=BIGINT}
+          and type_id = #{typeId,jdbcType=BIGINT}
+    </delete>
+
+    <select id="countUserByTypeId" resultType="int">
+        select count(*)
+        from push_user_type sur
+                 inner join sys_user su on sur.user_id = su.id
+        where sur.type_id = #{typeId,jdbcType=BIGINT}
+          and su.del = '0'
+    </select>
+    <delete id="deleteByTypeId">
+        delete
+        from push_user_type
+        where type_id = #{typeId}
+    </delete>
+    <insert id="batchInsert">
+        insert into push_user_type(user_id, type_id) values
+        <foreach item="item" index="index" collection="records" separator=",">
+            (#{item.userId}, #{item.typeId})
+        </foreach>
+    </insert>
+    <delete id="deleteByUserId">
+        delete
+        from push_user_type
+        where user_id = #{userId,jdbcType=BIGINT}
+    </delete>
+    <select id="listUserIdByTypeId" resultType="java.lang.Long">
+        select sur.user_id
+        from push_user_type sur
+                 inner join sys_user u on u.id = sur.user_id
+        where sur.type_id = #{typeId}
+          and u.del = false
+    </select>
+        <select id="getUserRidByFarmIdAndMessageTypeKey" resultType="com.zmu.cloud.commons.entity.admin.SysUser">
+        SELECT
+            a.id,a.login_name,a.rid
+        FROM
+            sys_user AS a
+            INNER JOIN sys_user_farm AS b ON b.user_id = a.id
+            INNER JOIN push_user_type AS c ON c.user_id = a.id
+            INNER JOIN push_message_type AS d ON c.type_id = d.id
+        WHERE
+            a.`status` = 1
+            AND a.del = 0
+            AND a.rid is not null
+            AND b.farm_id = #{farmId}
+            AND d.message_type_key = #{messageTypeKey}
+    </select>
+</mapper>

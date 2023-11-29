@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.DeviceQualityCheckMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.DeviceQualityCheck">
+    <!--@mbg.generated-->
+    <!--@Table device_quality_check-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="tower_id" jdbcType="BIGINT" property="towerId" />
+    <result column="device_num" jdbcType="VARCHAR" property="deviceNum" />
+    <result column="check_count" jdbcType="INTEGER" property="checkCount" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="volume" jdbcType="BIGINT" property="volume" />
+    <result column="standard_volume" jdbcType="BIGINT" property="standardVolume" />
+    <result column="right_percent" jdbcType="INTEGER" property="rightPercent" />
+    <result column="pass" jdbcType="INTEGER" property="pass" />
+    <result column="log_id" jdbcType="BIGINT" property="logId" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
+    <result column="batch_num" jdbcType="VARCHAR" property="batchNum" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="handle" jdbcType="INTEGER" property="handle" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="checker_id" jdbcType="BIGINT" property="checkerId" />
+    <result column="checker_name" jdbcType="VARCHAR" property="checkerName" />
+    <result column="again" jdbcType="INTEGER" property="again" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, tower_id, device_num, check_count, start_time, end_time, volume, standard_volume, 
+    right_percent, pass, log_id, sn, batch_num, company_id, pig_farm_id, create_time, 
+    update_time, handle, remark, checker_id, checker_name,again
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from device_quality_check
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from device_quality_check
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zmu.cloud.commons.entity.DeviceQualityCheck" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into device_quality_check (tower_id, device_num, check_count, 
+      start_time, end_time, volume, 
+      standard_volume, right_percent, pass, 
+      log_id, sn, batch_num, 
+      company_id, pig_farm_id, create_time, 
+      update_time, handle, remark, 
+      checker_id, checker_name, again)
+    values (#{towerId,jdbcType=BIGINT}, #{deviceNum,jdbcType=VARCHAR}, #{checkCount,jdbcType=INTEGER}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{volume,jdbcType=BIGINT}, 
+      #{standardVolume,jdbcType=BIGINT}, #{rightPercent,jdbcType=INTEGER}, #{pass,jdbcType=INTEGER}, 
+      #{logId,jdbcType=BIGINT}, #{sn,jdbcType=VARCHAR}, #{batchNum,jdbcType=VARCHAR}, 
+      #{companyId,jdbcType=BIGINT}, #{pigFarmId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{handle,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{checkerId,jdbcType=BIGINT}, #{checkerName,jdbcType=VARCHAR}, #{again,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zmu.cloud.commons.entity.DeviceQualityCheck" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into device_quality_check
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="towerId != null">
+        tower_id,
+      </if>
+      <if test="deviceNum != null">
+        device_num,
+      </if>
+      <if test="checkCount != null">
+        check_count,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="volume != null">
+        volume,
+      </if>
+      <if test="standardVolume != null">
+        standard_volume,
+      </if>
+      <if test="rightPercent != null">
+        right_percent,
+      </if>
+      <if test="pass != null">
+        pass,
+      </if>
+      <if test="logId != null">
+        log_id,
+      </if>
+      <if test="sn != null">
+        sn,
+      </if>
+      <if test="batchNum != null">
+        batch_num,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="pigFarmId != null">
+        pig_farm_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="handle != null">
+        handle,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="checkerId != null">
+        checker_id,
+      </if>
+      <if test="checkerName != null">
+        checker_name,
+      </if>
+      <if test="again != null">
+        again,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="towerId != null">
+        #{towerId,jdbcType=BIGINT},
+      </if>
+      <if test="deviceNum != null">
+        #{deviceNum,jdbcType=VARCHAR},
+      </if>
+      <if test="checkCount != null">
+        #{checkCount,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="volume != null">
+        #{volume,jdbcType=BIGINT},
+      </if>
+      <if test="standardVolume != null">
+        #{standardVolume,jdbcType=BIGINT},
+      </if>
+      <if test="rightPercent != null">
+        #{rightPercent,jdbcType=INTEGER},
+      </if>
+      <if test="pass != null">
+        #{pass,jdbcType=INTEGER},
+      </if>
+      <if test="logId != null">
+        #{logId,jdbcType=BIGINT},
+      </if>
+      <if test="sn != null">
+        #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNum != null">
+        #{batchNum,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="pigFarmId != null">
+        #{pigFarmId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handle != null">
+        #{handle,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="checkerId != null">
+        #{checkerId,jdbcType=BIGINT},
+      </if>
+      <if test="checkerName != null">
+        #{checkerName,jdbcType=VARCHAR},
+      </if>
+      <if test="again != null">
+        #{again,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zmu.cloud.commons.entity.DeviceQualityCheck">
+    <!--@mbg.generated-->
+    update device_quality_check
+    <set>
+      <if test="towerId != null">
+        tower_id = #{towerId,jdbcType=BIGINT},
+      </if>
+      <if test="deviceNum != null">
+        device_num = #{deviceNum,jdbcType=VARCHAR},
+      </if>
+      <if test="checkCount != null">
+        check_count = #{checkCount,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="volume != null">
+        volume = #{volume,jdbcType=BIGINT},
+      </if>
+      <if test="standardVolume != null">
+        standard_volume = #{standardVolume,jdbcType=BIGINT},
+      </if>
+      <if test="rightPercent != null">
+        right_percent = #{rightPercent,jdbcType=INTEGER},
+      </if>
+      <if test="pass != null">
+        pass = #{pass,jdbcType=INTEGER},
+      </if>
+      <if test="logId != null">
+        log_id = #{logId,jdbcType=BIGINT},
+      </if>
+      <if test="sn != null">
+        sn = #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNum != null">
+        batch_num = #{batchNum,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="pigFarmId != null">
+        pig_farm_id = #{pigFarmId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handle != null">
+        handle = #{handle,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="checkerId != null">
+        checker_id = #{checkerId,jdbcType=BIGINT},
+      </if>
+      <if test="checkerName != null">
+        checker_name = #{checkerName,jdbcType=VARCHAR},
+      </if>
+      <if test="again != null">
+        again = #{again,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zmu.cloud.commons.entity.DeviceQualityCheck">
+    <!--@mbg.generated-->
+    update device_quality_check
+    set tower_id = #{towerId,jdbcType=BIGINT},
+      device_num = #{deviceNum,jdbcType=VARCHAR},
+      check_count = #{checkCount,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      volume = #{volume,jdbcType=BIGINT},
+      standard_volume = #{standardVolume,jdbcType=BIGINT},
+      right_percent = #{rightPercent,jdbcType=INTEGER},
+      pass = #{pass,jdbcType=INTEGER},
+      log_id = #{logId,jdbcType=BIGINT},
+      sn = #{sn,jdbcType=VARCHAR},
+      batch_num = #{batchNum,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=BIGINT},
+      pig_farm_id = #{pigFarmId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      handle = #{handle,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      checker_id = #{checkerId,jdbcType=BIGINT},
+      checker_name = #{checkerName,jdbcType=VARCHAR},
+      again = #{again,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+    <select id="list" parameterType="com.zmu.cloud.commons.dto.QueryDeviceCheck" resultMap="BaseResultMap">
+        SELECT
+            t1.*
+        FROM
+            device_quality_check t1
+            INNER JOIN ( SELECT MAX( id ) AS id FROM device_quality_check GROUP BY device_num ) t2 ON t1.id = t2.id
+            where 1=1
+     <if test="pass != null">
+        and t1.pass = #{pass,jdbcType=INTEGER}
+      </if>
+
+      <if test="handle != null">
+        and t1.handle = #{handle,jdbcType=INTEGER}
+      </if>
+
+
+    <if test="deviceNo != null and deviceNo != ''">
+        and t1.device_num = #{deviceNo,jdbcType=VARCHAR}
+      </if>
+      order by t1.create_time desc
+
+  </select>
+
+</mapper>

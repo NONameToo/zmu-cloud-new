@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigFeedingRecordMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigFeedingRecord">
+    <!--@mbg.generated-->
+    <!--@Table pig_feeding_record-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="client_id" jdbcType="BIGINT" property="clientId" />
+    <result column="feeder_code" jdbcType="INTEGER" property="feederCode" />
+    <result column="pig_id" jdbcType="BIGINT" property="pigId" />
+    <result column="ear_number" jdbcType="VARCHAR" property="earNumber" />
+    <result column="back_fat" jdbcType="INTEGER" property="backFat" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="parities" jdbcType="INTEGER" property="parities" />
+    <result column="stage" jdbcType="INTEGER" property="stage" />
+    <result column="is_auto" jdbcType="VARCHAR" property="isAuto" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="pig_house_id" jdbcType="BIGINT" property="pigHouseId" />
+    <result column="pig_house_name" jdbcType="VARCHAR" property="pigHouseName" />
+    <result column="pig_house_type" jdbcType="INTEGER" property="pigHouseType" />
+    <result column="pig_house_row_id" jdbcType="BIGINT" property="pigHouseRowId" />
+    <result column="pig_house_col_id" jdbcType="BIGINT" property="pigHouseColId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, client_id, feeder_code, pig_id, ear_number, back_fat, amount, parities, stage, 
+    is_auto, company_id, pig_farm_id, pig_house_id, pig_house_name, pig_house_type, pig_house_row_id, 
+    pig_house_col_id, create_time
+  </sql>
+
+    <select id="ymdFeedingAmountReport" resultType="com.zmu.cloud.commons.vo.FeedReportDetailVo">
+        select fr.pig_house_type houseType, ifnull(round(sum(fr.amount) / 1000, 2), 0) amounts
+        from pig_feeding_record fr
+        where 1=1
+        <if test="reportType == 'day'">
+            and date_format(fr.create_time, '%Y-%m-%d') = #{time}
+        </if>
+        <if test="reportType == 'week'">
+            and YEAR(fr.create_time)=YEAR(NOW())
+            and DATE_FORMAT( fr.create_time,"%u") = #{time}
+        </if>
+        <if test="reportType == 'month'">
+            and date_format(fr.create_time, '%Y-%m') = #{time}
+        </if>
+        <if test="reportType == 'year'">
+            and date_format(fr.create_time, '%Y') = #{time}
+        </if>
+        <if test="houseTypes != null and houseTypes.size() &gt; 0">
+            and fr.pig_house_type in
+            <foreach close=")" collection="houseTypes" index="index" item="item" open="(" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        group by fr.pig_house_type
+        order by fr.pig_house_type
+    </select>
+
+    <select id="mdFeedingAmountReport" resultType="com.zmu.cloud.commons.vo.FeedReportDetailVo">
+        select dt.day, dt.dayStr, dt.monthDay, ifnull(data.amounts, 0) amounts from (
+            select date_format(date_add(#{begin}, interval - rn DAY), '%y-%m-%d') dayFmt,
+                   date_format(date_add(#{begin}, interval - rn DAY), '%m/%d')   dayStr,
+                   date_format(date_add(#{begin}, interval - rn DAY), '%m月')      monthDay,
+                day (date_add(#{begin}, interval - rn DAY)) day
+            from (
+                    SELECT @row := @row + 1 as rn FROM
+                        (select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7) t,
+                        (SELECT @row := -1) r
+                 ) se
+        ) dt
+            left join (select date_format(fr.create_time, '%y-%m-%d') as dayFmt,
+                              round(sum(fr.amount) / 1000, 2)         as amounts
+                       from pig_feeding_record fr
+                        where 1=1
+                        <if test="houseType != null and houseType != ''">
+                            and fr.pig_house_type = #{houseType}
+                        </if>
+                        <if test="houseId != null and houseId != ''">
+                            and fr.pig_house_id = #{houseId}
+                        </if>
+                        group by date_format(fr.create_time, '%y-%m-%d')
+                        order by date_format(fr.create_time, '%y-%m-%d')) data on dt.dayFmt = data.dayFmt
+                        order by dt.dayFmt
+    </select>
+
+    <!-- 每月饲喂量报表 -->
+    <select id="monthFeedingAmountReport" resultType="com.zmu.cloud.commons.vo.FeedReportDetailVo">
+        select ym.m month, concat(ym.m, '月') monthDay, ifnull(data.amounts, 0) amounts from (
+            select 1 m
+            union
+            select 2
+            union
+            select 3
+            union
+            select 4
+            union
+            select 5
+            union
+            select 6
+            union
+            select 7
+            union
+            select 8
+            union
+            select 9
+            union
+            select 10
+            union
+            select 11
+            union
+            select 12
+        ) ym
+            left join (select month (fr.create_time) as month
+                               , round(sum (fr.amount) / 1000, 2) as amounts
+                       from pig_feeding_record fr
+        where year (fr.create_time) = #{year}
+          and fr.pig_house_type = #{houseType}
+        <if test="houseId != null and houseId != ''">
+            and fr.pig_house_id = #{houseId}
+        </if>
+        group by month (fr.create_time)
+        order by month (fr.create_time)) data on ym.m = data.month
+    </select>
+
+    <!-- 最近4周各背膘饲喂量走势 -->
+    <select id="latelyFourWeekBackFatFeedingAmountReport" resultType="com.zmu.cloud.commons.vo.FeedReportDetailVo">
+        select base.week
+             , fat.back_fat                                                                        backFat
+             , concat(date_format(subdate(base.wk, date_format(base.wk, '%w') - 1), '%m/%d'),
+                      '-', date_format(subdate(base.wk, date_format(base.wk, '%w') - 7), '%m/%d')) weekStr
+             , fat.back_fat
+             , ifnull(round(sum(fr.amount) / 1000, 2), 0)                                  amounts
+             , base.nm + 1                                                                         spot
+        from (
+            select week(date_add(#{day}, interval - num.nm week )) week,
+                   date_add(#{day}, interval - num.nm week )       wk,
+                   abs(num.nm - 3)                                 nm
+            from (select 0 nm union all select 1 union all select 2 union all select 3) num
+        ) base
+            join (select 1 back_fat union all select 2 union all select 3 union all select 4 union all select 5) fat
+                 on 1 = 1
+            left join (select f.* from pig_feeding_record f where f.pig_house_type = #{houseType}) fr
+        on week(subdate(fr.create_time, 1)) = base.week  and YEAR(fr.create_time)=YEAR(NOW()) and fr.back_fat = fat.back_fat
+        <if test="houseId != null and houseId != ''">
+            and fr.pig_house_id = #{houseId}
+        </if>
+        group by base.week, fat.back_fat
+        order by fat.back_fat, base.week
+    </select>
+
+    <!-- （日、月、年）饲喂量报表 -->
+    <select id="ymdEachAvgFeedingAmountReport" resultType="com.zmu.cloud.commons.vo.FeedReportDetailVo">
+        select base.*, (@row:=@row+1) spot
+        from (select  fr.pig_house_name houseName, fr.pig_house_type houseType, ifnull(round(sum(fr.amount)/1000, 2), 0)/count(fr.amount) amounts
+                from pig_feeding_record fr
+                where 1=1
+                <if test="reportType == 'day'">
+                    and date_format(fr.create_time, '%Y-%m-%d') = #{time}
+                </if>
+                <if test="reportType == 'week'">
+                    and YEAR(fr.create_time)=YEAR(NOW())
+                    and DATE_FORMAT( fr.create_time,"%u") = #{time}
+                </if>
+                <if test="reportType == 'month'">
+                    and date_format(fr.create_time, '%Y-%m') = #{time}
+                </if>
+                <if test="reportType == 'year'">
+                    and date_format(fr.create_time, '%Y') = #{time}
+                </if>
+                group by fr.pig_house_id having count(fr.amount) &gt; 0
+                order by fr.pig_house_id) base, (select @row := 0) r
+    </select>
+</mapper>

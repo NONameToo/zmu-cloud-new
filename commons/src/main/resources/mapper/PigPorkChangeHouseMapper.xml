@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigPorkChangeHouseMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigPorkChangeHouse">
+        <!--@mbg.generated-->
+        <!--@Table pig_pork_change_house-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="change_house_time" jdbcType="DATE" property="changeHouseTime"/>
+        <result column="number" jdbcType="INTEGER" property="number"/>
+        <result column="house_columns_out_id" jdbcType="BIGINT" property="houseColumnsOutId"/>
+        <result column="pig_group_out_id" jdbcType="BIGINT" property="pigGroupOutId"/>
+        <result column="house_columns_in_id" jdbcType="BIGINT" property="houseColumnsInId"/>
+        <result column="pig_group_in_id" jdbcType="BIGINT" property="pigGroupInId"/>
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId"/>
+        <result column="weight" jdbcType="DECIMAL" property="weight"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, change_house_time,
+        `number`, house_columns_out_id, house_columns_in_id,pig_group_out_id,pig_group_in_id,weight,
+        operator_id, del, remark, create_by, update_by, create_time, update_time
+    </sql>
+
+    <select id="event" resultType="com.zmu.cloud.commons.vo.EventPigPorkChangeHouseVO">
+        SELECT h.change_house_time changeHouseTime,
+               u.real_name         operatorName,
+               h.remark,
+               h.create_time       createTime,
+               ph.name             pigHouseIn,
+               phr.name            pigRowsIn,
+               phc.name            pigColumnsIn,
+               phc.position        positionIn,
+               ph1.name            pigHouseOut,
+               phr1.name           pigRowsOut,
+               phc1.name           pigColumnsOut,
+               phc1.position       positionOut,
+               h.weight,
+               h.number,
+               pg.name             pigGroupNameIn,
+               pg1.name            pigGroupNameOut
+        FROM pig_pork_change_house h
+                     LEFT JOIN sys_user u ON u.id = h.operator_id
+                     left join pig_house_columns phc ON phc.id = h.house_columns_in_id
+                     left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                     left join pig_house ph on phr.pig_house_id = ph.id
+                     left join pig_group pg on h.pig_group_in_id = pg.id
+                     left join pig_house_columns phc1 ON phc1.id = h.house_columns_out_id
+                     left join pig_house_rows phr1 on phc1.pig_house_rows_id = phr1.id
+                     left join pig_house ph1 on phr1.pig_house_id = ph1.id
+                     left join pig_group pg1 on h.pig_group_out_id = pg1.id
+        <where>
+            <if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+                and h.change_house_time BETWEEN #{startTime,jdbcType=VARCHAR} AND #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="pigGroupInId != null">
+                and h.pig_group_in_id = #{pigGroupInId,jdbcType=BIGINT}
+            </if>
+            <if test="pigGroupOutId != null">
+                and h.pig_group_out_id = #{pigGroupOutId,jdbcType=BIGINT}
+            </if>
+            and h.del = 0
+        </where>
+        order by h.change_house_time desc
+    </select>
+</mapper>

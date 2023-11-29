@@ -1,0 +1,161 @@
+server:
+  tomcat:
+    basedir: /mnt/sdc/temp/${spring.application.name}
+  shutdown: graceful
+
+spring:
+  profiles:
+    active: dev
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      webStatFilter:
+        enabled: true
+      statViewServlet:
+        enabled: true
+        login-username: admin
+        login-password: y4<br,@wsx
+      filters: stat,wall,log4j2
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          enabled: true
+          config:
+            multi-statement-allow: true
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=3000
+  redis:
+    timeout: 3s
+  main.allow-bean-definition-overriding: true
+  mvc:
+    throw-exception-if-no-handler-found: true
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    locale: zh_CN
+    time-zone: "GMT+8"
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 50MB
+  web:
+    resources:
+      add-mappings: false
+  dinger:
+    project-id: ${spring.application.name}
+    dingers:
+      wetalk:
+        token-id: d2dcdb0a-81a7-44d9-b6df-da237dd7c4c2
+
+mybatis-plus:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:mapper/*.xml
+  check-config-location: true
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: del
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+# pageHelper
+pagehelper:
+  helperDialect: mysql
+oss:
+  access-key-id: LTAI4G1HtugwzFWPYfo1ZXju
+  access-key-secret: JHlDhj8CphZBnQv8t8ve590EYPHe4Q
+  bucket: ibic-bucket
+  base-url: https://ibic-bucket.oss-cn-hangzhou.aliyuncs.com/
+  endpoint: oss-cn-hangzhou.aliyuncs.com
+
+logging:
+  pattern:
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} %logger{30}:%L : %m%n'
+    console: '%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr(%-40.40logger{30}){cyan}%clr( %L ){faint}%clr(: %m%n){faint}'
+  level:
+    root: INFO
+    com.zmu.cloud.commons.mapper: DEBUG
+
+file:
+  upload:
+    images: /data/zmu_cloud/images/
+    files: /data/zmu_cloud/files/
+    docs: /data/zmu_cloud/docs/
+  down: https://file.zemuchuangxin.com/
+  firmware:
+    upgrade:
+      save:
+        linux: /mnt/sdc/zmu/firmware
+        windows: D:\泽牧科技\料塔\硬件固件包
+  measure: /mnt/sdc/zmu/measure/
+  qrcode:
+    linux: /mnt/sdc/zmu/qrcode/
+    windows: D:\泽牧科技\qrcode
+
+#极光推送
+jpush:
+  #测试用
+  #app-key: fe3c408bb742768504b8a630
+  #master-secret: a627fc262820c396919dd796
+  #智慧猪家
+  #app-key: 704fb57f4f8f1909883ab296
+  #master-secret: e988761752b0afaea54b15e1
+  #云慧养
+  app-key: 7efce7d9b8abcfd2ebbcfed5
+  master-secret: 20ca7c3b3f753024c030917f
+
+wechat:
+  mpAppId: wxd898xxxx
+  mchId: 1483xxxx
+  mchKey: C5245D70xxxxx
+  keyPath: /var/weixin_cert/wxpay.p12
+  notifyUrl: http://122.9.151.134:8062/api/pay/notify
+  miniAppId: wxxxxxxxxxxx6bf9b
+  miniAppSecret: xxbc6xxxxxxxxxxxxxx9c49d
+  appAppId: wxxxxxxxxxxxx43b0
+
+alipay:
+  appId: 2021000122615820
+  privateKey: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQClqJw/Fz8FYj31vOav1wHKFTnYGRsDRaw8QRAVgqHpRpUPf8YapLDBHtWv5PY9W0PuF6wsVHkXTqNutkLtS6GFV7yLVYRIknz9fYqVUBGw5E9qyfdvl38kQK0jQTk2axT+UXw3qdkIqgUkakv7sv1XnZ8tcAbyPINs/4+pIvwGQFsK/tzBx1+WowKVkufkrTyiDht+3M1ASnkTaGoYgjj0YMNPopElcMKSXBhOkSq/kQuwzFDU5nGcwZSZ2HAaFDPSrXdi4r2MMTvBX7fCje712Ty2eZuVp3GA562C7oN2Fmv5zTfq0n/mWJe2O3Uuhqs+Oef1xRfPWmvrQKOEZsyzAgMBAAECggEAGFRIBjgKyGaiROnmU2LXX294nFUrk3JzFjJUA2S5FMKJ98nDNXyEfQhjR77vrxktQ9V0MtqBIjwpYoQgFiuqYCP/i9MWZ3YkJzJ93OnyfzE4vK1GyrvML23UP74/gc9+OM+M17v5JP2bXbrCyAeEj46Vpx2x13etsZ9i4OtDakNiz1vsYic3qoSn3YMz8UJawkE7hXqUtHft8kwrfp1gn3qkdJGzZ/AkVzsMgp6kSaK1x/qn9s1Yr1fNsjyI0+S6048b+0eYveMWsG6FDydbO619tqdq/t6aKgaMuWZvC42/dHClXRq2G/jycdcL6l7p/KicWgixWBXkubud3UCsSQKBgQDXNM+H9qIWArln1BwmQ+G2VJ5/+jv7QavF8CD7e/lvwFifn8Akqj26uk6xVIvoiLJm+pGPYFiRT0KOWnZ7GyL9mvH9LXko6rkBH1ArwkaFymKaH75llQgXgxbShqvK6oKGQVRRPaRgrtmh2CQZN2qJTQcUVoR7crA0pErnHXa/HQKBgQDFD235lsk2Rmz8SK7rAFoBpSC5vYs+smbH7lIMyrzHDXwvhGuPhQabBilxW8MPZ+pVzjw/JHYO/UrCbFN8f41tACwMv/8BFQNl3dicNSS+fkuJc0zQf8TMvhiYYwdex4HWZT8OlEhym6kGwzb9dB9JxRWK6gsIl7s+SEELPYLiDwKBgQCr9nceneVG0UZ1wPf9W6CwoU1F1h631vH7aLXyPk5DDd/DLVPL+Hz7CIR5DqX9Wb20q+REPSiIdF0qgv7JwBVlsLpNJFj8aRML4omdbdAMeHvxzAvIAB5HK2jBMPt1WY6S2QEXKbp/xzgAK0YtICrxK6vMhJW4Txyd8+omY1TPwQKBgQCUQ9itynqXoINNie45mCkgRbqKpYcH5Diawr/vKfbBGW9PXSWEdUUUDJ3P0YfApqHUb3g61dcRzheakuB5soqY8WEzMp3NlZ7Z3QGl/gIoZWO2Bg9MbGWI2posxY19DUSuJ7063exodp/FG8nbBqyn12Yu/4rPq0HRSZHOwDgilwKBgEA+XL7czbz80Bhj9cA4Bgw0KBnWQo9rqSkfPrk2sUaUWWHDTDXHe3SljpyEV7QOipJVncskPfx+iTyx+xiWmin8wHIb9suLCTR4Pm2WK/Q+sP+VVN4MfOzgJ+VgbNvqinyCGp7jzXk3sSjpu3m1TaBEgNvx4AOJ8/OPgtLG+HuC
+  aliPayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqF+5mdUlzJAdY/912FGC0kroIMrviWpcdGhRANB6k8QNjvjtrbTsrRoQ6Va2+c7FjL5CocceKaZSPFMLN02ljP5R0oN3qbcdfF01CjWjpfXCGTEyzPkI7HrsO8EJ9KnEYPLQYcrRkulHiq9FaGGH4cPhfkxuYcOixGr3AbZK+oPsKQvPszariwr+EUi8uT2z6TRJC/g5MIPPVNS1/du/HRVf1VqrGrmlvRD0W2EZAja8BdTMhr7ElnixFsVQJfa+2phq7Qgbs0H09sgahlBXXHTN0bRUY1J+FLAsXcwv7S+qIiwG9geIvznoj4VJwhxpzxamLk5zcPKM6qFRGvQLkwIDAQAB
+  notifyUrl: http://122.9.151.134:8063/api/4G/notify
+  returnUrl: http://122.9.151.134:8063/api/4G/return
+  sandbox: true #是否使用沙箱
+
+#card:
+#  url: http://api.szmiot.com/api
+#  appKey: 8823456
+#  secret: 9174cf29d8da47c2840cc0f44cf59bad
+
+card:
+  url: http://api.szmiot.com/api
+  appKey: 10789305
+  secret: 80c3443dadff45e8b9f4710865f315d4
+
+zmu:
+  config:
+    config:
+      jx-app-base-url: http://49.4.1.109/app
+
+
+python:
+  windows: D:/anaconda3/python.exe
+  linux: /mnt/sdc/fsk/anaconda/envs/suanfa/bin/python3
+  scriptPathW: D:/算法/suanFaForJava.py
+  scriptPathL: /mnt/sdc/fsk/RepareSuanFaForJavaNo3D.py
+  method: 1
+  windowsFileBasePath: D:/算法/点云文件/
+  linuxFileBasePath: /mnt/sdc/fsk/temp/
+
+
+
+
+
+
+

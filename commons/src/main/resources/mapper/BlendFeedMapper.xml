@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.BlendFeedMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.BlendFeed">
+    <!--@mbg.generated-->
+    <!--@Table blend_feed-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="farm_id" jdbcType="BIGINT" property="farmId" />
+    <result column="first_amount" jdbcType="INTEGER" property="firstAmount" />
+    <result column="feed_again" jdbcType="INTEGER" property="feedAgain" />
+    <result column="feed_again_time" jdbcType="TIME" property="feedAgainTime" />
+    <result column="feed_again_amount" jdbcType="INTEGER" property="feedAgainAmount" />
+    <result column="feed_again_task_id" jdbcType="BIGINT" property="feedAgainTaskId" />
+    <result column="material_line_id" jdbcType="BIGINT" property="materialLineId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, farm_id, first_amount, feed_again, feed_again_time, feed_again_amount, feed_again_task_id, 
+    material_line_id
+  </sql>
+</mapper>

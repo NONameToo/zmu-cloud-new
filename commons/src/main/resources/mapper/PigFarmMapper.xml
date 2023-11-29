@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigFarmMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigFarm">
+    <!--@mbg.generated-->
+    <!--@Table pig_farm-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="pig_type_id" jdbcType="BIGINT" property="pigTypeId" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="principal_id" jdbcType="BIGINT" property="principalId" />
+    <result column="principal_tel" jdbcType="VARCHAR" property="principalTel" />
+    <result column="province_id" jdbcType="INTEGER" property="provinceId" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="area_id" jdbcType="INTEGER" property="areaId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="default_feeding_amount" jdbcType="INTEGER" property="defaultFeedingAmount" />
+    <result column="del" jdbcType="CHAR" property="del" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="balance" jdbcType="INTEGER" property="balance" />
+    <result column="jx" jdbcType="INTEGER" property="jx" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, `name`, `type`, pig_type_id, `level`, principal_id, principal_tel, 
+    province_id, city_id, area_id, address, default_feeding_amount, del, remark, create_by, 
+    update_by, create_time, update_time, balance, jx
+  </sql>
+    <resultMap extends="BaseResultMap" id="VO" type="com.zmu.cloud.commons.vo.PigFarmVO">
+        <result column="company_name" jdbcType="BIGINT" property="companyName" />
+    </resultMap>
+
+    <sql id="VO_LIST">
+        pf.id,
+        pf.`name`,
+        pf.`type`,
+        pf.pig_type_id,
+        pf.principal_id,
+        pf.`level`,
+        pf.province_id,
+        pf.city_id,
+        pf.area_id,
+        pf.address,
+        pf.remark,
+        pf.create_time,
+        pf.update_time
+    </sql>
+
+    <select id="get" resultMap="VO">
+        select
+        <include refid="VO_LIST" />
+        ,
+            u.real_name                                                       principal,
+            u.phone                                                           principalPhone,
+            pt.name                                                           pigTypeName,
+            (select suf.is_default
+             from sys_user_farm suf
+             where suf.user_id = #{userId}
+               and suf.farm_id = pf.id)                                       isDefault,
+            ifnull((select name from area p where p.id = pf.province_id), '') provinceName,
+            ifnull((select name from area c where c.id = pf.city_id), '')     cityName,
+            ifnull((select name from area a where a.id = pf.area_id), '')     areaName
+        from pig_farm pf
+                 left join sys_user u on pf.principal_id = u.id
+                 left join pig_type pt on pt.id = pf.pig_type_id
+        where pf.id = #{id}
+          and pf.del = '0'
+          and u.del = '0'
+    </select>
+
+    <select id="list" resultMap="VO">
+        select
+        <include refid="VO_LIST" />
+        ,
+            u.real_name                                                       principal,
+            u.phone                                                           principalPhone,
+            pt.name                                                           pigTypeName,
+            (select suf.is_default
+             from sys_user_farm suf
+             where suf.user_id = #{userId}
+               and suf.farm_id = pf.id)                                       isDefault,
+            ifnull((select name from area p where p.id = pf.province_id), '') provinceName,
+            ifnull((select name from area c where c.id = pf.city_id), '')     cityName,
+            ifnull((select name from area a where a.id = pf.area_id), '')     areaName
+        from pig_farm pf
+            left join sys_user u on pf.principal_id = u.id
+            left join pig_type pt on pt.id = pf.pig_type_id
+        where pf.del = '0'
+        <if test="name != null and name != ''">
+            and pf.name like concat('%', #{name}, '%')
+        </if>
+        <if test="type != null">
+            and pf.type = #{type}
+        </if>
+        <if test="level != null">
+            and pf.level = #{level}
+        </if>
+        <if test="companyId != null">
+            and pf.company_id = #{companyId}
+        </if>
+        order by pf.create_time desc
+    </select>
+
+    <select id="listUserPigFarmIds" resultType="java.lang.Long">
+        select suf.farm_id
+        from sys_user u
+                 inner join sys_user_farm suf on u.id = suf.user_id
+        where u.id = #{userId}
+          and u.status = 1
+          and u.del = '0'
+          and u.company_id = #{companyId}
+        order by suf.is_default desc, suf.farm_id
+    </select>
+
+    <select id="listUserPigFarmIdsAdmin" resultType="java.lang.Long">
+        select f.id
+        from pig_farm f
+        where f.del = '0'
+            <!--排除巨星猪场-->
+          and exists(select 1 from company c where c.id = f.company_id)
+    </select>
+
+    <select id="listByIds" resultMap="VO">
+        select
+        <include refid="VO_LIST" />
+        ,
+            c.id                                                              company_id,
+            c.name                                                            company_name,
+            u.real_name                                                       principal,
+            u.phone                                                           principalPhone,
+            pt.name                                                           pigTypeName,
+            (select suf.is_default
+             from sys_user_farm suf
+             where suf.user_id = #{userId}
+               and suf.farm_id = pf.id)                                       isDefault,
+            ifnull((select name from area p where p.id = pf.province_id), '') provinceName,
+            ifnull((select name from area c where c.id = pf.city_id), '')     cityName,
+            ifnull((select name from area a where a.id = pf.area_id), '')     areaName
+        from pig_farm pf
+                 left join sys_user u on pf.principal_id = u.id
+                 left join pig_type pt on pt.id = pf.pig_type_id
+                 left join company c on c.id = pf.company_id
+        where pf.del = '0'
+          and pf.id in
+        <foreach close=")" collection="ids" item="id" open="(" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="listPigFarmVOsByUserId" resultMap="VO">
+        select  <include refid="VO_LIST" />,
+                                              u2.real_name                                                      principal,
+                                              u2.phone                                                          principalPhone,
+                                              pt.name                                                           pigTypeName,
+                                              suf.is_default                                                    isDefault,
+                                              ifnull((select name from area p where p.id = pf.province_id), '') provinceName,
+                                              ifnull((select name from area c where c.id = pf.city_id), '')     cityName,
+                                              ifnull((select name from area a where a.id = pf.area_id), '')     areaName
+    from pig_farm pf
+             inner join sys_user_farm suf on suf.farm_id = pf.id
+             inner join sys_user u1 on u1.id = suf.user_id
+             left join sys_user u2 on u2.id = pf.principal_id
+             left join pig_type pt on pt.id = pf.pig_type_id
+    where pf.del = '0'
+      and u1.del = '0'
+      and u1.status = 1
+      and u1.id = #{userId}
+    order by suf.is_default desc, suf.farm_id
+    </select>
+
+    <select id="statisticPigHouseColumns" resultType="com.zmu.cloud.commons.vo.FarmStatisticPigHouseColumnsVO">
+        SELECT ph.`name`,
+               IFNULL(bs.boar, 0)                                                                         boar,
+               IFNULL(bs.sow, 0)                                                                          sow,
+               IFNULL(pps.porkNum, 0)                                                                     pork,
+               IFNULL(pp.piggyNum, 0)                                                                     piggy,
+               --     IFNULL(m.`max`, 0)                                                                         `max`,
+               ph.max_per_columns                                                                         `max`,
+               (IFNULL(bs.boar, 0) + IFNULL(bs.sow, 0) + IFNULL(pps.porkNum, 0) + IFNULL(pp.piggyNum, 0)) total,
+               convert(IFNULL((IFNULL(bs.boar, 0) + IFNULL(bs.sow, 0) + IFNULL(pps.porkNum, 0) +
+                               IFNULL(pp.piggyNum, 0)) / `max` * 100, 0), DECIMAL(18, 2))                 `usage`
+        FROM pig_house ph
+                 LEFT JOIN (
+            SELECT ph.id                               pigHouseId,
+                   COUNT(
+                           IF
+                               (pb.type = 1, 1, NULL)) boar,
+                   COUNT(
+                           IF
+                               (pb.type = 2, 1, NULL)) sow
+            FROM pig_breeding pb
+                     INNER JOIN pig_house_columns phc ON phc.id = pb.pig_house_columns_id
+                     INNER JOIN pig_house_rows phr ON phr.id = phc.pig_house_rows_id
+                     INNER JOIN pig_house ph ON ph.id = phr.pig_house_id
+            WHERE pb.presence_status = 1
+              and pb.del = '0'
+              and phc.del = '0'
+              and phr.del = '0'
+            GROUP BY ph.id
+        ) bs ON bs.pigHouseId = ph.id
+                 LEFT JOIN (
+            SELECT ph.id    pigHouseId,
+                   count(1) porkNum
+            FROM pig_pork_stock pps
+                     INNER JOIN pig_house_columns phc ON phc.id = pps.pig_house_columns_id
+                     INNER JOIN pig_house_rows phr ON phr.id = phc.pig_house_rows_id
+                     INNER JOIN pig_house ph ON ph.id = phr.pig_house_id
+            where pps.del = '0'
+              and phc.del = '0'
+              and phr.del = '0'
+              and pps.type = 1
+            GROUP BY ph.id
+        ) pps ON pps.pigHouseId = ph.id
+                 LEFT JOIN (
+            SELECT ph.id          pigHouseId,
+                   SUM(pp.number) piggyNum
+            FROM pig_breeding pb
+                     INNER JOIN pig_piggy pp ON pp.pig_breeding_id = pb.id
+                     INNER JOIN pig_house_columns phc ON phc.id = pb.pig_house_columns_id
+                     INNER JOIN pig_house_rows phr ON phr.id = phc.pig_house_rows_id
+                     INNER JOIN pig_house ph ON ph.id = phr.pig_house_id
+            WHERE pb.presence_status = 1
+              and pb.del = '0'
+              and phc.del = '0'
+              and phr.del = '0'
+              and pp.del = '0'
+            GROUP BY ph.id
+        ) pp ON pp.pigHouseId = ph.id
+                 LEFT JOIN (
+            SELECT count(1) * ph.max_per_columns `max`,
+                   ph.id
+            FROM pig_house ph
+                     INNER JOIN pig_house_rows phr ON phr.pig_house_id = ph.id
+                     INNER JOIN pig_house_columns phc ON phc.pig_house_rows_id = phr.id
+            WHERE ph.del = '0'
+              and phr.del = '0'
+              and phc.del = '0'
+            GROUP BY ph.id
+        ) m on m.id = ph.id
+        where ph.del = '0'
+    </select>
+
+    <select id="listPigFarmIds" resultType="java.lang.Long">
+        select id from pig_farm where del = '0'
+    </select>
+
+    <select id="byId" resultMap="BaseResultMap">
+        select * from pig_farm where id = #{farmId,jdbcType=BIGINT} and del = '0'
+    </select>
+
+    <select id="selectFarmByName" resultMap="BaseResultMap">
+        select * from pig_farm where `name` like concat('%', #{name}, '%') and del = '0'
+    </select>
+
+    <select id="selectFarmsIds" resultType="com.zmu.cloud.commons.vo.FarmDetail">
+        SELECT
+        a.id as 'farmId',
+        a.`name` as 'farmName'
+        FROM
+         pig_farm a
+        WHERE
+        a.del = '0'
+        AND a.id IN
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectFarmsByName" parameterType="string" resultType="com.zmu.cloud.commons.vo.TowerFarmLogVo">
+        SELECT
+        a.id as 'farmId',
+        a.`name` as 'farmName'
+        FROM
+         pig_farm a
+        WHERE
+        a.del = '0'
+        <if test="farmName != null and farmName != ''">
+            and a.name like concat('%',#{farmName},'%')
+        </if>
+    </select>
+
+    <select id="listIn" resultMap="BaseResultMap">
+        select b.* from feed_tower a left join pig_farm b on a.pig_farm_id = b.id where b.del = '0' and a.del = 0
+        <if test="deviceNo != null and deviceNo != ''">
+            and a.device_no like concat('%',#{deviceNo},'%')
+        </if>
+        <if test="name != null and name != ''">
+            and a.name like concat('%',#{name},'%')
+        </if>
+        group by b.id
+        order by b.name
+        limit #{start},#{end}
+    </select>
+
+    <select id="listInCount" resultType="long">
+        select count(*) from (select b.* from feed_tower a left join pig_farm b on a.pig_farm_id = b.id where b.del = '0' and a.del = 0
+        <if test="deviceNo != null and deviceNo != ''">
+            and a.device_no like concat('%',#{deviceNo},'%')
+        </if>
+        <if test="name != null and name != ''">
+            and a.name like concat('%',#{name},'%')
+        </if>
+        group by b.id) temp
+    </select>
+</mapper>

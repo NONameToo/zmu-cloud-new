@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigHouseMapper">
+
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigHouse">
+        <!--@mbg.generated-->
+        <!--@Table pig_house-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="pig_type_id" jdbcType="BIGINT" property="pigTypeId"/>
+        <result column="rows" jdbcType="INTEGER" property="rows"/>
+        <result column="columns" jdbcType="INTEGER" property="columns"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="max_per_columns" property="maxPerColumns" javaType="java.lang.Integer"/>
+<!--        <association property="totalColumns" javaType="java.lang.Integer" select="totalColumns" column="{id=id,companyId=company_id,pigFarmId=pig_farm_id}"/>-->
+        <!--<collection property="list" ofType="com.zmu.cloud.commons.entity.PigHouseRows"
+                    column="{houseId=id,companyId=company_id,pigFarmId=pig_farm_id}"
+                    select="com.zmu.cloud.commons.mapper.PigHouseRowsMapper.listByHouseId"/>-->
+    </resultMap>
+
+    <resultMap id="BaseResultMap2" type="com.zmu.cloud.commons.entity.PigHouse">
+        <!--@mbg.generated-->
+        <!--@Table pig_house-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="pig_type_id" jdbcType="BIGINT" property="pigTypeId"/>
+        <result column="rows" jdbcType="INTEGER" property="rows"/>
+        <result column="columns" jdbcType="INTEGER" property="columns"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="max_per_columns" property="maxPerColumns" javaType="java.lang.Integer"/>
+        <association property="totalColumns" javaType="java.lang.Integer" select="totalColumns" column="{id=id,companyId=company_id,pigFarmId=pig_farm_id}"/>
+        <collection property="list" ofType="com.zmu.cloud.commons.entity.PigHouseRows">
+            <id column="phr_id" jdbcType="BIGINT" property="id"/>
+            <result column="phr_company_id" jdbcType="BIGINT" property="companyId"/>
+            <result column="phr_pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+            <result column="phr_pig_house_id" jdbcType="BIGINT" property="pigHouseId"/>
+            <result column="phr_name" jdbcType="VARCHAR" property="name"/>
+            <result column="phr_code" jdbcType="VARCHAR" property="code"/>
+            <result column="phr_position" jdbcType="VARCHAR" property="position"/>
+            <result column="phr_del" jdbcType="CHAR" property="del"/>
+            <result column="phr_remark" jdbcType="VARCHAR" property="remark"/>
+            <result column="phr_create_by" jdbcType="BIGINT" property="createBy"/>
+            <result column="phr_update_by" jdbcType="BIGINT" property="updateBy"/>
+            <result column="phr_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="phr_update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+            <collection property="list" ofType="com.zmu.cloud.commons.entity.PigHouseColumns">
+                <id column="phc_id" jdbcType="BIGINT" property="id"/>
+                <result column="phc_company_id" jdbcType="BIGINT" property="companyId"/>
+                <result column="phc_pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+                <result column="phc_pig_house_id" jdbcType="BIGINT" property="pigHouseId"/>
+                <result column="phc_pig_house_rows_id" jdbcType="BIGINT" property="pigHouseRowsId"/>
+                <result column="phc_name" jdbcType="VARCHAR" property="name"/>
+                <result column="phc_code" jdbcType="VARCHAR" property="code"/>
+                <result column="phc_position" jdbcType="VARCHAR" property="position"/>
+                <result column="phc_client_id" jdbcType="BIGINT" property="clientId"/>
+                <result column="phc_feeder_code" jdbcType="INTEGER" property="feederCode"/>
+                <result column="phc_feeder_enable" jdbcType="INTEGER" property="feederEnable"/>
+                <result column="phc_feeding_amount" jdbcType="INTEGER" property="feedingAmount"/>
+                <result column="phc_del" jdbcType="CHAR" property="del"/>
+                <result column="phc_remark" jdbcType="VARCHAR" property="remark"/>
+                <result column="phc_create_by" jdbcType="BIGINT" property="createBy"/>
+                <result column="phc_update_by" jdbcType="BIGINT" property="updateBy"/>
+                <result column="phc_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+                <result column="phc_update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <resultMap id="AVAILABLE_PORK_LEAVE" type="com.zmu.cloud.commons.entity.PigHouse" extends="BaseResultMap">
+        <collection property="list" ofType="com.zmu.cloud.commons.entity.PigHouseRows"
+                    column="{houseId=id,companyId=company_id,pigFarmId=pig_farm_id}"
+                    select="com.zmu.cloud.commons.mapper.PigHouseRowsMapper.listForPorkLeave"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, `name`, code, `type`, pig_type_id, `rows`, `columns`, max_per_columns,
+        del, remark, create_by, update_by, create_time, update_time
+    </sql>
+
+    <select id="totalColumns" resultType="int">
+        SELECT count(1)
+        FROM pig_house ph
+                 INNER JOIN pig_house_rows phr ON phr.pig_house_id = ph.id and phr.company_id = ph.company_id and
+                                                  phr.pig_farm_id = ph.pig_farm_id
+                 INNER JOIN pig_house_columns phc
+                            ON phc.pig_house_rows_id = phr.id and phc.company_id = phr.company_id and
+                               phc.pig_farm_id = phr.pig_farm_id
+        WHERE ph.del = '0'
+          and phr.del = '0'
+          and phc.del = '0'
+          and ph.id = #{id}
+          and ph.company_id = #{companyId}
+          and ph.pig_farm_id = #{pigFarmId}
+    </select>
+
+    <select id="listAvailableHouseForPork" resultMap="AVAILABLE_PORK_LEAVE">
+        select ph.*
+        from pig_house ph
+                 inner join (
+            SELECT DISTINCT ph.id
+            FROM pig_house ph
+                     INNER JOIN pig_house_rows phr
+                                ON ph.id = phr.pig_house_id
+                                    and phr.company_id = #{companyId}
+                                    and phr.pig_farm_id = #{pigFarmId}
+                     INNER JOIN pig_house_columns phc
+                                ON phc.pig_house_rows_id = phr.id
+                                    and phc.company_id = #{companyId}
+                                    and phc.pig_farm_id = #{pigFarmId}
+                     INNER JOIN (
+                SELECT pps.pig_house_columns_id, pps.pork_number
+                FROM pig_pork_stock pps
+                WHERE pps.del = '0'
+                  AND pps.type = 1
+                  AND pps.pork_number > 0
+                  and pps.company_id = #{companyId}
+                  and pps.pig_farm_id = #{pigFarmId}
+                GROUP BY pps.pig_house_columns_id) tmp1 on tmp1.pig_house_columns_id = phc.id
+            WHERE ph.del = '0'
+              and phr.del = '0'
+              and phc.del = '0'
+              and ph.company_id = #{companyId}
+              and ph.pig_farm_id = #{pigFarmId}
+        ) tmp2 on tmp2.id = ph.id
+        order by ph.id
+    </select>
+
+    <select id="getById" resultMap="BaseResultMap2">
+        select ph.*,
+               phr.id                phr_id,
+               phr.company_id        phr_company_id,
+               phr.pig_farm_id       phr_pig_farm_id,
+               phr.pig_house_id      phr_pig_house_id,
+               phr.`name`            phr_name,
+               phr.code              phr_code,
+               phr.position          phr_position,
+               phr.del               phr_del,
+               phr.remark            phr_remark,
+               phr.create_by         phr_create_by,
+               phr.update_by         phr_update_by,
+               phr.create_time       phr_create_time,
+               phr.update_time       phr_update_time,
+               phc.id                phc_id,
+               phc.company_id        phc_company_id,
+               phc.pig_farm_id       phc_pig_farm_id,
+               phc.pig_house_id      phc_pig_house_id,
+               phc.pig_house_rows_id phc_pig_house_rows_id,
+               phc.`name`            phc_name,
+               phc.code              phc_code,
+               phc.`position`        phc_position,
+               phc.client_id         phc_client_id,
+               phc.feeder_code       phc_feeder_code,
+               phc.feeder_enable     phc_feeder_enable,
+               phc.feeding_amount    phc_feeding_amount,
+               phc.del               phc_del,
+               phc.remark            phc_remark,
+               phc.create_by         phc_create_by,
+               phc.update_by         phc_update_by,
+               phc.create_time       phc_create_time,
+               phc.update_time       phc_update_time
+        from pig_house ph
+                 left join pig_house_rows phr
+                           on ph.id = phr.pig_house_id and phr.del = '0'
+                 left join pig_house_columns phc
+                           on phr.id = phc.pig_house_rows_id and phc.del = '0'
+        where ph.id = #{id}
+          and ph.del = '0'
+    </select>
+
+    <select id="selectByIdIn" parameterType="long" resultMap="BaseResultMap">
+        select * from pig_house where id = #{id}
+    </select>
+</mapper>

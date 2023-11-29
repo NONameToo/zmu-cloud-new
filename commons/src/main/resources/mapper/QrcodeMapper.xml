@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.QrcodeMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.Qrcode">
+    <!--@mbg.generated-->
+    <!--@Table qrcode-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="pig_house_id" jdbcType="BIGINT" property="pigHouseId" />
+    <result column="pig_column_id" jdbcType="BIGINT" property="pigColumnId" />
+    <result column="no" jdbcType="INTEGER" property="no" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="feeder_code" jdbcType="INTEGER" property="feederCode" />
+    <result column="batch" jdbcType="INTEGER" property="batch" />
+    <result column="del" jdbcType="CHAR" property="del" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, pig_farm_id, pig_house_id, pig_column_id, `no`, code, feeder_code, 
+    batch, del, create_time
+  </sql>
+
+  <select id="selectByCode" resultMap="BaseResultMap">
+    select * from qrcode where code = #{code}
+  </select>
+</mapper>

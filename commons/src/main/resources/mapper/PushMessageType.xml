@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PushMessageTypeMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PushMessageType">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="message_type_name" jdbcType="VARCHAR" property="messageTypeName"/>
+        <result column="message_type_key" jdbcType="VARCHAR" property="messageTypeKey"/>
+        <result column="message_type_sort" jdbcType="INTEGER" property="messageTypeSort"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, message_type_name, message_type_key, message_type_sort,  `status`, del, remark,
+        create_by, update_by, create_time, update_time
+    </sql>
+
+
+
+    <select id="listPushMessageType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from push_message_type sr
+        <where>
+            and sr.del = 0
+            <if test="query.messageTypeName != null and query.messageTypeName != ''">
+                and sr.message_type_name like concat('%', #{query.messageTypeName}, '%')
+            </if>
+            <if test="query.status != null">
+                and sr.status = #{query.status}
+            </if>
+        </where>
+        order by message_type_sort
+    </select>
+    <select id="getPushMessageTypeNameByUserId" resultType="java.lang.String">
+        select message_type_name
+        from push_message_type
+                 join push_user_type sur on push_message_type.id = sur.type_id and sur.user_id = #{userId}
+        where push_message_type.del = 0
+          and push_message_type.status = 1
+        order by message_type_sort
+    </select>
+
+    <select id="listPushMessageTypeByUserId" resultType="com.zmu.cloud.commons.vo.PushMessageTypeVO">
+        select push_message_type.*,if(user_id is null,0,1) as subIf
+        from push_message_type left
+                 join push_user_type sur on push_message_type.id = sur.type_id and sur.user_id = #{userId}
+        where push_message_type.del = 0
+          and push_message_type.status = 1
+
+        order by message_type_sort
+</select>
+
+</mapper>

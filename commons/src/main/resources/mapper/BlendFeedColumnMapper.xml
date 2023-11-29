@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.BlendFeedColumnMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.BlendFeedColumn">
+    <!--@mbg.generated-->
+    <!--@Table blend_feed_column-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="blend_feed_id" jdbcType="BIGINT" property="blendFeedId" />
+    <result column="farm_id" jdbcType="BIGINT" property="farmId" />
+    <result column="house_id" jdbcType="BIGINT" property="houseId" />
+    <result column="col_id" jdbcType="BIGINT" property="colId" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, blend_feed_id, farm_id, house_id, col_id, `position`
+  </sql>
+</mapper>

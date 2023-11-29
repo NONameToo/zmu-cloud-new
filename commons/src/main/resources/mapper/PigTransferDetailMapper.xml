@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigTransferDetailMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigTransferDetail">
+    <!--@mbg.generated-->
+    <!--@Table pig_transfer_detail-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="out_house_id" jdbcType="BIGINT" property="outHouseId" />
+    <result column="out_house_name" jdbcType="VARCHAR" property="outHouseName" />
+    <result column="out_col_id" jdbcType="BIGINT" property="outColId" />
+    <result column="out_col_no" jdbcType="INTEGER" property="outColNo" />
+    <result column="in_house_id" jdbcType="BIGINT" property="inHouseId" />
+    <result column="in_house_name" jdbcType="VARCHAR" property="inHouseName" />
+    <result column="in_col_id" jdbcType="BIGINT" property="inColId" />
+    <result column="in_col_no" jdbcType="INTEGER" property="inColNo" />
+    <result column="pig_id" jdbcType="BIGINT" property="pigId" />
+    <result column="ear_number" jdbcType="VARCHAR" property="earNumber" />
+    <result column="transfer_id" jdbcType="BIGINT" property="transferId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, pig_farm_id, out_house_id, out_house_name, out_col_id, out_col_no, in_house_id, 
+    in_house_name, in_col_id, in_col_no, pig_id, ear_number, transfer_id
+  </sql>
+</mapper>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigImmuneMapper">
+    <resultMap type="com.zmu.cloud.commons.entity.PigImmune" id="PigImmuneResult">
+        <result property="id" column="id"/>
+        <result property="registrationTime" column="registration_time"/>
+        <result property="manageType" column="manage_type"/>
+        <result property="immuneObject" column="immune_object"/>
+        <result property="immuneNumber" column="immune_number"/>
+        <result property="locationId" column="location_id"/>
+        <result property="immuneType" column="immune_type"/>
+        <result property="immuneItem" column="immune_item"/>
+        <result property="vaccineName" column="vaccine_name"/>
+        <result property="totalConsumption" column="total_consumption"/>
+        <result property="doseUnit" column="dose_unit"/>
+        <result property="immuneMode" column="immune_mode"/>
+        <result property="operator" column="operator"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="pigFarmId" column="pig_farm_id"/>
+        <result property="companyId" column="company_id"/>
+    </resultMap>
+    <sql id="selectPigImmuneVo">
+        select id,registration_time,manage_type,immune_object,immune_number,location_id,immune_type,immune_item,vaccine_name,total_consumption,dose_unit,immune_mode,operator,create_by,create_time,update_by,update_time,remark,pig_farm_id,company_id
+        from pig_immune
+    </sql>
+
+    <insert id="add">
+        insert into pig_immune (registration_time, manage_type, immune_object, immune_number,location_id,
+        immune_type, immune_item,
+        vaccine_name,total_consumption,dose_unit,immune_mode,operator,create_by,create_time,update_by, update_time,pig_farm_id,company_id
+        <if test="remark != null">
+            ,remark
+        </if>)
+        values
+        (#{registrationTime},#{manageType},#{immuneObject},#{immuneNumber},#{locationId},#{immuneType},#{immuneItem},#{vaccineName},#{totalConsumption},#{doseUnit},#{immuneMode},#{operator},#{createBy},#{createTime},#{updateBy},#{updateTime},#{pigFarmId},#{companyId}
+        <if test="remark != null">
+            ,#{remark}
+        </if>)
+    </insert>
+
+    <update id="update">
+        update pig_immune
+        set registration_time = #{registrationTime}
+          , manage_type=#{manageType}
+          , immune_object=#{immuneObject}
+          , immune_number=#{immuneNumber}
+          , location_id=#{locationId}
+          , immune_type=#{immuneType}
+          , immune_item=#{immuneItem}
+          , vaccine_name=#{vaccineName}
+          , total_consumption=#{totalConsumption}
+          , dose_unit=#{doseUnit}
+          , immune_mode=#{immuneMode}
+          , operator=#{operator}
+          , update_by=#{updateBy}
+          , update_time=#{updateTime}
+          , remark=#{remark}
+        where id = #{id};
+    </update>
+
+    <update id="del">
+        update pig_immune
+        set del = '1'
+        where id = #{id};
+    </update>
+
+    <select id="pageQuery" resultType="com.zmu.cloud.commons.vo.PigImmuneVO">
+        select
+        p.id id,
+        p.registration_time registrationTime,
+        p.manage_type manageType,
+        p.immune_object immuneObject,
+        p.immune_number immuneNumber,
+        p.location_id locationId,
+        ph.name location,
+        p.immune_type immuneType,
+        p.immune_item immuneItem,
+        p.vaccine_name vaccineName,
+        p.total_consumption totalConsumption,
+        p.dose_unit doseUnit,
+        p.immune_mode immuneMode,
+        p.remark remark,
+        p.operator operator,
+        p.update_time updateTime
+        from pig_immune p left join pig_house ph on p.location_id = ph.id
+        where p.del = '0'
+        <if test="immuneNumber != null and immuneNumber != ''">
+            and p.immune_number like concat('%', #{immuneNumber}, '%')
+        </if>
+        <if test="location != null and location != ''">
+            and ph.name like concat('%', #{location}, '%')
+        </if>
+        <if test="immuneObject != null and immuneObject != ''">
+            and p.immune_object like concat('%', #{immuneObject}, '%')
+        </if>
+        <if test="startTime != null ">
+            and p.registration_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null ">
+            and p.registration_time &lt;= #{endTime}
+        </if>
+        order by p.registration_time desc
+    </select>
+
+    <select id="detail" resultType="com.zmu.cloud.commons.vo.PigImmuneVO">
+        select id id,
+               registration_time registrationTime,
+               manage_type manageType,
+               immune_object immuneObject,
+               immune_number immuneNumber,
+               location_id locationId,
+               immune_type immuneType,
+               immune_item immuneItem,
+               vaccine_name vaccineName,
+               total_consumption totalConsumption,
+               dose_unit doseUnit,
+               immune_mode immuneMode,
+               create_by createBy,
+               create_time createTime,
+               operator operator,
+               update_by updateBy,
+               update_time updateTime,
+               remark remark,
+               company_id companyId,
+               pig_farm_id pigFarmId
+        from pig_immune
+        where del = '0'
+          and id = #{id}
+    </select>
+</mapper>

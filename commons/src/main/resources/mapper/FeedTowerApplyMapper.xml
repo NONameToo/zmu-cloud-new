@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeedTowerApplyMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeedTowerApply">
+    <!--@mbg.generated-->
+    <!--@Table feed_tower_apply-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="tower_id" jdbcType="BIGINT" property="towerId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="feed_type" jdbcType="VARCHAR" property="feedType" />
+    <result column="total" jdbcType="BIGINT" property="total" />
+    <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, apply_code, company_id, pig_farm_id, tower_id, user_id, feed_type, total, apply_status, 
+    create_time, update_time
+  </sql>
+
+
+   <select id="page" resultType="com.zmu.cloud.commons.vo.FeedTowerApplyVO">
+            SELECT
+            ap.id,
+            ap.apply_code as applyCode,
+            ap.company_id as companyId,
+            ap.pig_farm_id as pigFarmId,
+            ap.tower_id as towerId,
+            ap.user_id as userId,
+            ap.feed_type as feedTypeName,
+            ap.total,
+            ap.apply_status as applyStatus,
+            ap.create_time as createTime,
+            ap.update_time as updateTime,
+
+            tower.`name` AS towerName
+        FROM
+            feed_tower_apply AS ap
+            INNER JOIN feed_tower AS tower ON tower.id = ap.tower_id
+        <where>
+            1=1
+             <if test="startTime != null and startTime != ''">
+                and date_format(ap.create_time, '%Y-%m-%d') between #{startTime} and #{endTime}
+            </if>
+
+            <if test="applyCode != null and applyCode != ''">
+                and ap.apply_code  =  #{applyCode}
+            </if>
+
+             <if test="towerName != null and towerName != ''">
+                 and tower.name  like concat('%', #{towerName}, '%')
+            </if>
+
+             <if test="towerId != null and towerId != ''">
+                 and tower.id  =  #{towerId}
+            </if>
+        </where>
+        ORDER BY ap.create_time desc
+    </select>
+</mapper>

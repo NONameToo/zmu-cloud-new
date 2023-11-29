@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigBreedingLeaveMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigBreedingLeave">
+        <!--@mbg.generated-->
+        <!--@Table pig_breeding_leave-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="pig_breeding_id" jdbcType="BIGINT" property="pigBreedingId"/>
+        <result column="leave_time" jdbcType="DATE" property="leaveTime"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="leaving_reason" jdbcType="INTEGER" property="leavingReason"/>
+        <result column="weight" jdbcType="DECIMAL" property="weight"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="unit_price" jdbcType="DECIMAL" property="unitPrice"/>
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, pig_breeding_id, leave_time,`type`, leaving_reason, weight, price,
+        unit_price, operator_id, del, remark, create_by, update_by, create_time, update_time
+    </sql>
+
+    <select id="event" resultType="com.zmu.cloud.commons.vo.EventPigBreedingLeaveVO">
+        select b.ear_number     earNumber,
+               l.leave_time     leaveTime,
+               l.type,
+               l.leaving_reason leavingReason,
+               l.weight,
+               l.price,
+               l.unit_price     unitPrice,
+               u.real_name      operatorName,
+               l.create_time    createTime,
+               l.remark,
+               b.type           pigType
+        from pig_breeding_leave l
+                     left join pig_breeding b on l.pig_breeding_id = b.id
+                     left join sys_user u on u.id = l.operator_id
+        <where>
+            <if test="earNumber != null and earNumber != ''">
+                and b.ear_number like concat('%', #{earNumber}, '%')
+            </if>
+            <if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+                and l.leave_time BETWEEN #{startTime,jdbcType=VARCHAR}
+                        AND #{endTime,jdbcType=VARCHAR}
+            </if>
+            and b.del = 0
+        </where>
+        order by l.leave_time desc
+    </select>
+
+    <select id="statisticPigDead" resultType="com.zmu.cloud.commons.vo.FarmStatisticPigDeadDB">
+        SELECT ifnull(t.reason,13) reason, t.`value`, t.pigType,   p.position name
+                from (
+                SELECT pbl.leaving_reason      reason,
+                       pbl.pig_breeding_id     id,
+                       pb.ear_number           `value`,
+                       pb.pig_house_columns_id phcId,
+                       pb.type                 pigType
+                FROM pig_breeding_leave pbl
+                             LEFT JOIN pig_breeding pb on pb.id = pbl.pig_breeding_id
+                WHERE pbl.del = '0'
+                  and pbl.type = 1
+        <if test="startDate != null and endDate != null">
+            and pbl.leave_time between #{startDate} and #{endDate}
+        </if>
+        GROUP BY pbl.leaving_reason, pbl.pig_breeding_id, pb.type
+        UNION ALL
+        SELECT ppl.leaving_reason       reason,
+               ppl.pig_group_id         id,
+               pg.`name`                `value`,
+               ppl.pig_house_columns_id phcId,
+               3                        pigType
+        FROM pig_pork_leave ppl
+                     LEFT JOIN pig_group pg on pg.id = ppl.pig_group_id
+                WHERE ppl.del = '0'
+                  and ppl.type = 1
+        <if test="startDate != null and endDate != null">
+            and ppl.leave_time between #{startDate} and #{endDate}
+        </if>
+        GROUP BY ppl.leaving_reason, ppl.pig_group_id, ppl.pig_house_columns_id
+        UNION ALL
+        SELECT pl.leaving_reason       reason,
+               pl.pig_piggy_id         id,
+               pb.ear_number           `value`,
+               pb.pig_house_columns_id phcId,
+               4                       pigType
+        FROM pig_piggy_leave pl
+                     inner JOIN pig_piggy pp on pp.id = pl.pig_piggy_id
+                     INNER JOIN pig_breeding pb on pb.id = pp.pig_breeding_id
+                WHERE pl.del = '0'
+                  and pl.type = 1
+        <if test="startDate != null and endDate != null">
+            and pl.leave_time between #{startDate} and #{endDate}
+        </if>
+        GROUP BY pl.leaving_reason, pl.pig_piggy_id
+                ) t
+                LEFT JOIN (
+                SELECT CONCAT(ph.`name`, '-', phr.`code`, '-', phc.`code`) `name`,
+                       phc.position,
+                       phc.id
+                FROM pig_house ph
+                             INNER JOIN pig_house_rows phr ON phr.pig_house_id = ph.id
+                             INNER JOIN pig_house_columns phc ON phc.pig_house_rows_id = phr.id
+                WHERE ph.del = '0'
+                  AND phr.del = '0'
+                  AND phc.del = '0'
+                ) p ON p.id = t.phcId
+    </select>
+</mapper>

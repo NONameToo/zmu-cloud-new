@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.IndexMenuTypeMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.IndexMenuType">
+    <!--@mbg.generated-->
+    <!--@Table index_menu_type-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="menu_type_name" jdbcType="VARCHAR" property="menuTypeName" />
+    <result column="menu_type_key" jdbcType="VARCHAR" property="menuTypeKey" />
+    <result column="menu_type_sort" jdbcType="INTEGER" property="menuTypeSort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="del" jdbcType="CHAR" property="del" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="app" jdbcType="VARCHAR" property="app" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, menu_type_name, menu_type_key, menu_type_sort, `status`, del, remark, create_by,
+    update_by, create_time, update_time, app
+  </sql>
+
+
+
+    <select id="listIndexMenuType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from index_menu_type sr
+        <where>
+            and sr.del = 0
+            <if test="query.menuTypeName != null and query.menuTypeName != ''">
+                and sr.menu_type_name like concat('%', #{query.menuTypeName}, '%')
+            </if>
+            <if test="query.status != null">
+                and sr.status = #{query.status}
+            </if>
+            <if test="query.app != null">
+                and sr.app = #{query.app}
+            </if>
+        </where>
+        order by menu_type_sort
+    </select>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from index_menu_type
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+
+
+      <select id="getIndexMenuTypeNameByUserId" resultType="java.lang.String">
+        select menu_type_name
+        from index_menu_type
+                 join index_menu_user_type sur on index_menu_type.id = sur.type_id and sur.user_id = #{userId}
+        where index_menu_type.del = 0
+          and index_menu_type.status = 1
+        order by menu_type_sort
+    </select>
+
+    <select id="listIndexMenuTypeByUserId" resultType="com.zmu.cloud.commons.vo.IndexMenuTypeVO">
+        select index_menu_type.*,if(user_id is null,0,1) as subIf
+        from index_menu_type left
+                 join index_menu_user_type sur on index_menu_type.id = sur.type_id and sur.user_id = #{userId}
+        where index_menu_type.del = 0
+          and index_menu_type.status = 1
+
+        order by menu_type_sort
+
+        </select>
+
+
+    <select id="listIndexMenuTypeByUserAndApp" resultType="com.zmu.cloud.commons.vo.IndexMenuTypeVO">
+    select distinct index_menu_type.*,if(user_id is null,0,1) as subIf, sur.is_default isDefault
+    from index_menu_type left
+             join index_menu_user_type sur on index_menu_type.id = sur.type_id
+                <if test="userId != null">
+                    and sur.user_id = #{userId}
+                </if>
+    where index_menu_type.del = 0
+      and index_menu_type.status = 1
+      and index_menu_type.app = #{zmuApp}
+      <if test="resourceType == 'jx'">
+          and index_menu_type.id not in (33)
+      </if>
+      <if test="resourceType == 'yhy'">
+          and index_menu_type.id not in (66,77,88,99)
+      </if>
+    order by menu_type_sort
+    </select>
+
+</mapper>

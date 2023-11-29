@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FarmFeedingStrategyAllowMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FarmFeedingStrategyAllow">
+    <!--@mbg.generated-->
+    <!--@Table farm_feeding_strategy_allow-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="employ_id" jdbcType="BIGINT" property="employId" />
+    <result column="employ_name" jdbcType="VARCHAR" property="employName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, employ_id, employ_name
+  </sql>
+</mapper>

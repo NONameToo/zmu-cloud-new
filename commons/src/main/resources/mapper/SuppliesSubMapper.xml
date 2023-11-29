@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.SuppliesSubMapper">
+    
+    <resultMap type="com.zmu.cloud.commons.entity.SuppliesSub" id="SuppliesSubResult">
+        <result property="id"    column="id"    />
+        <result property="subDate"    column="sub_date"    />
+        <result property="name"    column="name"    />
+        <result property="unit"    column="unit"    />
+        <result property="num"    column="num"    />
+        <result property="numed"    column="numed"    />
+        <result property="subType"    column="sub_type"    />
+        <result property="site"    column="site"    />
+        <result property="vender"    column="vender"    />
+        <result property="receiveBy"    column="receive_by"    />
+        <result property="operateBy"    column="operate_by"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="del"    column="del"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="pigFarmId"    column="pig_farm_id"    />
+    </resultMap>
+
+    <sql id="selectSuppliesSubVo">
+        select id, sub_date, name, unit, num, numed, sub_type, site, vender, receive_by, operate_by, create_by, create_time, update_by, update_time, remark, del, company_id, pig_farm_id from supplies_sub
+    </sql>
+
+    <select id="selectSuppliesSubList" parameterType="com.zmu.cloud.commons.entity.SuppliesSub" resultType="com.zmu.cloud.commons.entity.SuppliesSub">
+        SELECT
+        a.id,
+        a.sub_date AS 'subDate',
+        a.NAME,
+        a.unit,
+        a.num,
+        a.numed,
+        (
+        CASE
+        WHEN a.sub_type = '0' THEN
+        '免疫'
+        WHEN a.sub_type = '1' THEN
+        '防治'
+        WHEN a.sub_type = '2' THEN
+        '洗消'
+        WHEN a.sub_type = '3' THEN
+        '其他'
+        END
+        ) AS 'subType',
+        a.site,
+        a.vender,
+        a.receive_by AS 'receiveBy',
+        a.operate_by AS 'operateBy',
+        su.real_name as 'operateByName',
+        a.create_by AS 'createBy',
+        a.create_time AS 'createTime',
+        a.update_by AS 'updateBy',
+        a.update_time AS 'updateTime',
+        a.remark,
+        a.del,
+        a.company_id AS 'companyId',
+        a.pig_farm_id AS 'pigFarmId'
+        FROM
+        supplies_sub a left join sys_user su on a.operate_by = su.id
+        <where>
+          a.del = 0
+            <if test="subDate != null "> and a.sub_date = #{subDate}</if>
+            <if test="name != null  and name != ''"> and a.name like concat('%', #{name}, '%')</if>
+            <if test="unit != null  and unit != ''"> and a.unit = #{unit}</if>
+            <if test="num != null "> and a.num = #{num}</if>
+            <if test="subType != null  and subType != ''"> and a.sub_type = #{subType}</if>
+            <if test="site != null  and site != ''"> and a.site = #{site}</if>
+            <if test="vender != null  and vender != ''"> and a.vender = #{vender}</if>
+            <if test="receiveBy != null and receiveBy != ''"> and a.receive_by = #{receiveBy}</if>
+            <if test="operateBy != null "> and a.operate_by = #{operateBy}</if>
+            <if test="startTime != null "> and a.sub_date &gt;= #{startTime}</if>
+            <if test="endTime != null "> and a.sub_date &lt;= DATE_ADD(#{endTime}, INTERVAL 1 DAY)</if>
+        </where>
+    </select>
+    
+    <select id="selectSuppliesSubById" parameterType="Long" resultMap="SuppliesSubResult">
+        <include refid="selectSuppliesSubVo"/>
+        where del = 0 and id = #{id}
+    </select>
+        
+    <insert id="insertSuppliesSub" parameterType="com.zmu.cloud.commons.entity.SuppliesSub" useGeneratedKeys="true" keyProperty="id">
+        insert into supplies_sub
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="subDate != null">sub_date,</if>
+            <if test="name != null">name,</if>
+            <if test="unit != null">unit,</if>
+            <if test="num != null">num,</if>
+            <if test="numed != null">numed,</if>
+            <if test="subType != null">sub_type,</if>
+            <if test="site != null">site,</if>
+            <if test="vender != null">vender,</if>
+            <if test="receiveBy != null">receive_by,</if>
+            <if test="operateBy != null">operate_by,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="del != null">del,</if>
+            <if test="companyId != null">company_id,</if>
+            <if test="pigFarmId != null">pig_farm_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="subDate != null">#{subDate},</if>
+            <if test="name != null">#{name},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="num != null">#{num},</if>
+            <if test="numed != null">#{numed},</if>
+            <if test="subType != null">#{subType},</if>
+            <if test="site != null">#{site},</if>
+            <if test="vender != null">#{vender},</if>
+            <if test="receiveBy != null">#{receiveBy},</if>
+            <if test="operateBy != null">#{operateBy},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="del != null">#{del},</if>
+            <if test="companyId != null">#{companyId},</if>
+            <if test="pigFarmId != null">#{pigFarmId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSuppliesSub" parameterType="com.zmu.cloud.commons.entity.SuppliesSub">
+        update supplies_sub
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="subDate != null">sub_date = #{subDate},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="num != null">num = #{num},</if>
+            <if test="numed != null">numed = #{numed},</if>
+            <if test="subType != null">sub_type = #{subType},</if>
+            <if test="site != null">site = #{site},</if>
+            <if test="vender != null">vender = #{vender},</if>
+            <if test="receiveBy != null">receive_by = #{receiveBy},</if>
+            <if test="operateBy != null">operate_by = #{operateBy},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="del != null">del = #{del},</if>
+            <if test="companyId != null">company_id = #{companyId},</if>
+            <if test="pigFarmId != null">pig_farm_id = #{pigFarmId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSuppliesSubById" parameterType="Long">
+        update supplies_sub set del = 1 where id = #{id}
+    </delete>
+
+    <delete id="deleteSuppliesSubByIds" parameterType="String">
+        update supplies_sub set del = 1,update_by = #{userId},update_time = now() where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

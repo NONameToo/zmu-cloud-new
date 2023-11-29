@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeederQrtzMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeederQrtz">
+    <!--@mbg.generated-->
+    <!--@Table feeder_qrtz-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="trigger_time" jdbcType="VARCHAR" property="triggerTime" />
+    <result column="farm_id" jdbcType="BIGINT" property="farmId" />
+    <result column="house_id" jdbcType="BIGINT" property="houseId" />
+    <result column="house_name" jdbcType="VARCHAR" property="houseName" />
+    <result column="house_type_id" jdbcType="INTEGER" property="houseTypeId" />
+    <result column="house_type" jdbcType="VARCHAR" property="houseType" />
+    <result column="material_line_id" jdbcType="BIGINT" property="materialLineId" />
+    <result column="material_line_name" jdbcType="VARCHAR" property="materialLineName" />
+    <result column="blend_feed_id" jdbcType="BIGINT" property="blendFeedId" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="job_group" jdbcType="VARCHAR" property="jobGroup" />
+    <result column="job_enable" jdbcType="INTEGER" property="jobEnable" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, trigger_time, farm_id, house_id, house_name, house_type_id, house_type, material_line_id, 
+    material_line_name, blend_feed_id, job_name, job_group, job_enable
+  </sql>
+</mapper>

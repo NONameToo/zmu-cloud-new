@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.SaleAfterMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.SaleAfter">
+    <!--@mbg.generated-->
+    <!--@Table sale_after-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="create_by" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+      id,
+      `type`,
+      status,
+      remark,
+      create_by,
+      update_by,
+      create_time,
+      update_time
+  </sql>
+
+  <update id="batchPass">
+    update sale_after set status = 1 where id in
+    <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </update>
+
+</mapper>

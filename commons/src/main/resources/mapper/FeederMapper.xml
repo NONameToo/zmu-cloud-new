@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeederMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.Feeder">
+    <!--@mbg.generated-->
+    <!--@Table feeder-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="pig_house_id" jdbcType="BIGINT" property="pigHouseId" />
+    <result column="client_id" jdbcType="BIGINT" property="clientId" />
+    <result column="material_line_id" jdbcType="BIGINT" property="materialLineId" />
+    <result column="feeder_code" jdbcType="INTEGER" property="feederCode" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="error" jdbcType="VARCHAR" property="error" />
+    <result column="sensor_weight" jdbcType="INTEGER" property="sensorWeight" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, pig_farm_id, pig_house_id, client_id, material_line_id, feeder_code, 
+    `type`, `status`, error, sensor_weight, `date`
+  </sql>
+</mapper>

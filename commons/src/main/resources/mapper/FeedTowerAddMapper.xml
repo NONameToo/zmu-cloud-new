@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeedTowerAddMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeedTowerAdd">
+    <!--@mbg.generated-->
+    <!--@Table feed_tower_add-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="car_id" jdbcType="BIGINT" property="carId" />
+    <result column="tower_id" jdbcType="BIGINT" property="towerId" />
+    <result column="current_state" jdbcType="INTEGER" property="currentState" />
+    <result column="add_before" jdbcType="BIGINT" property="addBefore" />
+    <result column="add_before_volume" jdbcType="BIGINT" property="addBeforeVolume" />
+    <result column="add_before_log_id" jdbcType="BIGINT" property="addBeforeLogId" />
+    <result column="add_start_time" jdbcType="TIMESTAMP" property="addStartTime" />
+    <result column="add_end_time" jdbcType="TIMESTAMP" property="addEndTime" />
+    <result column="may_add_end_time" jdbcType="TIMESTAMP" property="mayAddEndTime" />
+    <result column="may_left_time" jdbcType="BIGINT" property="mayLeftTime" />
+    <result column="add_after" jdbcType="BIGINT" property="addAfter" />
+    <result column="add_after_volume" jdbcType="BIGINT" property="addAfterVolume" />
+    <result column="add_after_log_id" jdbcType="BIGINT" property="addAfterLogId" />
+    <result column="use_time" jdbcType="BIGINT" property="useTime" />
+    <result column="add_total" jdbcType="BIGINT" property="addTotal" />
+    <result column="open_time" jdbcType="TIMESTAMP" property="openTime" />
+    <result column="close_time" jdbcType="TIMESTAMP" property="closeTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="stop_status" jdbcType="INTEGER" property="stopStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, car_id, tower_id, current_state, add_before, add_before_volume, add_before_log_id, 
+    add_start_time, add_end_time, may_add_end_time, may_left_time, add_after, add_after_volume, 
+    add_after_log_id, use_time, add_total, open_time, close_time, remark, stop_status, 
+    create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from feed_tower_add
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from feed_tower_add
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zmu.cloud.commons.entity.FeedTowerAdd" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into feed_tower_add (car_id, tower_id, current_state, 
+      add_before, add_before_volume, add_before_log_id, 
+      add_start_time, add_end_time, may_add_end_time, 
+      may_left_time, add_after, add_after_volume, 
+      add_after_log_id, use_time, add_total, 
+      open_time, close_time, remark, 
+      stop_status, create_time, update_time
+      )
+    values (#{carId,jdbcType=BIGINT}, #{towerId,jdbcType=BIGINT}, #{currentState,jdbcType=INTEGER}, 
+      #{addBefore,jdbcType=BIGINT}, #{addBeforeVolume,jdbcType=BIGINT}, #{addBeforeLogId,jdbcType=BIGINT}, 
+      #{addStartTime,jdbcType=TIMESTAMP}, #{addEndTime,jdbcType=TIMESTAMP}, #{mayAddEndTime,jdbcType=TIMESTAMP}, 
+      #{mayLeftTime,jdbcType=BIGINT}, #{addAfter,jdbcType=BIGINT}, #{addAfterVolume,jdbcType=BIGINT}, 
+      #{addAfterLogId,jdbcType=BIGINT}, #{useTime,jdbcType=BIGINT}, #{addTotal,jdbcType=BIGINT}, 
+      #{openTime,jdbcType=TIMESTAMP}, #{closeTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, 
+      #{stopStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zmu.cloud.commons.entity.FeedTowerAdd" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into feed_tower_add
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="carId != null">
+        car_id,
+      </if>
+      <if test="towerId != null">
+        tower_id,
+      </if>
+      <if test="currentState != null">
+        current_state,
+      </if>
+      <if test="addBefore != null">
+        add_before,
+      </if>
+      <if test="addBeforeVolume != null">
+        add_before_volume,
+      </if>
+      <if test="addBeforeLogId != null">
+        add_before_log_id,
+      </if>
+      <if test="addStartTime != null">
+        add_start_time,
+      </if>
+      <if test="addEndTime != null">
+        add_end_time,
+      </if>
+      <if test="mayAddEndTime != null">
+        may_add_end_time,
+      </if>
+      <if test="mayLeftTime != null">
+        may_left_time,
+      </if>
+      <if test="addAfter != null">
+        add_after,
+      </if>
+      <if test="addAfterVolume != null">
+        add_after_volume,
+      </if>
+      <if test="addAfterLogId != null">
+        add_after_log_id,
+      </if>
+      <if test="useTime != null">
+        use_time,
+      </if>
+      <if test="addTotal != null">
+        add_total,
+      </if>
+      <if test="openTime != null">
+        open_time,
+      </if>
+      <if test="closeTime != null">
+        close_time,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="stopStatus != null">
+        stop_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="carId != null">
+        #{carId,jdbcType=BIGINT},
+      </if>
+      <if test="towerId != null">
+        #{towerId,jdbcType=BIGINT},
+      </if>
+      <if test="currentState != null">
+        #{currentState,jdbcType=INTEGER},
+      </if>
+      <if test="addBefore != null">
+        #{addBefore,jdbcType=BIGINT},
+      </if>
+      <if test="addBeforeVolume != null">
+        #{addBeforeVolume,jdbcType=BIGINT},
+      </if>
+      <if test="addBeforeLogId != null">
+        #{addBeforeLogId,jdbcType=BIGINT},
+      </if>
+      <if test="addStartTime != null">
+        #{addStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="addEndTime != null">
+        #{addEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mayAddEndTime != null">
+        #{mayAddEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mayLeftTime != null">
+        #{mayLeftTime,jdbcType=BIGINT},
+      </if>
+      <if test="addAfter != null">
+        #{addAfter,jdbcType=BIGINT},
+      </if>
+      <if test="addAfterVolume != null">
+        #{addAfterVolume,jdbcType=BIGINT},
+      </if>
+      <if test="addAfterLogId != null">
+        #{addAfterLogId,jdbcType=BIGINT},
+      </if>
+      <if test="useTime != null">
+        #{useTime,jdbcType=BIGINT},
+      </if>
+      <if test="addTotal != null">
+        #{addTotal,jdbcType=BIGINT},
+      </if>
+      <if test="openTime != null">
+        #{openTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closeTime != null">
+        #{closeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="stopStatus != null">
+        #{stopStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zmu.cloud.commons.entity.FeedTowerAdd">
+    <!--@mbg.generated-->
+    update feed_tower_add
+    <set>
+      <if test="carId != null">
+        car_id = #{carId,jdbcType=BIGINT},
+      </if>
+      <if test="towerId != null">
+        tower_id = #{towerId,jdbcType=BIGINT},
+      </if>
+      <if test="currentState != null">
+        current_state = #{currentState,jdbcType=INTEGER},
+      </if>
+      <if test="addBefore != null">
+        add_before = #{addBefore,jdbcType=BIGINT},
+      </if>
+      <if test="addBeforeVolume != null">
+        add_before_volume = #{addBeforeVolume,jdbcType=BIGINT},
+      </if>
+      <if test="addBeforeLogId != null">
+        add_before_log_id = #{addBeforeLogId,jdbcType=BIGINT},
+      </if>
+      <if test="addStartTime != null">
+        add_start_time = #{addStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="addEndTime != null">
+        add_end_time = #{addEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mayAddEndTime != null">
+        may_add_end_time = #{mayAddEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mayLeftTime != null">
+        may_left_time = #{mayLeftTime,jdbcType=BIGINT},
+      </if>
+      <if test="addAfter != null">
+        add_after = #{addAfter,jdbcType=BIGINT},
+      </if>
+      <if test="addAfterVolume != null">
+        add_after_volume = #{addAfterVolume,jdbcType=BIGINT},
+      </if>
+      <if test="addAfterLogId != null">
+        add_after_log_id = #{addAfterLogId,jdbcType=BIGINT},
+      </if>
+      <if test="useTime != null">
+        use_time = #{useTime,jdbcType=BIGINT},
+      </if>
+      <if test="addTotal != null">
+        add_total = #{addTotal,jdbcType=BIGINT},
+      </if>
+      <if test="openTime != null">
+        open_time = #{openTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closeTime != null">
+        close_time = #{closeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="stopStatus != null">
+        stop_status = #{stopStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zmu.cloud.commons.entity.FeedTowerAdd">
+    <!--@mbg.generated-->
+    update feed_tower_add
+    set car_id = #{carId,jdbcType=BIGINT},
+      tower_id = #{towerId,jdbcType=BIGINT},
+      current_state = #{currentState,jdbcType=INTEGER},
+      add_before = #{addBefore,jdbcType=BIGINT},
+      add_before_volume = #{addBeforeVolume,jdbcType=BIGINT},
+      add_before_log_id = #{addBeforeLogId,jdbcType=BIGINT},
+      add_start_time = #{addStartTime,jdbcType=TIMESTAMP},
+      add_end_time = #{addEndTime,jdbcType=TIMESTAMP},
+      may_add_end_time = #{mayAddEndTime,jdbcType=TIMESTAMP},
+      may_left_time = #{mayLeftTime,jdbcType=BIGINT},
+      add_after = #{addAfter,jdbcType=BIGINT},
+      add_after_volume = #{addAfterVolume,jdbcType=BIGINT},
+      add_after_log_id = #{addAfterLogId,jdbcType=BIGINT},
+      use_time = #{useTime,jdbcType=BIGINT},
+      add_total = #{addTotal,jdbcType=BIGINT},
+      open_time = #{openTime,jdbcType=TIMESTAMP},
+      close_time = #{closeTime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      stop_status = #{stopStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

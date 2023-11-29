@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.MqttLogMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.MqttLog">
+    <!--@mbg.generated-->
+    <!--@Table mqtt_log-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="topic" jdbcType="VARCHAR" property="topic" />
+    <result column="message" jdbcType="VARCHAR" property="message" />
+    <result column="clientId" jdbcType="BIGINT" property="clientid" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="correct" jdbcType="VARCHAR" property="correct" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="head" jdbcType="VARCHAR" property="head" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="total_length" jdbcType="VARCHAR" property="totalLength" />
+    <result column="operation_type" jdbcType="VARCHAR" property="operationType" />
+    <result column="value_length" jdbcType="VARCHAR" property="valueLength" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+    <result column="crc" jdbcType="VARCHAR" property="crc" />
+    <result column="feedback" jdbcType="INTEGER" property="feedback" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, topic, message, clientId, `type`, correct, create_time, head, version, total_length, 
+    operation_type, value_length, `value`, crc, feedback
+  </sql>
+</mapper>

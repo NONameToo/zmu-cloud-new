@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeedTowerDeviceMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeedTowerDevice">
+    <!--@mbg.generated-->
+    <!--@Table feed_tower_device-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="tower_id" jdbcType="BIGINT" property="towerId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
+    <result column="sn_time" jdbcType="TIMESTAMP" property="snTime" />
+    <result column="device_no" jdbcType="VARCHAR" property="deviceNo" />
+    <result column="standard_angle" jdbcType="INTEGER" property="standardAngle" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="version_code" jdbcType="VARCHAR" property="versionCode" />
+    <result column="modbus_id" jdbcType="INTEGER" property="modbusId" />
+    <result column="wifi_account" jdbcType="VARCHAR" property="wifiAccount" />
+    <result column="wifi_pwd" jdbcType="VARCHAR" property="wifiPwd" />
+    <result column="warranty" jdbcType="INTEGER" property="warranty" />
+    <result column="warranty_begin" jdbcType="DATE" property="warrantyBegin" />
+    <result column="warranty_period" jdbcType="DATE" property="warrantyPeriod" />
+    <result column="del" jdbcType="INTEGER" property="del" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="compensate_percent" jdbcType="DOUBLE" property="compensatePercent" />
+    <result column="net_mode" jdbcType="INTEGER" property="netMode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, pig_farm_id, tower_id, `name`, sn, sn_time, device_no, standard_angle, 
+    version, version_code, modbus_id, wifi_account, wifi_pwd, warranty, warranty_begin, 
+    warranty_period, del, create_time, compensate_percent, net_mode
+  </sql>
+
+
+  <update id="unBindFeedTower" parameterType="string">
+    UPDATE feed_tower_device SET tower_id = 0 , company_id = 0 , pig_farm_id = 0 , net_mode = 1 where del = 0 and device_no = #{deviceNo}
+  </update>
+
+  <select id="getTowerNameByTowerId" parameterType="long" resultType="string">
+    select name from feed_tower where del = 0 and id = #{towerId}
+  </select>
+
+  <update id="chooseNetMode">
+    update feed_tower_device set net_mode = #{netMode} where del = 0 and device_no = #{deviceNo}
+  </update>
+  <select id="selectNetModeByDeviceNo" parameterType="string" resultType="long">
+    select net_mode from feed_tower_device where del = 0 and device_no = #{deviceNo}
+  </select>
+</mapper>

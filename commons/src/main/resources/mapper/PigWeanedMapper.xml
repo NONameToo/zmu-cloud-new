@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigWeanedMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigWeaned">
+    <!--@mbg.generated-->
+    <!--@Table pig_weaned-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="pig_breeding_id" jdbcType="BIGINT" property="pigBreedingId" />
+    <result column="pig_ids" jdbcType="VARCHAR" property="pigIds" />
+    <result column="pig_ear_numbers" jdbcType="VARCHAR" property="pigEarNumbers" />
+    <result column="weaned_date" jdbcType="DATE" property="weanedDate" />
+    <result column="weaned_number" jdbcType="INTEGER" property="weanedNumber" />
+    <result column="pig_house_id" jdbcType="BIGINT" property="pigHouseId" />
+    <result column="pig_house_columns_id" jdbcType="BIGINT" property="pigHouseColumnsId" />
+    <result column="pig_group_id" jdbcType="BIGINT" property="pigGroupId" />
+    <result column="parity" jdbcType="INTEGER" property="parity" />
+    <result column="weaned_weight" jdbcType="DECIMAL" property="weanedWeight" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="del" jdbcType="CHAR" property="del" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, pig_farm_id, pig_breeding_id, pig_ids, pig_ear_numbers, weaned_date, weaned_number, pig_house_id,
+    pig_house_columns_id, pig_group_id, parity, weaned_weight, operator_id, del, remark,
+    create_by, update_by, create_time, update_time
+  </sql>
+
+    <select id="selectEventId" resultType="com.zmu.cloud.commons.vo.EventWeanedVO">
+        select w.id,
+               w.parity,
+               w.remark,
+               w.operator_id          operatorId,
+               u.real_name            operatorName,
+               w.create_time          createTime,
+               w.weaned_date          weanedDate,
+               w.weaned_number        weanedNumber,
+               ph.name                pigHouse,
+               phr.name               pigRows,
+               phc.name               pigColumns,
+               phc.position,
+               w.pig_house_columns_id pigHouseColumnsId,
+               w.weaned_weight        weanedWeight,
+               w.pig_breeding_id      pigBreedingId,
+               pg.name                pigGroupName
+        from pig_weaned w
+                     left join sys_user u on u.id = w.operator_id
+                     left join pig_house_columns phc on w.pig_house_columns_id = phc.id
+                     left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                     left join pig_house ph on phr.pig_house_id = ph.id
+                     left join pig_group pg on w.pig_group_id = pg.id
+        where w.pig_breeding_id = #{id,jdbcType=BIGINT}
+          and w.del = 0
+        order by w.create_time desc
+    </select>
+    <select id="event" resultType="com.zmu.cloud.commons.vo.EventPigWeanedVO">
+        select p.weaned_date   weanedDate,
+               p.pig_ids    pigIds,
+               p.pig_ear_numbers    pigEarNumbers,
+               u.real_name     operatorName,
+               p.create_time   createTime,
+               p.weaned_number weanedNumber,
+               p.weaned_weight weanedWeight,
+               p.remark,
+               ph.name         pigHouse
+        from pig_weaned p
+                     left join sys_user u on u.id = p.operator_id
+                     left join pig_house ph on p.pig_house_id = ph.id
+        <where>
+            <if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+                and p.weaned_date BETWEEN #{startTime,jdbcType=VARCHAR} AND #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="pigHouseId != null">
+                and ph.id = #{pigHouseId,jdbcType=BIGINT}
+            </if>
+            and p.del = 0
+        </where>
+        order by p.weaned_date desc
+    </select>
+
+    <select id="statisticWeaned" resultType="com.zmu.cloud.commons.vo.FarmStatisticProductionTotalVO$Weaned">
+        SELECT COUNT(DISTINCT pw.pig_breeding_id)                     sow,
+               IFNULL(SUM(pw.weaned_number), 0)                       piggy,
+               convert(SUM(t.num) / SUM(t.parity), DECIMAL(18, 2))    avg,
+               convert(SUM(t.weight) / SUM(t.parity), DECIMAL(18, 2)) avgKg
+                FROM pig_weaned pw
+                LEFT JOIN (
+                SELECT MAX(pw.parity)                   parity,
+                       IFNULL(SUM(pw.weaned_weight), 0) weight,
+                       IFNULL(SUM(pw.weaned_number), 0) num
+                FROM pig_weaned pw
+                WHERE pw.del = '0'
+        <if test="startDate != null and endDate != null">
+            and pw.create_time between #{startDate} and #{endDate}
+        </if>
+        GROUP BY pw.pig_breeding_id
+                ) t ON true
+                WHERE pw.del = '0'
+        <if test="startDate != null and endDate != null">
+            and pw.create_time between #{startDate} and #{endDate}
+        </if>
+    </select>
+</mapper>

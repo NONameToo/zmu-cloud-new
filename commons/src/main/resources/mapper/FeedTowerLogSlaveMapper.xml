@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeedTowerLogSlaveMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeedTowerLogSlave">
+    <!--@mbg.generated-->
+    <!--@Table feed_tower_log_slave-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="log_id" jdbcType="BIGINT" property="logId" />
+    <result column="device_no" jdbcType="VARCHAR" property="deviceNo" />
+    <result column="task_no" jdbcType="VARCHAR" property="taskNo" />
+    <result column="data" jdbcType="LONGVARCHAR" property="data" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, log_id, device_no, task_no, `data`, create_time
+  </sql>
+
+  <select id="selectData" parameterType="long" resultType="string">
+    select data from feed_tower_log_slave where log_id = #{logId}
+  </select>
+</mapper>

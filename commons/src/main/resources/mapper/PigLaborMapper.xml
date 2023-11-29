@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigLaborMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigLabor">
+        <!--@mbg.generated-->
+        <!--@Table pig_labor-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="pig_breeding_id" jdbcType="BIGINT" property="pigBreedingId"/>
+        <result column="labor_date" jdbcType="DATE" property="laborDate"/>
+        <result column="pig_house_id" jdbcType="DATE" property="pigHouseId"/>
+        <result column="pig_house_name" jdbcType="DATE" property="pigHouseName"/>
+        <result column="labor_result" jdbcType="INTEGER" property="laborResult"/>
+        <result column="labor_minute" jdbcType="INTEGER" property="laborMinute"/>
+        <result column="healthy_number" jdbcType="INTEGER" property="healthyNumber"/>
+        <result column="weak_number" jdbcType="INTEGER" property="weakNumber"/>
+        <result column="deformity_number" jdbcType="INTEGER" property="deformityNumber"/>
+        <result column="dead_number" jdbcType="INTEGER" property="deadNumber"/>
+        <result column="mummy_number" jdbcType="INTEGER" property="mummyNumber"/>
+        <result column="live_number" jdbcType="INTEGER" property="liveNumber"/>
+        <result column="killed_number" jdbcType="INTEGER" property="killedNumber"/>
+        <result column="feeding_number" jdbcType="INTEGER" property="feedingNumber"/>
+        <result column="parity" jdbcType="INTEGER" property="parity"/>
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, pig_breeding_id, labor_date, pig_house_id, pig_house_name, labor_result, labor_minute,
+        healthy_number, weak_number, deformity_number, dead_number, mummy_number, live_number,killed_number,feeding_number
+        parity, operator_id, del, remark, create_by, update_by, create_time, update_time
+    </sql>
+
+    <select id="selectEventId" resultType="com.zmu.cloud.commons.vo.EventLaborVO">
+        select p.parity,
+               p.remark,
+               p.operator_id      operatorId,
+               p.labor_date       laborDate,
+               p.labor_result     laborResult,
+               p.labor_minute     laborMinute,
+               p.healthy_number   healthyNumber,
+               p.weak_number      weakNumber,
+               p.deformity_number deformityNumber,
+               p.dead_number      deadNumber,
+               p.mummy_number     mummyNumber,
+               p.live_number      liveNumber,
+               p.killed_number    killedNumber,
+               p.feeding_number   feedingNumber,
+               u.real_name        operatorName,
+               p.create_time      createTime,
+               p.id,
+               p.pig_breeding_id  pigBreedingId,
+               p.pig_house_name   pigHouseName
+        from pig_labor p
+                     left join sys_user u on u.id = p.operator_id
+        where pig_breeding_id = #{id,jdbcType=BIGINT}
+        order by p.create_time desc
+    </select>
+    <select id="event" resultType="com.zmu.cloud.commons.vo.EventPigLaborVO">
+        select p.labor_date                                                                           laborDate,
+               b.ear_number                                                                           earNumber,
+               u.real_name                                                                            operatorName,
+               p.create_time                                                                          createTime,
+               p.labor_result                                                                         laborResult,
+               p.labor_minute                                                                         laborMinute,
+               p.healthy_number                                                                       healthyNumber,
+               p.weak_number                                                                          weakNumber,
+               p.deformity_number                                                                     deformityNumber,
+               p.dead_number                                                                          deadNumber,
+               p.mummy_number                                                                         mummyNumber,
+               p.killed_number                                                                        killedNumber,
+               p.feeding_number                                                                       feedingNumber,
+               p.healthy_number + p.weak_number + p.deformity_number + p.mummy_number + p.dead_number countNumber,
+               p.parity,
+               p.remark,
+               p.pig_house_name                                                                       pigHouse
+        from pig_labor p
+                     left join pig_breeding b on p.pig_breeding_id = b.id
+                     left join sys_user u on u.id = p.operator_id
+        <where>
+            <if test="earNumber != null and earNumber != ''">
+                and b.ear_number like concat('%', #{earNumber}, '%')
+            </if>
+            <if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+                and p.labor_date BETWEEN #{startTime,jdbcType=VARCHAR} AND #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="pigHouseId != null">
+                and p.pig_house_id = #{pigHouseId,jdbcType=BIGINT}
+            </if>
+            and p.del = 0
+        </where>
+        order by p.labor_date desc
+    </select>
+
+    <select id="selectByPigBreedingId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from pig_labor b
+        where b.pig_breeding_id = #{pigBreedingId,jdbcType=BIGINT}
+        order by b.create_time desc
+        limit 1
+    </select>
+
+    <select id="statisticLabor" resultType="com.zmu.cloud.commons.vo.FarmStatisticProductionTotalVO$Labor">
+        SELECT COUNT(DISTINCT pl.pig_breeding_id)                                                             sow,
+               SUM(IFNULL(pl.healthy_number, 0))                                                              healthy,
+               SUM(IFNULL(pl.weak_number, 0))                                                                 weak,
+               SUM(IFNULL(pl.deformity_number, 0))                                                            deformity,
+               SUM(IFNULL(pl.dead_number, 0))                                                                 dead,
+               SUM(IFNULL(pl.mummy_number, 0))                                                                mummy,
+               SUM(IFNULL(pl.live_number, 0))                                                                 live,
+               SUM(IFNULL(pl.healthy_number, 0) + IFNULL(pl.weak_number, 0) + IFNULL(pl.deformity_number, 0) +
+                   IFNULL(pl.dead_number, 0) +
+                   IFNULL(pl.mummy_number, 0))                                                                totalLabor,
+               SUM(IFNULL(pl.healthy_number, 0) + IFNULL(pl.weak_number, 0) + IFNULL(pl.deformity_number, 0)) totalLive
+        FROM pig_labor pl
+                WHERE pl.del = '0'
+        <if test="startDate != null and endDate != null">
+            and pl.create_time between #{startDate} and #{endDate}
+        </if>
+    </select>
+
+    <select id="statisticGestationalAgeRatio" resultType="com.zmu.cloud.commons.vo.FarmStatisticGestationalAgeRatioVO">
+        SELECT count(1) num, t.parity
+                from (
+                SELECT max(pl.parity) parity
+                from pig_labor pl
+        <!--                          inner join pig_breeding pb on pl.pig_breeding_id = pb.id-->
+        WHERE pl.del = '0'
+        <!--                   and pb.presence_status = 1-->
+        GROUP BY pl.pig_breeding_id
+        HAVING max(pl.parity) &lt; 7
+                ) t
+                GROUP BY t.parity
+    </select>
+
+    <select id="statisticGestationalAgeRatioGreaterThan7" resultType="java.lang.Integer">
+        SELECT count(*) num
+                from (
+                SELECT max(pl.parity) parity
+                from pig_labor pl
+        <!--                          inner join pig_breeding pb on pl.pig_breeding_id = pb.id-->
+        WHERE pl.del = '0'
+        <!--                   and pb.presence_status = 1-->
+        GROUP BY pl.pig_breeding_id
+        HAVING max(pl.parity) &gt;= 7
+                ) t
+    </select>
+
+    <select id="statisticGestationalAgeRatioEqualsZero" resultType="int">
+        SELECT count(DISTINCT pb.id)
+        FROM pig_breeding pb
+                     LEFT JOIN pig_labor pl ON pb.id = pl.pig_breeding_id
+                AND pl.del = '0'
+                WHERE pb.del = '0'
+                  AND pb.type = 2
+        <!--          and pb.presence_status = 1-->
+        and pl.id is null
+    </select>
+
+    <select id="laborScore" resultType="com.zmu.cloud.commons.vo.FarmStatisticLaborScoreVO">
+        SELECT ifnull(convert(SUM(
+                                      IFNULL(pl.healthy_number, 0) + IFNULL(pl.weak_number, 0) +
+                                      IFNULL(pl.deformity_number, 0) + IFNULL(pl.dead_number, 0) +
+                                      IFNULL(pl.mummy_number, 0)) / COUNT(1), DECIMAL(18, 2)), 0) avgLabor,
+               ifnull(convert(SUM(IFNULL(pl.healthy_number, 0) + IFNULL(pl.weak_number, 0)) / COUNT(1), DECIMAL(18, 2)),
+                      0)                                                                          avgHealthy,
+                ifnull(convert((
+                SELECT count(pl.pig_breeding_id)
+                FROM pig_labor pl
+                WHERE pl.del = '0'
+                  and pl.company_id = #{companyId}
+                  and pl.pig_farm_id = #{pigFarmId}
+        <if test="startDate != null and endDate != null">
+            and pl.create_time between #{startDate} and #{endDate}
+        </if>
+        ) / (
+            SELECT count(DISTINCT pm.pig_breeding_id)
+            FROM pig_mating pm
+            WHERE pm.del = '0'
+            and pm.company_id = #{companyId}
+            and pm.pig_farm_id = #{pigFarmId}
+            <if test="startDate != null and endDate != null">
+                and pm.create_time between #{startDate} and #{endDate}
+            </if>
+        ) * 100, DECIMAL(18, 2)), 0)                                            avgLaborRatio
+                FROM pig_labor pl
+                WHERE pl.del = '0'
+                  and pl.company_id = #{companyId}
+                  and pl.pig_farm_id = #{pigFarmId}
+        <if test="startDate != null and endDate != null">
+            and pl.create_time between #{startDate} and #{endDate}
+        </if>
+    </select>
+
+
+    <select id="laborReport" resultType="com.zmu.cloud.commons.vo.HomeLaborReportVO">
+SELECT
+    COALESCE(counts.ws, 0) AS ws,
+    COALESCE(counts.zs, 0) AS zs,
+    COALESCE(counts.wjts, 0) AS wjts,
+    COALESCE(deaths.swts, 0) AS swts,
+    COALESCE(inventory.cl, 0) AS cl,
+    CASE WHEN COALESCE(cl, 0) + COALESCE(swts, 0) = 0 THEN 0  WHEN COALESCE(swts, 0) = 0 THEN 0 ELSE Round((swts / (COALESCE(cl, 0) + COALESCE(swts, 0))) * 100,2 )END AS swl
+FROM
+    (SELECT
+        COUNT(id) AS ws,
+        SUM(healthy_number + weak_number) AS zs,
+        CASE WHEN COUNT(id) = 0 THEN 0 ELSE Round((SUM(healthy_number + weak_number) / COUNT(id)) ,2)END AS wjts
+    FROM
+        pig_labor
+    WHERE
+        del = '0'
+        <if test="startTime != null and endTime != null">
+                and labor_date between #{startTime} and #{endTime}
+        </if>
+        ) AS counts,
+    (SELECT
+        SUM(number) AS swts
+    FROM
+        pig_piggy_leave
+    WHERE
+        del = '0'
+        <if test="startTime != null and endTime != null">
+                and leave_time between #{startTime} and #{endTime}
+        </if>
+        AND `type` = 1) AS deaths,
+    (SELECT
+        SUM(number) AS cl
+    FROM
+        pig_piggy
+    WHERE
+        del = '0'
+        ) AS inventory;
+</select>
+
+    <select id="selectPigHouseIdByPigBreedingId" parameterType="long" resultType="long">
+        select a.pig_house_id from pig_breeding a where a.del = '0' and a.id = #{pigBreedingId}
+    </select>
+
+</mapper>

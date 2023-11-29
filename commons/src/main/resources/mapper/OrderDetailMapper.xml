@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.OrderDetailMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.OrderDetail">
+    <!--@mbg.generated-->
+    <!--@Table order_detail-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="iccid" jdbcType="VARCHAR" property="iccid" />
+    <result column="tower_id" jdbcType="BIGINT" property="towerId" />
+    <result column="orderNo" jdbcType="VARCHAR" property="orderno" />
+    <result column="sku_id" jdbcType="BIGINT" property="skuId" />
+    <result column="actual_price" jdbcType="INTEGER" property="actualPrice" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="we_status" jdbcType="INTEGER" property="weStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, order_code, iccid, tower_id, orderNo, sku_id, actual_price, num, we_status, create_time, 
+    update_time
+  </sql>
+
+</mapper>

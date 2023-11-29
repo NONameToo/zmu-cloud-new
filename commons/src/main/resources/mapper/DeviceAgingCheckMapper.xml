@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.DeviceAgingCheckMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.DeviceAgingCheck">
+    <!--@mbg.generated-->
+    <!--@Table device_aging_check-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="tower_id" jdbcType="BIGINT" property="towerId" />
+    <result column="device_num" jdbcType="VARCHAR" property="deviceNum" />
+    <result column="check_count" jdbcType="INTEGER" property="checkCount" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="volume" jdbcType="BIGINT" property="volume" />
+    <result column="standard_volume" jdbcType="BIGINT" property="standardVolume" />
+    <result column="right_percent" jdbcType="INTEGER" property="rightPercent" />
+    <result column="pass" jdbcType="INTEGER" property="pass" />
+    <result column="log_id" jdbcType="BIGINT" property="logId" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
+    <result column="batch_num" jdbcType="VARCHAR" property="batchNum" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="handle" jdbcType="INTEGER" property="handle" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="checker_id" jdbcType="BIGINT" property="checkerId" />
+    <result column="checker_name" jdbcType="VARCHAR" property="checkerName" />
+    <result column="task_no" jdbcType="VARCHAR" property="taskNo" />
+    <result column="run_count" jdbcType="INTEGER" property="runCount" />
+    <result column="err_count" jdbcType="INTEGER" property="errCount" />
+    <result column="quality_id" jdbcType="BIGINT" property="qualityId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, tower_id, device_num, check_count, start_time, end_time, volume, standard_volume, 
+    right_percent, pass, log_id, sn, batch_num, company_id, pig_farm_id, create_time, 
+    update_time, handle, remark, checker_id, checker_name, task_no, run_count, err_count, quality_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from device_aging_check
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from device_aging_check
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zmu.cloud.commons.entity.DeviceAgingCheck" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into device_aging_check (tower_id, device_num, check_count, 
+      start_time, end_time, volume, 
+      standard_volume, right_percent, pass, 
+      log_id, sn, batch_num, 
+      company_id, pig_farm_id, create_time, 
+      update_time, handle, remark, 
+      checker_id, checker_name, task_no, run_count, err_count, quality_id)
+    values (#{towerId,jdbcType=BIGINT}, #{deviceNum,jdbcType=VARCHAR}, #{checkCount,jdbcType=INTEGER}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{volume,jdbcType=BIGINT}, 
+      #{standardVolume,jdbcType=BIGINT}, #{rightPercent,jdbcType=INTEGER}, #{pass,jdbcType=INTEGER}, 
+      #{logId,jdbcType=BIGINT}, #{sn,jdbcType=VARCHAR}, #{batchNum,jdbcType=VARCHAR}, 
+      #{companyId,jdbcType=BIGINT}, #{pigFarmId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{handle,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{checkerId,jdbcType=BIGINT}, #{checkerName,jdbcType=VARCHAR}, #{taskNo,jdbcType=VARCHAR},
+      #{runCount,jdbcType=INTEGER}, #{errCount,jdbcType=INTEGER}, #{qualityId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zmu.cloud.commons.entity.DeviceAgingCheck" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into device_aging_check
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="towerId != null">
+        tower_id,
+      </if>
+      <if test="deviceNum != null">
+        device_num,
+      </if>
+      <if test="checkCount != null">
+        check_count,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="volume != null">
+        volume,
+      </if>
+      <if test="standardVolume != null">
+        standard_volume,
+      </if>
+      <if test="rightPercent != null">
+        right_percent,
+      </if>
+      <if test="pass != null">
+        pass,
+      </if>
+      <if test="logId != null">
+        log_id,
+      </if>
+      <if test="sn != null">
+        sn,
+      </if>
+      <if test="batchNum != null">
+        batch_num,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="pigFarmId != null">
+        pig_farm_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="handle != null">
+        handle,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="checkerId != null">
+        checker_id,
+      </if>
+      <if test="checkerName != null">
+        checker_name,
+      </if>
+      <if test="taskNo != null">
+        task_no,
+      </if>
+      <if test="taskNo != null">
+        run_count,
+      </if>
+      <if test="taskNo != null">
+        err_count,
+      </if>
+      <if test="taskNo != null">
+        quality_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="towerId != null">
+        #{towerId,jdbcType=BIGINT},
+      </if>
+      <if test="deviceNum != null">
+        #{deviceNum,jdbcType=VARCHAR},
+      </if>
+      <if test="checkCount != null">
+        #{checkCount,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="volume != null">
+        #{volume,jdbcType=BIGINT},
+      </if>
+      <if test="standardVolume != null">
+        #{standardVolume,jdbcType=BIGINT},
+      </if>
+      <if test="rightPercent != null">
+        #{rightPercent,jdbcType=INTEGER},
+      </if>
+      <if test="pass != null">
+        #{pass,jdbcType=INTEGER},
+      </if>
+      <if test="logId != null">
+        #{logId,jdbcType=BIGINT},
+      </if>
+      <if test="sn != null">
+        #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNum != null">
+        #{batchNum,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="pigFarmId != null">
+        #{pigFarmId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handle != null">
+        #{handle,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="checkerId != null">
+        #{checkerId,jdbcType=BIGINT},
+      </if>
+      <if test="checkerName != null">
+        #{checkerName,jdbcType=VARCHAR},
+      </if>
+      <if test="checkerName != null">
+        #{taskNo,jdbcType=VARCHAR},
+      </if>
+      <if test="checkerName != null">
+        #{runCount,jdbcType=INTEGER},
+      </if>
+      <if test="checkerName != null">
+        #{errCount,jdbcType=INTEGER},
+      </if>
+      <if test="checkerName != null">
+        #{qualityId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zmu.cloud.commons.entity.DeviceAgingCheck">
+    <!--@mbg.generated-->
+    update device_aging_check
+    <set>
+      <if test="towerId != null">
+        tower_id = #{towerId,jdbcType=BIGINT},
+      </if>
+      <if test="deviceNum != null">
+        device_num = #{deviceNum,jdbcType=VARCHAR},
+      </if>
+      <if test="checkCount != null">
+        check_count = #{checkCount,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="volume != null">
+        volume = #{volume,jdbcType=BIGINT},
+      </if>
+      <if test="standardVolume != null">
+        standard_volume = #{standardVolume,jdbcType=BIGINT},
+      </if>
+      <if test="rightPercent != null">
+        right_percent = #{rightPercent,jdbcType=INTEGER},
+      </if>
+      <if test="pass != null">
+        pass = #{pass,jdbcType=INTEGER},
+      </if>
+      <if test="logId != null">
+        log_id = #{logId,jdbcType=BIGINT},
+      </if>
+      <if test="sn != null">
+        sn = #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNum != null">
+        batch_num = #{batchNum,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="pigFarmId != null">
+        pig_farm_id = #{pigFarmId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handle != null">
+        handle = #{handle,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="checkerId != null">
+        checker_id = #{checkerId,jdbcType=BIGINT},
+      </if>
+      <if test="checkerName != null">
+        checker_name = #{checkerName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskNo != null">
+        task_no = #{taskNo,jdbcType=VARCHAR},
+      </if>
+      <if test="runCount != null">
+        run_count = #{runCount,jdbcType=INTEGER},
+      </if>
+      <if test="errCount != null">
+        err_count = #{errCount,jdbcType=INTEGER},
+      </if>
+      <if test="qualityId != null">
+        quality_id = #{qualityId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zmu.cloud.commons.entity.DeviceAgingCheck">
+    <!--@mbg.generated-->
+    update device_aging_check
+    set tower_id = #{towerId,jdbcType=BIGINT},
+      device_num = #{deviceNum,jdbcType=VARCHAR},
+      check_count = #{checkCount,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      volume = #{volume,jdbcType=BIGINT},
+      standard_volume = #{standardVolume,jdbcType=BIGINT},
+      right_percent = #{rightPercent,jdbcType=INTEGER},
+      pass = #{pass,jdbcType=INTEGER},
+      log_id = #{logId,jdbcType=BIGINT},
+      sn = #{sn,jdbcType=VARCHAR},
+      batch_num = #{batchNum,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=BIGINT},
+      pig_farm_id = #{pigFarmId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      handle = #{handle,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      checker_id = #{checkerId,jdbcType=BIGINT},
+      checker_name = #{checkerName,jdbcType=VARCHAR},
+      task_no = #{taskNo,jdbcType=VARCHAR},
+      run_count = #{runCount,jdbcType=INTEGER},
+      err_count = #{errCount,jdbcType=INTEGER},
+      quality_id = #{qualityId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+    <select id="list" parameterType="com.zmu.cloud.commons.dto.QueryAgingCheck" resultMap="BaseResultMap">
+      SELECT
+      a.*
+      FROM
+      device_aging_check a
+      INNER JOIN ( SELECT MAX( id ) AS id FROM device_aging_check GROUP BY device_num ) b ON a.id = b.id
+      WHERE
+      1 =1
+      <if test="pass != null">
+        and a.pass = #{pass,jdbcType=INTEGER}
+      </if>
+      <if test="handle != null">
+        and a.handle = #{handle,jdbcType=INTEGER}
+      </if>
+      <if test="deviceNo != null and deviceNo != ''">
+        and a.device_num = #{deviceNo,jdbcType=VARCHAR}
+      </if>
+      order by a.create_time desc
+  </select>
+
+  <select id="listNew" parameterType="com.zmu.cloud.commons.dto.QueryAgingCheck" resultType="com.zmu.cloud.commons.entity.DeviceAgingCheck">
+    SELECT
+    a.id AS 'id',
+    a.tower_id AS 'towerId',
+    a.device_num AS 'deviceNum',
+    a.check_count AS 'checkCount',
+    a.start_time AS 'startTime',
+    a.end_time AS 'endTime',
+    a.volume AS 'volume',
+    a.standard_volume AS 'standardVolume',
+    a.right_percent AS 'rightPercent',
+    a.pass AS 'pass',
+    a.log_id AS 'logId',
+    a.sn AS 'sn',
+    a.batch_num AS 'batchNum',
+    a.company_id AS 'companyId',
+    a.pig_farm_id AS 'pigFarmId',
+    a.create_time AS 'createTime',
+    a.update_time AS 'updateTime',
+    a.handle AS 'handle',
+    a.remark AS 'remark',
+    a.checker_id AS 'checkerId',
+    a.checker_name AS 'checkerName',
+    c.taskNo AS 'taskNo',
+    d.count AS 'runCount',
+    e.count AS 'errCount',
+    a.quality_id AS 'qualityId',
+    (
+    CASE
+
+    WHEN a.pass = - 2 THEN
+    TIMESTAMPDIFF( SECOND, a.start_time, now( ) )
+    WHEN a.pass = - 1 THEN
+    0 ELSE TIMESTAMPDIFF( SECOND, a.start_time, a.end_time )
+    END
+    ) AS 'longTime'
+    FROM
+    device_aging_check a
+    INNER JOIN ( SELECT MAX( id ) AS id FROM device_aging_check GROUP BY device_num ) b ON a.id = b.id
+    LEFT JOIN (
+    SELECT
+    a.id AS 'id',
+    a.task_no AS 'taskNo',
+    a.aging_id AS 'agingId'
+    FROM
+    feed_tower_log a
+    RIGHT JOIN ( SELECT MAX( id ) AS 'id' FROM feed_tower_log WHERE aging_id IS NOT NULL GROUP BY aging_id ) b ON a.id = b.id
+    ) c ON c.agingId = a.id
+    LEFT JOIN ( SELECT aging_id AS 'agingId', COUNT( * ) AS 'count' FROM feed_tower_log WHERE aging_id IS NOT NULL GROUP BY aging_id ) d ON d.agingId = a.id
+    LEFT JOIN (
+    SELECT
+    aging_id AS 'agingId',
+    COUNT( * ) AS 'count'
+    FROM
+    feed_tower_log
+    WHERE
+    aging_id IS NOT NULL
+    AND STATUS NOT IN ( 'completed', 'running', 'starting', 'invalid' )
+    GROUP BY
+    aging_id
+    ) e ON e.agingId = a.id
+    WHERE
+    1 =1
+    <if test="pass != null and pass != -3">
+      and a.pass = #{pass,jdbcType=INTEGER}
+    </if>
+    <if test="pass != null and pass == -3">
+      and a.pass not in (-1,-2)
+    </if>
+    <if test="handle != null">
+      and a.handle = #{handle,jdbcType=INTEGER}
+    </if>
+    <if test="deviceNo != null and deviceNo != ''">
+      and a.device_num = #{deviceNo,jdbcType=VARCHAR}
+    </if>
+    order by a.create_time desc limit #{pageNum},#{pageSize}
+  </select>
+
+  <select id="listNewCount" parameterType="com.zmu.cloud.commons.dto.QueryAgingCheck" resultType="long">
+    SELECT
+    count(*)
+    FROM
+    device_aging_check a
+    INNER JOIN ( SELECT MAX( id ) AS id FROM device_aging_check GROUP BY device_num ) b ON a.id = b.id
+    WHERE
+    1 =1
+    <if test="pass != null and pass != -3">
+      and a.pass = #{pass,jdbcType=INTEGER}
+    </if>
+    <if test="pass != null and pass == -3">
+      and a.pass not in (-1,-2)
+    </if>
+    <if test="handle != null">
+      and a.handle = #{handle,jdbcType=INTEGER}
+    </if>
+    <if test="deviceNo != null and deviceNo != ''">
+      and a.device_num = #{deviceNo,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <select id="selectRunning" resultType="com.zmu.cloud.commons.entity.DeviceAgingCheck">
+    SELECT
+    a.id AS 'id',
+    a.check_count AS 'checkCount',
+    a.start_time AS 'startTime',
+    a.device_num AS 'deviceNum',
+    ( SELECT MAX( create_time ) FROM feed_tower_log WHERE aging_id = a.id ) AS 'createTime',
+    ( SELECT status FROM feed_tower_log WHERE aging_id = a.id order by create_time desc limit 1) AS 'checkerName'
+    FROM
+    device_aging_check a
+    INNER JOIN ( SELECT MAX( id ) AS id FROM device_aging_check GROUP BY device_num ) b ON a.id = b.id
+    WHERE
+    a.pass = - 2
+    HAVING
+    TIMESTAMPDIFF( MINUTE, createTime, now( ) ) &gt; 30
+    AND TIMESTAMPDIFF( HOUR, startTime, now( ) ) &lt; checkCount
+    AND checkerName not in ('starting','running')
+  </select>
+
+  <select id="selectListPass" parameterType="com.zmu.cloud.commons.dto.QueryAgingCheck" resultMap="BaseResultMap">
+        SELECT distinct
+            a.*
+        FROM
+            device_aging_check a left join feed_tower_log f on a.id = f.aging_id
+            where 1=1
+            and a.pass > -1
+            and f.status in ('exception','nothing','cancel','completed')
+      <if test="deviceNo != null and deviceNo != ''">
+        and a.device_num = #{deviceNo,jdbcType=VARCHAR}
+      </if>
+      <if test="startTime != null">
+        and a.start_time &gt; #{startTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endTime != null">
+        and a.start_time &lt; #{endTime,jdbcType=TIMESTAMP}
+      </if>
+      order by a.start_time desc
+  </select>
+
+</mapper>

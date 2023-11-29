@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeedTowerFeedTypeMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeedTowerFeedType">
+    <!--@mbg.generated-->
+    <!--@Table feed_tower_feed_type-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="density" jdbcType="BIGINT" property="density" />
+    <result column="inlay" jdbcType="TINYINT" property="inlay" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="create_by" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, `name`, density, inlay,
+    create_by,
+    update_by,
+    create_time,
+    update_time
+  </sql>
+
+  <select id="selectListByCompanyId" resultType="com.zmu.cloud.commons.entity.FeedTowerFeedType">
+    SELECT
+    a.id as 'id',
+    a.company_id as 'companyId',
+    a.`name` as 'name',
+    a.density as 'density',
+    a.inlay as 'inlay',
+    ifnull(b.real_name,c.name) as 'updateByName',
+    a.create_by as 'createBy',
+    a.update_by as 'updateBy',
+    a.create_time as 'createTime',
+    a.update_time as 'updateTime'
+    FROM
+    feed_tower_feed_type a
+    left join sys_user b on b.id = a.update_by
+    left join sph_employ c on c.id = a.update_by
+    WHERE
+    a.company_id = #{companyId}
+    and a.inlay != 1
+
+    ORDER BY a.`name` desc
+  </select>
+</mapper>

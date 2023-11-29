@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PrinterMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.Printer">
+    <!--@mbg.generated-->
+    <!--@Table printer-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="printer_name" jdbcType="VARCHAR" property="printerName" />
+    <result column="printer_ip" jdbcType="VARCHAR" property="printerIp" />
+    <result column="printer_port" jdbcType="INTEGER" property="printerPort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, printer_name, printer_ip, printer_port, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from printer
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from printer
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zmu.cloud.commons.entity.Printer" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into printer (printer_name, printer_ip, printer_port, 
+      create_time, update_time)
+    values (#{printerName,jdbcType=VARCHAR}, #{printerIp,jdbcType=VARCHAR}, #{printerPort,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zmu.cloud.commons.entity.Printer" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into printer
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="printerName != null">
+        printer_name,
+      </if>
+      <if test="printerIp != null">
+        printer_ip,
+      </if>
+      <if test="printerPort != null">
+        printer_port,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="printerName != null">
+        #{printerName,jdbcType=VARCHAR},
+      </if>
+      <if test="printerIp != null">
+        #{printerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="printerPort != null">
+        #{printerPort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zmu.cloud.commons.entity.Printer">
+    <!--@mbg.generated-->
+    update printer
+    <set>
+      <if test="printerName != null">
+        printer_name = #{printerName,jdbcType=VARCHAR},
+      </if>
+      <if test="printerIp != null">
+        printer_ip = #{printerIp,jdbcType=VARCHAR},
+      </if>
+      <if test="printerPort != null">
+        printer_port = #{printerPort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zmu.cloud.commons.entity.Printer">
+    <!--@mbg.generated-->
+    update printer
+    set printer_name = #{printerName,jdbcType=VARCHAR},
+      printer_ip = #{printerIp,jdbcType=VARCHAR},
+      printer_port = #{printerPort,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+      <select id="listPinterByUser" resultType="com.zmu.cloud.commons.vo.PrinterVO">
+        select printer.*,if(user_id is null,0,1) as isDefault, sur.is_default isDefault
+    from printer left
+             join printer_user sur on printer.id = sur.printer_id and sur.user_id = #{userId}
+    order by printer.id desc
+    </select>
+
+    <delete id="deleteByUserId">
+        delete
+        from printer_user
+        where user_id = #{userId,jdbcType=BIGINT}
+    </delete>
+
+</mapper>

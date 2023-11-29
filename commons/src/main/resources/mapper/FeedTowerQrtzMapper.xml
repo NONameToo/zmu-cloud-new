@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeedTowerQrtzMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeedTowerQrtz">
+    <!--@mbg.generated-->
+    <!--@Table feed_tower_qrtz-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="tower_id" jdbcType="BIGINT" property="towerId" />
+    <result column="device_no" jdbcType="VARCHAR" property="deviceNo" />
+    <result column="trigger_time" jdbcType="VARCHAR" property="triggerTime" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="job_group" jdbcType="VARCHAR" property="jobGroup" />
+    <result column="job_enable" jdbcType="INTEGER" property="jobEnable" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, tower_id, device_no, trigger_time, job_name, job_group, job_enable
+  </sql>
+</mapper>

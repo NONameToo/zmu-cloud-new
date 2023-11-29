@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.SysUserMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.admin.SysUser">
+        <!--@mbg.generated-->
+        <!--@Table sys_user-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="login_name" jdbcType="VARCHAR" property="loginName"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="sex" jdbcType="INTEGER" property="sex"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="user_role_type" jdbcType="VARCHAR" property="userRoleType"
+                typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="rid" jdbcType="VARCHAR" property="rid"/>
+        <collection property="roleIds" column="{userId=id}" select="selectRoleIdsById"/>
+        <collection property="farmIds" ofType="java.lang.Long" column="{userId=id,companyId=company_id}"
+                    select="com.zmu.cloud.commons.mapper.PigFarmMapper.listUserPigFarmIds"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, login_name, nick_name, real_name, email, phone, sex,
+        avatar, `password`, `status`, user_role_type,del, remark, create_by, update_by, create_time, update_time,rid
+    </sql>
+    <select id="selectRoleIdsById" resultType="java.lang.Long">
+        select role_id
+        from sys_user_role
+        where user_id = #{userId}
+    </select>
+    <select id="findUserById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where id = #{id}
+    </select>
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where del = 0
+        <if test="loginName != null and loginName != ''">
+            and login_name like concat('%', #{loginName}, '%')
+        </if>
+        <if test="nickName != null and nickName != ''">
+            and nick_name like concat('%', #{nickName}, '%')
+        </if>
+        <if test="realName != null and realName != ''">
+            and real_name like concat('%', #{realName}, '%')
+        </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
+
+        <if test="rid != null">
+            and rid = #{rid}
+        </if>
+
+        <if test="createTimeStart != null and createTimeStart != '' and createTimeEnd != null and createTimeEnd != ''">
+            and create_time between #{createTimeStart} and #{createTimeEnd}
+        </if>
+        <if test="phone != null and phone != ''">
+            and phone like concat('%', #{phone}, '%')
+        </if>
+        order by create_time desc
+    </select>
+    <select id="getByLoginAccount" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where login_name = #{loginName}
+          and del = 0
+    </select>
+
+    <update id="updateStatus">
+        update sys_user su
+        set su.status = 0
+        where su.id = #{userId}
+          and su.del = 0
+    </update>
+
+     <update id="cleanOtherUserRid">
+        update sys_user su
+        set su.rid =  null
+        where su.rid = #{rid}
+    </update>
+
+
+
+    <select id="listUserId" resultType="java.lang.Long">
+        select id
+        from sys_user
+        where del = '0' and company_id = #{companyId}
+    </select>
+
+
+    <select id="getOperators" resultType="com.zmu.cloud.commons.vo.OperatorVO">
+        select DISTINCT su.id userId, su.real_name realName
+        from sys_user su
+        where su.del = '0'
+          and su.status = 1
+          and su.company_id = #{companyId}
+          <if test="employ != null ">
+            and su.real_name like concat('%', #{employ}, '%')
+          </if>
+        order by su.id
+    </select>
+</mapper>

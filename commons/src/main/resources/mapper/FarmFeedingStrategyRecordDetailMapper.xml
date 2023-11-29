@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FarmFeedingStrategyRecordDetailMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FarmFeedingStrategyRecordDetail">
+    <!--@mbg.generated-->
+    <!--@Table farm_feeding_strategy_record_detail-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stage" jdbcType="VARCHAR" property="stage" />
+    <result column="feed" jdbcType="VARCHAR" property="feed" />
+    <result column="one" jdbcType="VARCHAR" property="one" />
+    <result column="thin" jdbcType="VARCHAR" property="thin" />
+    <result column="suitable" jdbcType="VARCHAR" property="suitable" />
+    <result column="fat" jdbcType="VARCHAR" property="fat" />
+    <result column="five" jdbcType="VARCHAR" property="five" />
+    <result column="record_id" jdbcType="BIGINT" property="recordId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, stage, feed, one, thin, suitable, fat, five, record_id
+  </sql>
+</mapper>

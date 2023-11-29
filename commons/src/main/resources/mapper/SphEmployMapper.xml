@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.SphEmployMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.SphEmploy">
+    <!--@mbg.generated-->
+    <!--@Table sph_employ-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="employ_code" jdbcType="VARCHAR" property="employCode" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="farm_id" jdbcType="BIGINT" property="farmId" />
+    <result column="farm_name" jdbcType="VARCHAR" property="farmName" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="org_id" jdbcType="BIGINT" property="orgId" />
+    <result column="org_name" jdbcType="VARCHAR" property="orgName" />
+    <result column="login_id" jdbcType="VARCHAR" property="loginId" />
+    <result column="rid" jdbcType="VARCHAR" property="rid" />
+    <result column="register" jdbcType="INTEGER" property="register" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, employ_code, `name`, `password`, icon, email, `position`, nick_name, phone, farm_id, 
+    farm_name, note, create_time, login_time, `status`, org_id, org_name, login_id, rid, 
+    register
+  </sql>
+
+    <insert id="syncBatchInsert">
+        insert into sph_employ (id, employ_code, name, farm_id, farm_name, status, org_id, org_name, login_id, phone)
+        VALUES
+        <foreach collection="list" item="obj" separator=",">
+            (#{obj.id},#{obj.employCode},#{obj.name},#{obj.farmId},#{obj.farmName},#{obj.status},#{obj.orgId},#{obj.orgName},#{obj.loginId},#{obj.phone})
+        </foreach>
+    </insert>
+    <update id="syncBatchUpdate" parameterType="java.util.List">
+        update sph_employ
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="org_id =case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id=#{item.id} then #{item.orgId}
+                </foreach>
+            </trim>
+            <trim prefix="org_name =case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id=#{item.id} then #{item.orgName}
+                </foreach>
+            </trim>
+            <trim prefix="employ_code =case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id=#{item.id} then #{item.employCode}
+                </foreach>
+            </trim>
+            <trim prefix="name =case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id=#{item.id} then #{item.name}
+                </foreach>
+            </trim>
+            <trim prefix="status =case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id=#{item.id} then #{item.status}
+                </foreach>
+            </trim>
+            <trim prefix="farm_id =case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id=#{item.id} then #{item.farmId}
+                </foreach>
+            </trim>
+            <trim prefix="farm_name =case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id=#{item.id} then #{item.farmName}
+                </foreach>
+            </trim>
+            <trim prefix="login_id =case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id=#{item.id} then #{item.loginId}
+                </foreach>
+            </trim>
+            <trim prefix="phone =case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id=#{item.id} then #{item.phone}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+            #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+</mapper>

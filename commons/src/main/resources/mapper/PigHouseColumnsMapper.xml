@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigHouseColumnsMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigHouseColumns">
+    <!--@mbg.generated-->
+    <!--@Table pig_house_columns-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="pig_house_id" jdbcType="BIGINT" property="pigHouseId" />
+    <result column="pig_house_rows_id" jdbcType="BIGINT" property="pigHouseRowsId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="no" jdbcType="INTEGER" property="no" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="client_id" jdbcType="BIGINT" property="clientId" />
+    <result column="feeder_code" jdbcType="INTEGER" property="feederCode" />
+    <result column="feeder_enable" jdbcType="INTEGER" property="feederEnable" />
+    <result column="feeding_amount" jdbcType="INTEGER" property="feedingAmount" />
+    <result column="pig_id" jdbcType="BIGINT" property="pigId" />
+    <result column="curr_quantity" jdbcType="INTEGER" property="currQuantity" />
+    <result column="curr_date" jdbcType="TIMESTAMP" property="currDate" />
+    <result column="del" jdbcType="CHAR" property="del" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, pig_farm_id, pig_house_id, pig_house_rows_id, `name`, code, `no`, 
+    `position`, client_id, feeder_code, feeder_enable, feeding_amount, pig_id, curr_quantity, 
+    curr_date, del, remark, create_by, update_by, create_time, update_time
+  </sql>
+
+    <resultMap extends="BaseResultMap" id="AVAILABLE_PORK_LEAVE" type="com.zmu.cloud.commons.entity.PigHouseColumns">
+        <result column="count" property="count" />
+    </resultMap>
+
+    <select id="ViewColumnVo" resultType="com.zmu.cloud.commons.vo.ViewColumnVo">
+        select hc.id, !isnull(ifnull(hc.pig_id, ifnull(p.id, null))) `has_pig`, p.ear_number, hc.no
+        from pig_house_columns hc
+                 left join pig_breeding p on hc.id = p.pig_house_columns_id
+        where hc.pig_farm_id = #{farmId}
+          and hc.position like #{row}
+          and hc.del = '0'
+        order by hc.position asc
+    </select>
+
+    <select id="viewAllCols" resultType="com.zmu.cloud.commons.vo.ViewColumnVo">
+        select r.id rowId, r.code, hc.id, ifnull(hc.pig_id, ifnull(p.id, null)) pig_id, !isnull(ifnull(hc.pig_id, ifnull(p.id, null))) `has_pig`, p.ear_number, hc.no
+        from pig_house_columns hc
+                 left join pig_breeding p on hc.id = p.pig_house_columns_id
+                 left join pig_house_rows r on hc.pig_house_rows_id = r.id
+        where hc.pig_house_id = #{houseId}
+        and hc.del = '0'
+        order by hc.position asc
+    </select>
+
+    <select id="listByRowsId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from pig_house_columns
+        where del = '0'
+          and pig_house_rows_id = #{rowsId}
+        <if test="companyId != null">
+            AND company_id = #{companyId}
+        </if>
+        <if test="pigFarmId != null">
+            AND pig_farm_id = #{pigFarmId}
+        </if>
+        order by id
+    </select>
+
+    <select id="listForPorkLeave" resultMap="AVAILABLE_PORK_LEAVE">
+        select phc.*, tmp2.pork_number count
+        from pig_house_columns phc
+                 inner join (
+            SELECT DISTINCT phc.id, tmp1.pork_number
+            FROM pig_house ph
+                     INNER JOIN pig_house_rows phr
+                                ON ph.id = phr.pig_house_id
+                                    and phr.company_id = #{companyId}
+                                    and phr.pig_farm_id = #{pigFarmId}
+                     INNER JOIN pig_house_columns phc
+                                ON phc.pig_house_rows_id = phr.id
+                                    and phc.company_id = #{companyId}
+                                    and phc.pig_farm_id = #{pigFarmId}
+                     INNER JOIN (
+                SELECT pps.pig_house_columns_id, sum(pps.pork_number) pork_number
+                FROM pig_pork_stock pps
+                WHERE pps.del = '0'
+                  AND pps.type = 1
+                  AND pps.pork_number &gt; 0
+                  and pps.company_id = #{companyId}
+                  and pps.pig_farm_id = #{pigFarmId}
+                GROUP BY pps.pig_house_columns_id) tmp1 on tmp1.pig_house_columns_id = phc.id
+            WHERE ph.del = '0'
+              and phr.del = '0'
+              and phc.del = '0'
+              and ph.company_id = #{companyId}
+              and ph.pig_farm_id = #{pigFarmId}
+              and phc.pig_house_rows_id = #{rowsId}
+        ) tmp2 on phc.id = tmp2.id
+    </select>
+
+
+    <update id="unBind">
+        update pig_breeding
+        set pig_house_columns_id = null
+        where id = #{pigId}
+    </update>
+
+    <update id="batchUnbind">
+        update pig_breeding
+        set pig_house_columns_id = null where pig_house_columns_id in
+        <foreach close=")" collection="pigIds" index="index" item="item" open="(" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="viewHouseRows" resultType="java.lang.String">
+        select distinct substring_index(col.position, '-', 2)  from pig_house_columns col
+        where col.pig_house_id = #{houseId}
+        order by substring_index(col.position, '-', 2)
+    </select>
+</mapper>

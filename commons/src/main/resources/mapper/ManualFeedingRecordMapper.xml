@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.ManualFeedingRecordMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.ManualFeedingRecord">
+    <!--@mbg.generated-->
+    <!--@Table manual_feeding_record-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="house_id" jdbcType="BIGINT" property="houseId" />
+    <result column="house_name" jdbcType="VARCHAR" property="houseName" />
+    <result column="house_column_id" jdbcType="BIGINT" property="houseColumnId" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="pig_id" jdbcType="BIGINT" property="pigId" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="feed_time" jdbcType="TIMESTAMP" property="feedTime" />
+    <result column="operator" jdbcType="BIGINT" property="operator" />
+    <result column="batch" jdbcType="VARCHAR" property="batch" />
+    <result column="client_id" jdbcType="BIGINT" property="clientId" />
+    <result column="feeder_code" jdbcType="INTEGER" property="feederCode" />
+    <result column="feed_status" jdbcType="VARCHAR" property="feedStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, pig_farm_id, house_id, house_name, house_column_id, `position`, pig_id, 
+    amount, feed_time, `operator`, batch, client_id, feeder_code, feed_status
+  </sql>
+
+  <select id="manualFeedingHistory" resultType="com.zmu.cloud.commons.vo.ManualFeedingHistoryVo">
+    select date_format(fr.feed_time, '%y-%m-%d %H:%i') feedTime, ifnull(e.real_name, emp.name) operator, count(fr.id) number,
+    sum(fr.amount) amount, group_concat(fr.position) viewCodeStr, fr.house_id houseId, fr.batch
+    from manual_feeding_record fr left join sys_user e on fr.operator = e.id
+    left join sph_employ emp on fr.operator = emp.id
+    where fr.pig_farm_id = #{farmId}
+    group by fr.batch, date_format(fr.feed_time, '%y-%m-%d %H:%i')
+    order by date_format(fr.feed_time, '%y-%m-%d %H:%i') desc
+  </select>
+</mapper>

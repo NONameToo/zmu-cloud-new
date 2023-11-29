@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigPorkLeaveMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigPorkLeave">
+        <!--@mbg.generated-->
+        <!--@Table pig_pork_leave-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="pig_house_columns_id" jdbcType="BIGINT" property="pigHouseColumnsId"/>
+        <result column="pig_group_id" jdbcType="BIGINT" property="pigGroupId"/>
+        <result column="leave_time" jdbcType="DATE" property="leaveTime"/>
+        <result column="number" jdbcType="INTEGER" property="number"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="leaving_reason" jdbcType="INTEGER" property="leavingReason"/>
+        <result column="weight" jdbcType="DECIMAL" property="weight"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="unit_price" jdbcType="DECIMAL" property="unitPrice"/>
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="birth_date" jdbcType="TIMESTAMP" property="birthDate"/>
+        <result column="pig_house_id" jdbcType="BIGINT" property="pigHouseId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, pig_house_columns_id, `number`, `type`, leaving_reason,pig_group_id,leave_time,
+        weight, price, unit_price, operator_id, del, remark, create_by, update_by, create_time,
+        update_time, pig_house_id, birth_date
+    </sql>
+
+    <select id="event" resultType="com.zmu.cloud.commons.vo.EventPigPorkLeaveVO">
+        select p.leave_time     leaveTime,
+               p.type,
+               p.leaving_reason leavingReason,
+               p.weight,
+               p.price,
+               p.unit_price     unitPrice,
+               u.real_name      operatorName,
+               p.create_time    createTime,
+               p.remark,
+               ph.name          pigHouse,
+               phr.name         pigRows,
+               phc.name         pigColumns,
+               phc.position,
+               p.number,
+               pg.name          pigGroupName
+        from pig_pork_leave p
+                     left join pig_house_columns phc on p.pig_house_columns_id = phc.id
+                     left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                     left join pig_house ph on p.pig_house_id = ph.id
+                     left join sys_user u on u.id = p.operator_id
+                     left join pig_group pg on p.pig_group_id = pg.id
+        <where>
+            <if test="pigHouseId != null">
+                and ph.id = #{pigHouseId}
+            </if>
+            <if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+                and p.leave_time BETWEEN #{startTime,jdbcType=VARCHAR} AND #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="pigGroupId != null">
+                and pg.id = #{pigGroupId,jdbcType=BIGINT}
+            </if>
+            and p.del = 0
+        </where>
+        order by p.leave_time desc,p.create_time desc
+    </select>
+</mapper>

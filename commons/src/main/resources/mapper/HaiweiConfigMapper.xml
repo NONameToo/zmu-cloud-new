@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.HaiweiConfigMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.HaiweiConfig">
+    <!--@mbg.generated-->
+    <!--@Table haiwei_config-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="farm_id" jdbcType="BIGINT" property="farmId" />
+    <result column="house_id" jdbcType="BIGINT" property="houseId" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="device" jdbcType="VARCHAR" property="device" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="privateKey" jdbcType="VARCHAR" property="privatekey" />
+    <result column="machineCode" jdbcType="VARCHAR" property="machinecode" />
+    <result column="platform" jdbcType="INTEGER" property="platform" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, farm_id, house_id, url, device, account, privateKey, machineCode, platform
+  </sql>
+</mapper>

@@ -14,6 +14,10 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <modules>
+        <module>tower-emq-handle</module>
+    </modules>
+
     <dependencies>
         <!--mybatis plus依赖包-->
         <dependency>

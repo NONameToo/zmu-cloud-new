@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigLaborTaskMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigLaborTask">
+        <!--@mbg.generated-->
+        <!--@Table pig_labor_task-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="pig_breeding_id" jdbcType="BIGINT" property="pigBreedingId"/>
+        <result column="mating_date" jdbcType="DATE" property="matingDate"/>
+        <result column="pregnancy_date" jdbcType="DATE" property="pregnancyDate"/>
+        <result column="days" jdbcType="INTEGER" property="days"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, pig_breeding_id,mating_date,days,pregnancy_date, `status`, del, remark, create_by, update_by,
+        create_time, update_time
+    </sql>
+
+    <select id="selectByPigBreedingId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from pig_labor_task
+        where pig_breeding_id = #{pigBreedingId,jdbcType=BIGINT}
+        and status = 1
+        and del = 0
+    </select>
+    <select id="page" resultType="com.zmu.cloud.commons.vo.PigLaborTaskListVO">
+        SELECT p.pig_breeding_id pigBreedingId,p.id, b.ear_number earNumber,
+        ph.id pigHouseId,
+        ph.name pigHouse,
+        ph.type pigHouseType,
+        p.mating_date matingDate,
+        b.pig_status pigStatus,
+        timestampdiff(DAY, p.pregnancy_date,NOW()) pregnancyDay,
+        DATE_ADD(p.mating_date,INTERVAL p.days DAY) preDate,
+        (timestampdiff(DAY, p.mating_date,IFNULL(p.update_time,p.create_time)) - p.days) overdueDay
+        FROM pig_labor_task p
+            left join pig_breeding b on p.pig_breeding_id = b.id
+            left join pig_house ph on b.pig_house_id = ph.id
+        <where>
+            <if test="earNumber != null and earNumber != ''">
+                and b.ear_number like concat('%', #{earNumber}, '%')
+            </if>
+            and p.del = 0 and p.status = 1 ORDER BY p.create_time desc
+        </where>
+    </select>
+
+    <select id="selectPushMessageTaskCount" resultType="com.zmu.cloud.commons.vo.PushMessageTaskCountVO">
+    select z.companyId,z.companyName,z.farmId,z.name as farmName,count(DISTINCT z.taskId) as total
+        from (SELECT
+        b.id AS taskId,
+        d.name as name,
+        d.id as farmId,
+        d.company_id as companyId,
+        company.name as companyName,
+        f.rid as rid
+        FROM
+            `pig_breeding` a
+            INNER JOIN pig_labor_task b ON b.pig_breeding_id = a.id left join pig_house_columns as c on a.pig_house_columns_id = c.id
+            left join pig_farm d on a.pig_farm_id = d.id left join company as company on d.company_id = company.id left join  sys_user_farm as e on e.farm_id = d.id left join  sys_user as f on e.user_id=f.id  left join push_user_type as g on g.user_id=f.id left join push_message_type as h on g.type_id = h.id
+        WHERE
+            b.`status` = 1
+            and b.del= 0
+            and h.message_type_key = #{messageTypeKey}
+            order by b.days DESC,b.id DESC)  as z    GROUP BY z.name
+    </select>
+</mapper>

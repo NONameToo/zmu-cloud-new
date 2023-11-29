@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigPiggyLeaveMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigPiggyLeave">
+        <!--@mbg.generated-->
+        <!--@Table pig_piggy_leave-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="pig_piggy_id" jdbcType="BIGINT" property="pigPiggyId"/>
+        <result column="leave_time" jdbcType="DATE" property="leaveTime"/>
+        <result column="number" jdbcType="INTEGER" property="number"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="leaving_reason" jdbcType="INTEGER" property="leavingReason"/>
+        <result column="weight" jdbcType="DECIMAL" property="weight"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, pig_piggy_id, `number`, `type`, leaving_reason, weight,leave_time,
+        price, operator_id, del, remark, create_by, update_by, create_time, update_time
+    </sql>
+
+    <select id="event" resultType="com.zmu.cloud.commons.vo.EventPigPiggyLeaveVO">
+        select b.ear_number     earNumber,
+               l.leave_time     leaveTime,
+               l.type,
+               l.number,
+               l.leaving_reason leavingReason,
+               l.weight,
+               l.price,
+               u.real_name      operatorName,
+               l.create_time    createTime,
+               l.remark,
+               ph.id            pigHouseId,
+               ph.name          pigHouse,
+               phr.name         pigRows,
+               phc.name         pigColumns,
+               phc.position
+        from pig_piggy_leave l
+                     left join pig_piggy p on l.pig_piggy_id = p.id
+                     left join pig_breeding b on p.pig_breeding_id = b.id
+                     left join pig_house_columns phc on b.pig_house_columns_id = phc.id
+                     left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                     left join pig_house ph on p.pig_house_id = ph.id
+                     left join sys_user u on u.id = l.operator_id
+        <where>
+            <if test="earNumber != null and earNumber != ''">
+                and b.ear_number like concat('%', #{earNumber}, '%')
+            </if>
+            <if test="operatorId != null">
+                and l.operator_id = #{operatorId}
+            </if>
+            <if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+                and l.leave_time BETWEEN #{startTime,jdbcType=VARCHAR} AND #{endTime,jdbcType=VARCHAR}
+            </if>
+            and l.del = 0
+        </where>
+        order by l.leave_time desc
+    </select>
+
+<select id="statisticDeadAmoy" resultType="com.zmu.cloud.commons.vo.HomeProductionReportOldVO$DeadAmoy">
+        SELECT
+        COALESCE(sw, 0) AS sw,
+        COALESCE(tt, 0) AS tt,
+        COALESCE(qt, 0) AS qt,
+        COALESCE(sw, 0) + COALESCE(tt, 0) + COALESCE(qt, 0) AS count
+FROM
+    (SELECT
+        SUM(CASE WHEN type =1  THEN 1 ELSE 0 END) AS sw,
+        SUM(CASE WHEN type =2  THEN 1 ELSE 0 END) AS tt,
+        SUM(CASE WHEN type =3  THEN 1 ELSE 0 END) AS qt
+    FROM pig_breeding_leave where del = '0'
+         <if test="startTime != null and endTime != null">
+                and leave_time between #{startTime} and #{endTime}
+          </if>
+      ) AS counts;
+</select>
+
+
+</mapper>

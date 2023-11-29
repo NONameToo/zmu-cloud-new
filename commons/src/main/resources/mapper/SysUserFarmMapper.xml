@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.SysUserFarmMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.SysUserFarm">
+    <!--@mbg.generated-->
+    <!--@Table sys_user_farm-->
+    <id column="user_id" jdbcType="BIGINT" property="userId" />
+    <id column="farm_id" jdbcType="BIGINT" property="farmId" />
+    <result column="is_default" jdbcType="CHAR" property="isDefault" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    user_id, farm_id, is_default
+  </sql>
+
+    <update id="clearDefault">
+        update sys_user_farm
+        set is_default = '0'
+        where user_id = #{userId}
+    </update>
+
+    <update id="setDefault">
+        update sys_user_farm
+        set is_default = '1'
+        where user_id = #{userId}
+          and farm_id = #{farmId}
+    </update>
+
+    <select id="selectFarmIdsByUserId" parameterType="long" resultType="com.zmu.cloud.commons.vo.FarmDetail">
+        SELECT
+	a.farm_id as 'farmId',
+	b.`name` as 'farmName'
+    FROM
+	sys_user_farm a LEFT JOIN pig_farm b ON a.farm_id = b.id
+    WHERE
+	a.user_id = #{userId}
+    GROUP BY
+	a.farm_id
+    </select>
+</mapper>

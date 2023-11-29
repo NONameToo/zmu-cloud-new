@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigGroupMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigGroup">
+        <!--@mbg.generated-->
+        <!--@Table pig_group-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="pig_house_columns_id" jdbcType="BIGINT" property="pigHouseColumnsId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="pig_house_id" jdbcType="BIGINT" property="pigHouseId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, pig_house_columns_id, `name`, del, remark, create_by,
+        update_by, create_time, update_time, pig_house_id
+    </sql>
+
+    <select id="selectCountByColumnsId" resultType="java.lang.Integer">
+        select count(id)
+        from pig_group
+        where to_days(create_time) = to_days(now())
+          and pig_house_columns_id = #{pigHouseColumnsId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectCountByHouseId" resultType="java.lang.Integer">
+        select count(id)
+        from pig_group
+        where to_days(create_time) = to_days(now())
+          and pig_house_id = #{pigHouseId,jdbcType=BIGINT}
+    </select>
+
+    <select id="list" resultType="com.zmu.cloud.commons.vo.PigGroupListVO">
+        select id, name pigGroupName
+        from pig_group
+        <where>
+            <if test="pigHouseColumnsId != null">
+                and pig_house_columns_id = #{pigHouseColumnsId,jdbcType=BIGINT}
+            </if>
+            and del = 0
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="listNew" resultType="com.zmu.cloud.commons.vo.PigGroupListVO">
+        select id, name as  'pigGroupName', pig_house_id as  'pigHouseId'
+        from pig_group
+        <where>
+            <if test="pigHouseId != null">
+                and pig_house_id = #{pigHouseId,jdbcType=BIGINT}
+            </if>
+            and del = 0
+        </where>
+        order by create_time desc
+    </select>
+</mapper>

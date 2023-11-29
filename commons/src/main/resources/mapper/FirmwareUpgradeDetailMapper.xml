@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FirmwareUpgradeDetailMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FirmwareUpgradeDetail">
+    <!--@mbg.generated-->
+    <!--@Table firmware_upgrade_detail-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="device_no" jdbcType="VARCHAR" property="deviceNo" />
+    <result column="upgrade_time" jdbcType="TIMESTAMP" property="upgradeTime" />
+    <result column="complete_time" jdbcType="TIMESTAMP" property="completeTime" />
+    <result column="upgrade_schedule" jdbcType="VARCHAR" property="upgradeSchedule" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="report_id" jdbcType="BIGINT" property="reportId" />
+    <result column="seq" jdbcType="INTEGER" property="seq" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, device_no, upgrade_time, complete_time, upgrade_schedule, remark, report_id, 
+    seq
+  </sql>
+</mapper>

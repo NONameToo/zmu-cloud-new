@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeedTowerMsgMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeedTowerMsg">
+    <!--@mbg.generated-->
+    <!--@Table feed_tower_msg-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="tower_id" jdbcType="BIGINT" property="towerId" />
+    <result column="device_no" jdbcType="VARCHAR" property="deviceNo" />
+    <result column="topic" jdbcType="VARCHAR" property="topic" />
+    <result column="msg" jdbcType="VARCHAR" property="msg" />
+    <result column="content_len" jdbcType="SMALLINT" property="contentLen" />
+    <result column="param" jdbcType="VARCHAR" property="param" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="correct" jdbcType="VARCHAR" property="correct" />
+    <result column="task_id" jdbcType="VARCHAR" property="taskId" />
+    <result column="data_time" jdbcType="VARCHAR" property="dataTime" />
+    <result column="steering_angle" jdbcType="INTEGER" property="steeringAngle" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="crc" jdbcType="VARCHAR" property="crc" />
+    <result column="end_flag" jdbcType="BOOLEAN" property="endFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, pig_farm_id, tower_id, device_no, topic, msg, content_len, param, 
+    `type`, version, correct, task_id, data_time, steering_angle, amount, content, crc, 
+    end_flag, create_time
+  </sql>
+</mapper>

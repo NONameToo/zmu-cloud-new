@@ -1,0 +1,96 @@
+server:
+  port: 8223
+
+spring:
+  application:
+    name: zmu-cloud-tower-emq-handle-v2
+  datasource:
+    dynamic:
+      druid:
+        initialSize: 5
+        minIdle: 10
+        maxActive: 50
+        maxWait: 60000
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        maxEvictableIdleTimeMillis: 900000
+        validationQuery: SELECT 1 FROM DUAL
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+      primary: cloud
+      datasource:
+        cloud:
+          name: cloud
+          driver-class-name: org.mariadb.jdbc.Driver
+          username: root
+          password: '%zmkjBb..&yhy!!'
+          url: jdbc:mariadb://122.9.151.134:3307/zmu_cloud?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true
+#        slave:
+#          name: slave
+#          driver-class-name: org.mariadb.jdbc.Driver
+#          username: root
+#          password: 'y4<br,@wsx168'
+#          url: jdbc:mariadb://139.9.243.213:3306/zmu_cloud_slave?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true
+#        equipment:
+#          name: equipment
+#          driver-class-name: org.mariadb.jdbc.Driver
+#          username: root
+#          password: 'JXgywlw!@#2022'
+#          url: jdbc:mariadb://www.af3-jxzdh.cn:3306/liaotacz?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true
+
+        jx: #巨星ERP
+          name: jx
+          driver-class-name: oracle.jdbc.driver.OracleDriver
+          url: jdbc:oracle:thin:@49.4.84.35:1521:orcl
+          username: erp_readonly
+          password: erp#test
+  redis:
+    host: 122.9.151.134
+    password: 'zm@ecs!123'
+  mqtt:
+    username: zmkj_master
+    password: '!#%&(@24680'
+    host-url: tcp://122.9.151.134:1883
+    webUrl: ws://122.9.151.134:8083/mqtt
+    nodes: emqx@192.168.0.173
+    client-id: zmu-cloud-local
+    default-topic: default
+    completionTimeout: 30000
+    keepAlive: 30
+    enable: true
+    enable_2003: false
+#  quartz:
+#    job-store-type: jdbc # 默认为内存 memory 的方式，这里我们使用数据库的形式
+#    wait-for-jobs-to-complete-on-shutdown: true # 关闭时等待任务完成
+#    overwrite-existing-jobs: true # 可以覆盖已有的任务
+#    jdbc:
+#      initialize-schema: never # 是否自动使用 SQL 初始化 Quartz 表结构，手动初始化创建表
+#    properties: # quartz原生配置
+#      org:
+#        quartz:
+#          scheduler:
+#            instanceName: ZMU_Scheduler # 实例名称（默认为quartzScheduler）
+#            instanceId: AUTO # 实例节点 ID 自动生成
+#          jobStore:
+#            class: org.springframework.scheduling.quartz.LocalDataSourceJobStore # springboot>2.5.6后使用这个
+#            tablePrefix: qrtz_ # Quartz 表前缀
+#            useProperties: false # 是否将JobDataMap中的属性转为字符串存储
+#          threadPool: # 线程池相关配置
+#            threadCount: 25
+#            threadPriority: 5 # 线程优先级
+#            class: org.quartz.simpl.SimpleThreadPool # 指定线程池实现类，对调度器提供固定大小的线程池
+oss:
+  callbackUrl: http://3455x60c88.qicp.vip/admin/file/verifyOSSCallback
+
+python:
+  windows: D:/anaconda3/python.exe
+  linux: /mnt/sdc/fsk/anaconda/envs/suanfa/bin/python3
+  scriptPathW: D:/算法/核心代码/RepareSuanFaForJavaNo3D.py
+  scriptPathL: /mnt/sdc/fsk/RepareSuanFaForJavaNo3D.py
+  method: 1
+  windowsFileBasePath: D:/算法/点云文件/
+  linuxFileBasePath: /mnt/sdc/fsk/temp/
+
+

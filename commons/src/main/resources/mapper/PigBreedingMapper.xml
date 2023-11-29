@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigBreedingMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigBreeding">
+        <!--@Table pig_breeding-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="pig_house_id" jdbcType="BIGINT" property="pigHouseId"/>
+        <result column="pig_house_columns_id" jdbcType="BIGINT" property="pigHouseColumnsId"/>
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId"/>
+        <result column="ear_number" jdbcType="VARCHAR" property="earNumber"/>
+        <result column="approach_time" jdbcType="DATE" property="approachTime"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="approach_fetal" jdbcType="INTEGER" property="approachFetal"/>
+        <result column="approach_type" jdbcType="INTEGER" property="approachType"/>
+        <result column="birth_date" jdbcType="DATE" property="birthDate"/>
+        <result column="presence_status" jdbcType="INTEGER" property="presenceStatus"/>
+        <result column="pig_status" jdbcType="INTEGER" property="pigStatus"/>
+        <result column="status_time" jdbcType="DATE" property="statusTime"/>
+        <result column="variety" jdbcType="INTEGER" property="variety"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="weight" jdbcType="DECIMAL" property="weight"/>
+        <result column="parity" jdbcType="INTEGER" property="parity"/>
+        <result column="back_fat_record_id" jdbcType="BIGINT" property="backFatRecordId"/>
+        <result column="back_fat" jdbcType="INTEGER" property="backFat"/>
+        <result column="back_fat_check_time" jdbcType="TIMESTAMP" property="backFatCheckTime"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, operator_id, ear_number, approach_time, `type`, approach_fetal,
+        approach_type, pig_house_id, pig_house_columns_id, birth_date, presence_status, pig_status, status_time,
+        variety, price, weight, parity, back_fat_record_id, back_fat, back_fat_check_time,
+        del, remark, create_by, update_by, create_time, update_time
+    </sql>
+
+    <select id="page" resultType="com.zmu.cloud.commons.vo.PigBreedingListVO">
+        select b.id,
+               b.ear_number                             earNumber,
+               b.variety,
+               b.approach_type                          approachType,
+               b.approach_fetal                         approachFetal,
+               timestampdiff(DAY, b.birth_date, now())  dayAge,
+               b.presence_status                        presenceStatus,
+               b.pig_status                             pigStatus,
+               timestampdiff(DAY, b.status_time, now()) statusDay,
+               ph.id                                    pigHouseId,
+               ph.name                                  pigHouse,
+               ph.type                                  pigHouseType,
+               phr.name                                 pigRows,
+               phc.name                                 pigColumns,
+               phc.position                             position,
+               b.pig_house_columns_id                   pigHouseColumnsId,
+               b.weight,
+               b.approach_time                          approachTime,
+               b.status_time                            statusTime,
+               b.remark,
+               b.parity,
+               b.type
+        from pig_breeding b
+                     left join pig_house_columns phc on b.pig_house_columns_id = phc.id
+                     left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                     left join pig_house ph on b.pig_house_id = ph.id
+        <where>
+            <if test="earNumber != null and earNumber != ''">
+                and b.ear_number like concat('%', #{earNumber}, '%')
+            </if>
+            <if test="pigHouseId != null">
+                and b.pig_house_id = #{pigHouseId}
+            </if>
+            <if test="statuses != null">
+                and b.pig_status IN
+                <foreach collection="statuses" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="type != null">
+                and b.type = #{type,jdbcType=INTEGER}
+            </if>
+            <if test="presenceStatus != null">
+                and b.presence_status = #{presenceStatus,jdbcType=INTEGER}
+            </if>
+            and b.del = 0
+            order by b.create_time desc
+        </where>
+    </select>
+
+    <select id="queryById" resultType="com.zmu.cloud.commons.vo.PigBreedingListVO">
+        select b.id,
+               b.ear_number                                        earNumber,
+               b.variety,
+               b.approach_type                                     approachType,
+               b.approach_fetal                                    approachFetal,
+               timestampdiff(DAY, b.birth_date, now())             dayAge,
+               b.presence_status                                   presenceStatus,
+               b.pig_status                                        pigStatus,
+               ifnull(timestampdiff(DAY, b.status_time, now()), 0) statusDay,
+               b.pig_house_columns_id                              pigHouseColumnsId,
+               b.birth_date                                        birthDate,
+               b.weight,
+               b.price,
+               b.approach_time                                     approachTime,
+               b.status_time                                       statusTime,
+               ph.name                                             pigHouse,
+               ph.type                                             pigHouseType,
+               ph.id                                               pigHouseId,
+               phr.name                                            pigRows,
+               phr.id                                              pigRowsId,
+               phc.name                                            pigColumns,
+               phc.position                                        position,
+               b.type,
+               b.remark,
+               b.parity,
+               b.operator_id                                       operatorId,
+               b.back_fat                                          backFat,
+               concat(phc.client_id, '-', phc.feeder_code)         feederCode
+        from pig_breeding b
+                     left join pig_house_columns phc on b.pig_house_columns_id = phc.id
+                     left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                     left join pig_house ph on b.pig_house_id = ph.id
+        where b.id = #{id,jdbcType=BIGINT}
+          and b.del = 0
+    </select>
+
+    <select id="statistics" resultType="com.zmu.cloud.commons.vo.PigBreedingStatisticsVO">
+        SELECT (select COUNT(id) FROM pig_mating p WHERE p.pig_breeding_id = b.id) AS matingNumber,
+               (SELECT COUNT(id)
+                FROM pig_pregnancy pre
+                WHERE pre.pig_breeding_id = b.id
+                  AND pre.pregnancy_result = 2)                                       abortionsNumber,
+               (SELECT COUNT(id)
+                FROM pig_pregnancy pre
+                WHERE pre.pig_breeding_id = b.id
+                  AND pre.pregnancy_result = 3)                                       returnNumber,
+               IFNULL((SELECT SUM(l.healthy_number + l.weak_number + l.deformity_number) / COUNT(id)
+                       FROM pig_labor l
+                       WHERE l.pig_breeding_id = b.id), 0)                            avgLitterLiveNumber,
+               (SELECT COUNT(id) FROM pig_weaned w WHERE w.pig_breeding_id = b.id)    weaningNumber,
+               (SELECT COUNT(id) FROM pig_labor l WHERE l.pig_breeding_id = b.id)     laborNumber,
+               (SELECT SUM(l.healthy_number + l.weak_number + l.deformity_number + l.mummy_number + l.dead_number)
+                FROM pig_labor l
+                WHERE l.pig_breeding_id = b.id)                                       totalLitterNumber,
+               (SELECT SUM(l.healthy_number + l.weak_number + l.deformity_number)
+                FROM pig_labor l
+                WHERE l.pig_breeding_id = b.id)                                       laborLiveNumber,
+               IFNULL((SELECT SUM(l.healthy_number + l.weak_number + l.deformity_number + l.mummy_number +
+                                  l.dead_number) / COUNT(id)
+                       FROM pig_labor l
+                       WHERE l.pig_breeding_id = b.id), 0)                            avgLitterNumber,
+               IFNULL((SELECT SUM(w.weaned_weight) / SUM(w.weaned_number)
+                       from pig_weaned w
+                       WHERE w.pig_breeding_id = b.id), 0)                            avgLitterWeightNumber,
+               IFNULL((SELECT SUM(w.weaned_number) / count(id) from pig_weaned w WHERE w.pig_breeding_id = b.id),
+                      0)                                                              avgWeaningNumber
+        FROM pig_breeding b
+        WHERE id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="count" resultType="com.zmu.cloud.commons.dto.PigStockDTO">
+        SELECT (select COUNT(b.id)
+                FROM pig_breeding b
+                WHERE b.pig_house_columns_id = #{pigHouseColumnsId,jdbcType=BIGINT}
+                  AND b.presence_status = 1 and b.del = 0)
+                       +
+               (IFNULL((SELECT sum(p.pork_number)
+                        FROM pig_pork_stock p
+                        WHERE p.pig_house_columns_id = #{pigHouseColumnsId,jdbcType=BIGINT}
+                          AND p.`type` = 1),
+                       0)) AS total
+                ,
+               t.maxPerColumns,
+               t.pigHouse,
+               t.pigRows,
+               t.pigColumns
+        FROM (SELECT ph.max_per_columns maxPerColumns,
+                     ph.name            pigHouse,
+                     phr.name           pigRows,
+                     phc.name           pigColumns
+              FROM pig_house_columns phc
+                           left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                           left join pig_house ph on phr.pig_house_id = ph.id
+              WHERE phc.id = #{pigHouseColumnsId,jdbcType=BIGINT}) t
+    </select>
+
+    <select id="event" resultType="com.zmu.cloud.commons.vo.EventPigBreedingListVO">
+        select b.ear_number                             earNumber,
+               b.variety,
+               b.approach_type                          approachType,
+               b.approach_fetal                         approachFetal,
+               timestampdiff(DAY, b.birth_date, now())  dayAge,
+               b.presence_status                        presenceStatus,
+               b.pig_status                             pigStatus,
+               timestampdiff(DAY, b.status_time, now()) statusDay,
+               b.pig_house_columns_id                   pigHouseColumnsId,
+               b.weight,
+               b.approach_time                          approachTime,
+               b.status_time                            statusTime,
+               ph.name                                  pigHouse,
+               phr.name                                 pigRows,
+               phc.name                                 pigColumns,
+               phc.position,
+               b.remark,
+               b.parity,
+               b.create_time                            createTime,
+               u.real_name                              operatorName,
+               b.type
+        from pig_breeding b
+                     left join pig_house_columns phc on b.pig_house_columns_id = phc.id
+                     left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                     left join pig_house ph on b.pig_house_id = ph.id
+                     left join sys_user u on u.id = b.operator_id
+        <where>
+            <if test="earNumber != null and earNumber != ''">
+                and b.ear_number like concat('%', #{earNumber,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+                and b.approach_time BETWEEN #{startTime,jdbcType=VARCHAR} AND #{endTime,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by b.approach_time desc
+    </select>
+
+    <select id="selectByEarNumber" resultType="com.zmu.cloud.commons.vo.PigBreedingListWebVO">
+        select b.ear_number                            earNumber,
+               timestampdiff(DAY, b.birth_date, now()) dayAge,
+               b.presence_status                       presenceStatus,
+               b.type,
+               b.pig_status                            pigStatus,
+               b.id,
+               ph.name                                 pigHouse,
+               phr.name                                pigRows,
+               phc.name                                pigColumns,
+               phc.position
+        from pig_breeding b
+                     left join pig_house_columns phc on b.pig_house_columns_id = phc.id
+                     left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                     left join pig_house ph on b.pig_house_id = ph.id
+        <where>
+            <if test="earNumber != null and earNumber != ''">
+                and b.ear_number like concat('%', #{earNumber,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="type != null">
+                and b.type = #{type,jdbcType=INTEGER}
+            </if>
+            <if test="pigStatuses != null">
+                and pig_status IN
+                <foreach collection="pigStatuses" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            and b.presence_status = 1
+            and b.del = 0
+        </where>
+        order by b.create_time desc
+    </select>
+
+    <select id="selectByTypeId" resultType="com.zmu.cloud.commons.vo.PigBreedingArchivesListVO">
+        select b.ear_number earNumber,
+               b.pig_status pigStatus,
+               ph.name      pigHouse,
+               phr.name     pigRows,
+               phc.name     pigColumns,
+               b.id,
+               b.back_fat   backFat,
+               phc.position
+        from pig_breeding b
+                     left join pig_house_columns phc on b.pig_house_columns_id = phc.id
+                     left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                     left join pig_house ph on b.pig_house_id = ph.id
+        LEFT JOIN (
+        SELECT
+        a.id AS 'aid',
+        (
+        CASE
+        WHEN IFNULL(a.status_time,0) <![CDATA[ > ]]> IFNULL(a.update_time,0) THEN
+        a.status_time
+        WHEN IFNULL(a.status_time,0) <![CDATA[ < ]]> IFNULL(a.update_time,0) THEN
+        a.update_time
+        WHEN ( IFNULL(a.status_time,0) = IFNULL(a.update_time,0) AND a.status_time is not NULL ) THEN
+        a.status_time
+        WHEN ( a.update_time is NULL AND a.status_time is NULL ) THEN
+        a.create_time
+        ELSE NULL
+        END
+        ) AS 'endTime'
+        FROM
+        pig_breeding a
+        ) c ON c.aid = b.id
+        <where>
+            <if test="earNumber != null and earNumber != ''">
+                and b.ear_number like concat('%', #{earNumber,jdbcType=VARCHAR}, '%')
+            </if>
+            and b.type = #{type,jdbcType=INTEGER}
+            and b.presence_status = 1
+            and b.del = 0
+            <if test="loseTime != null and loseTime != ''">
+                and IFNULL(c.endTime,0) <![CDATA[ < ]]> #{loseTime,jdbcType=VARCHAR}
+            </if>
+        </where>
+
+        order by b.create_time desc
+    </select>
+
+    <select id="selectByPigStatus" resultType="com.zmu.cloud.commons.vo.PigBreedingStatusVO">
+        select id, parity, company_id companyId, pig_farm_id pigFarmId
+        from pig_breeding
+        <where>
+            <if test="differenceDay != null">
+                case
+                    when parity <![CDATA[ <= ]]> 0 then timestampdiff(DAY, birth_date, NOW()) >= #{differenceDay}
+                    when parity <![CDATA[ > ]]> 0 then timestampdiff(DAY, status_time, NOW()) >= #{differenceDay}
+                end
+            </if>
+            and del = 0
+            and pig_status = #{pigStatus}
+            and type = 2
+            and presence_status = 1
+            and company_id = #{companyId,jdbcType=BIGINT}
+        </where>
+    </select>
+
+    <select id="selectByListPigStatus" resultType="com.zmu.cloud.commons.vo.PigBreedingStatusVO">
+        select id, parity, company_id companyId, pig_farm_id pigFarmId
+        from pig_breeding
+        <where>
+            <if test="pigStatus != null">
+                and pig_status IN
+                <foreach collection="pigStatus" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            and del = 0
+            and type = 2
+            and presence_status = 1
+            and company_id = #{companyId,jdbcType=BIGINT}
+        </where>
+    </select>
+
+    <select id="boarList" resultType="com.zmu.cloud.commons.vo.PigBreedingBoarListVO">
+        select id, ear_number earNumber
+        from pig_breeding
+        where type = 1
+          and presence_status = 1
+          and del = 0
+    </select>
+
+    <select id="summary" resultType="com.zmu.cloud.commons.vo.FarmStatisticSummaryVO">
+        SELECT (SELECT COUNT(1)
+                FROM pig_breeding pb
+                WHERE pb.del = '0'
+                  AND pb.presence_status = 1
+                  AND pb.type = 1)                                                                                  boar,
+               (SELECT COUNT(1) FROM pig_breeding pb WHERE pb.del = '0' AND pb.presence_status = 1 AND pb.type = 2) sow,
+               (SELECT IFNULL(SUM(pp.number), 0)
+                FROM pig_piggy pp
+                WHERE pp.del = '0')                                                                                 piggy,
+               (SELECT IFNULL(SUM(pps.pork_number), 0)
+                FROM pig_pork_stock pps
+                WHERE pps.del = '0'
+                  AND pps.type = 1)                                                                                 pork
+    </select>
+
+    <select id="sowNumList" resultType="com.zmu.cloud.commons.vo.FarmStatisticSummaryVO$Num">
+        SELECT COUNT(IF(pb.type = 2, 1, null)) num,
+               pb.pig_status                   `status`
+        FROM pig_breeding pb
+        WHERE pb.del = '0'
+          and pb.presence_status = 1
+        GROUP BY pb.pig_status
+    </select>
+
+    <select id="npd" resultType="java.math.BigDecimal">
+        select convert((SELECT SUM(IFNULL(t.days, #{maxDays}))
+                        FROM pig_breeding pb
+                                     LEFT JOIN (
+                                SELECT pd.pig_breeding_id,
+                                       pd.`month`,
+                                       #{maxDays} - IFNULL(SUM(pd.days), 0) days
+                                FROM production_day pd
+                                WHERE pd.del = '0'
+                                  and pd.company_id = #{companyId}
+                                  and pd.pig_farm_id = #{pigFarmId}
+                                  and pd.`year` = #{year}
+                                  AND pd.`month` = #{m}
+                                GROUP BY pd.pig_breeding_id
+                                ) t ON t.pig_breeding_id = pb.id
+                        WHERE pb.type = 2
+                          and pb.del = '0'
+                          and pb.company_id = #{companyId}
+                          and pb.pig_farm_id = #{pigFarmId}
+                          and (DATE_FORMAT(pb.approach_time, '%m') + 0) &lt; (#{m} + 1)) / (
+                               SELECT COUNT(1)
+                               FROM pig_breeding pb
+                               WHERE pb.type = 2
+                                 AND pb.del = '0'
+                                 and pb.company_id = #{companyId}
+                                 and pb.pig_farm_id = #{pigFarmId}
+                                 AND (DATE_FORMAT(pb.approach_time, '%m') + 0) &lt;
+                                     (#{m} + 1)
+                               ), DECIMAL(18, 2))
+    </select>
+
+    <select id="yearAvgParity" resultType="int">
+        SELECT IFNULL(SUM(pd.days), 0)
+        FROM production_day pd
+        WHERE pd.del = '0'
+          and pd.year = #{year}
+    </select>
+
+    <select id="listScore" resultType="com.zmu.cloud.commons.vo.FarmStatisticSowPsyVO">
+        select pb.ear_number                                         earNumber,
+               pb.variety,
+               house.position,
+               pm.mating,
+               pp.abortion,
+               pp.returns,
+               pp.`empty`,
+               pl.labor,
+               pl.liveTotal,
+               pw.weanedTotal,
+               pw.weanedAvg,
+               parity.parity,
+               convert(parity.parity * pw.weanedAvg, DECIMAL(18, 2)) psy
+        from pig_breeding pb
+                     LEFT JOIN (
+                SELECT CONCAT(ph.`name`, '-', phr.`code`, '-', phc.`code`) `name`,
+                       phc.position,
+                       phc.id
+                FROM pig_house ph
+                             INNER JOIN pig_house_rows phr ON phr.pig_house_id = ph.id
+                             INNER JOIN pig_house_columns phc ON phc.pig_house_rows_id = phr.id
+                WHERE ph.del = '0'
+                  AND phr.del = '0'
+                  AND phc.del = '0'
+                ) house ON house.id = pb.pig_house_columns_id
+                     left join (
+                select count(pm.pig_breeding_id) mating, pm.pig_breeding_id
+                from pig_mating pm
+                where pm.del = '0'
+                group by pm.pig_breeding_id
+                ) pm on pm.pig_breeding_id = pb.id
+                     left join (
+                select pp.pig_breeding_id,
+                       count(if(pp.pregnancy_result = 2, 1, null)) abortion,
+                       count(if(pp.pregnancy_result = 3, 1, null)) `returns`,
+                       count(if(pp.pregnancy_result = 4, 1, null)) `empty`
+                from pig_pregnancy pp
+                where pp.del = '0'
+                  and pp.pregnancy_result in (2, 3, 4)
+                group by pp.pig_breeding_id
+                ) pp on pp.pig_breeding_id = pb.id
+                     left join (
+                select pl.pig_breeding_id,
+                       count(1)                            labor,
+                       SUM(IFNULL(pl.healthy_number, 0) + IFNULL(pl.weak_number, 0) +
+                           IFNULL(pl.deformity_number, 0)) liveTotal
+                from pig_labor pl
+                where pl.del = '0'
+                group by pl.pig_breeding_id
+                ) pl on pl.pig_breeding_id = pb.id
+                     left join (
+                SELECT pw.pig_breeding_id,
+                       SUM(
+                               IFNULL(pw.weaned_number, 0))                                       weanedTotal,
+                       convert(IFNULL(SUM(pw.weaned_number), 0) / MAX(pw.parity), DECIMAL(18, 2)) weanedAvg
+                FROM pig_weaned pw
+                WHERE pw.del = '0'
+                GROUP BY pw.pig_breeding_id
+                ) pw on pw.pig_breeding_id = pb.id
+                     left join (
+                SELECT convert(TIMESTAMPDIFF(DAY, min(pl.labor_date), max(pl.labor_date)) / 365 /
+                               max(pl.parity), DECIMAL(18, 2))
+                               parity,
+                       pl.pig_breeding_id
+                FROM pig_labor pl
+                WHERE pl.del = '0'
+                GROUP BY pl.pig_breeding_id
+                ) parity on parity.pig_breeding_id = pb.id
+                where pb.del = '0'
+        <if test="earNumber != null and earNumber != ''">
+            and pb.ear_number = #{earNumber}
+        </if>
+        order by pb.id
+    </select>
+
+    <select id="selectExistNumber" resultType="string">
+        SELECT a.ear_number FROM pig_breeding a WHERE a.del = '0' AND a.ear_number IN
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="findByCol" parameterType="long" resultMap="BaseResultMap">
+        select * from pig_breeding where pig_house_columns_id = #{id} order by ear_number
+    </select>
+
+    <select id="pigBreedingLoseList" resultType="com.zmu.cloud.commons.vo.PigBreedingLoseVo">
+        SELECT
+        p.ear_number AS 'earNumber',
+        p.type AS 'type',
+        p.pig_status AS 'pigStatus',
+        p.status_time AS 'statusTime'
+        FROM
+        pig_breeding p
+        LEFT JOIN (
+        SELECT
+        a.id AS 'aid',
+        (
+        CASE
+        WHEN IFNULL(a.status_time,0) <![CDATA[ > ]]> IFNULL(a.update_time,0) THEN
+        a.status_time
+        WHEN IFNULL(a.status_time,0) <![CDATA[ < ]]> IFNULL(a.update_time,0) THEN
+                             a.update_time
+        WHEN ( IFNULL(a.status_time,0) = IFNULL(a.update_time,0) AND a.status_time is not NULL ) THEN
+        a.status_time
+        WHEN ( a.update_time is NULL AND a.status_time is NULL ) THEN
+        a.create_time
+        ELSE NULL
+        END
+        ) AS 'endTime'
+        FROM
+        pig_breeding a
+        ) b ON b.aid = p.id
+        WHERE
+        p.del = '0'
+        AND TIMESTAMPDIFF( DAY, b.endTime, NOW( ) ) > 365
+    </select>
+</mapper>

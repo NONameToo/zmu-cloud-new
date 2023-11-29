@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigPorkStockMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigPorkStock">
+        <!--@mbg.generated-->
+        <!--@Table pig_pork_stock-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="pig_house_columns_id" jdbcType="BIGINT" property="pigHouseColumnsId"/>
+        <result column="pig_group_id" jdbcType="BIGINT" property="pigGroupId"/>
+        <result column="pork_number" jdbcType="INTEGER" property="porkNumber"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="birth_date" jdbcType="TIMESTAMP" property="birthDate"/>
+        <result column="pig_house_id" jdbcType="BIGINT" property="pigHouseId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, pig_house_columns_id, pork_number, `type`, del, remark,pig_group_id,
+        create_by, update_by, create_time, update_time, pig_house_id, birth_date
+    </sql>
+
+    <select id="page" resultType="com.zmu.cloud.commons.vo.PigPorkStockListVO">
+        select p.id,
+               p.pork_number                                                   porkNumber,
+               phc.name                                                        pigColumns,
+               phr.name                                                        pigRows,
+               ph.name                                                         pigHouse,
+               ph.id                                                         pigHouseId,
+               timestampdiff(DAY, pp.birth_date, now())  dayAge,
+               pg.name                                                         groupName,
+               pg.id                                                         groupId,
+               pp.approach_time                                               approachTime,
+               phc.position
+        from pig_pork_stock p
+                 left join pig_house_columns phc on p.pig_house_columns_id = phc.id
+                 left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+                 left join pig_house ph on p.pig_house_id = ph.id
+                 left join pig_group pg on p.pig_group_id = pg.id
+                 left join pig_pork pp on pp.stock_id = p.id
+        <where>
+            p.type = 1
+            <if test="pigHouseId != null and pigHouseId != ''">
+                and ph.id = #{pigHouseId,jdbcType=BIGINT}
+            </if>
+
+            <if test="pigHouseColumnId != null and pigHouseColumnId != ''">
+                and p.pig_house_columns_id = #{pigHouseColumnId,jdbcType=BIGINT}
+            </if>
+
+
+            <if test="pigHouseRowId != null and pigHouseRowId != ''">
+                and phc.pig_house_rows_id = #{pigHouseRowId,jdbcType=BIGINT}
+            </if>
+
+            <if test="pigGroupId != null">
+                and pg.id = #{pigGroupId,jdbcType=BIGINT}
+            </if>
+            <if test="pigGroupName != null">
+                and pg.name like concat('%', #{pigGroupName,jdbcType=VARCHAR}, '%')
+            </if>
+            and p.del = 0
+            and p.pork_number != 0
+        </where>
+    </select>
+
+    <select id="statisticsSummaryVO" resultType="com.zmu.cloud.commons.vo.HomeStatisticsSummaryVO">
+        SELECT (SELECT COUNT(id) FROM pig_breeding b WHERE b.presence_status = 1 and b.pig_farm_id = #{pigFarmId,jdbcType=BIGINT} AND b.del = 0 AND b.type = 2) AS sow,
+               (SELECT COUNT(id) FROM pig_breeding b WHERE b.presence_status = 1 and b.pig_farm_id = #{pigFarmId,jdbcType=BIGINT} AND b.del = 0 AND b.type = 1) AS boar,
+               (SELECT ifnull(SUM(p.pork_number), 0) FROM pig_pork_stock p WHERE p.del = 0 and p.pig_farm_id = #{pigFarmId,jdbcType=BIGINT} and p.type = 1)     AS pork,
+               (SELECT ifnull(SUM(py.number), 0) FROM pig_piggy py WHERE py.del = 0 and py.pig_farm_id = #{pigFarmId,jdbcType=BIGINT})                          AS piggy
+    </select>
+
+    <select id="lastStatisticsSummaryVO" resultType="com.zmu.cloud.commons.vo.HomeStatisticsSummaryVO">
+        SELECT (SELECT COUNT(id)
+                FROM pig_breeding b
+                WHERE b.presence_status = 1
+                  AND b.del = 0
+                  AND b.type = 1
+                  and b.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                  and b.create_time  <![CDATA[<]]> #{dateTime,jdbcType=VARCHAR})  AS sow,
+               (SELECT COUNT(id)
+                FROM pig_breeding b
+                WHERE b.presence_status = 1
+                  AND b.del = 0
+                  AND b.type = 2
+                  and b.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                  and b.create_time  <![CDATA[<]]> #{dateTime,jdbcType=VARCHAR})  AS boar,
+               (SELECT IFNULL(SUM(p.pork_number), 0)
+                FROM pig_pork_stock p
+                WHERE p.del = 0
+                  and p.type = 1
+                  and p.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                  and p.create_time  <![CDATA[<]]> #{dateTime,jdbcType=VARCHAR})  AS pork,
+               (SELECT IFNULL(SUM(py.number), 0)
+                FROM pig_piggy py
+                WHERE py.del = 0
+                  and py.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                  and py.create_time  <![CDATA[<]]> #{dateTime,jdbcType=VARCHAR}) AS piggy
+    </select>
+
+    <select id="production" resultType="com.zmu.cloud.commons.vo.HomeProductionVO">
+        select(select count(*)
+               from pig_mating m
+               where m.del = 0
+                 and m.company_id = #{companyId,jdbcType=BIGINT}
+                 and m.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                 and date_format(m.mating_date, '%Y-%m-%d') = date_format(sysdate(), '%Y-%m-%d'))  AS mating,
+              (SELECT COUNT(*)
+               FROM pig_labor b
+               WHERE b.del = 0
+                 and b.company_id = #{companyId,jdbcType=BIGINT}
+                 and b.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                 and date_format(b.labor_date, '%Y-%m-%d') = date_format(sysdate(), '%Y-%m-%d'))   AS nest,
+              (SELECT IFNULL(SUM(w.weaned_number), 0)
+               FROM pig_weaned w
+               WHERE w.del = 0
+                 and w.company_id = #{companyId,jdbcType=BIGINT}
+                 and w.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                 and date_format(w.weaned_date, '%Y-%m-%d') = date_format(sysdate(), '%Y-%m-%d'))  AS weaned,
+              (SELECT COUNT(*)
+               FROM pig_breeding_leave l
+               WHERE l.del = 0
+                 AND l.type = 1
+                 and l.company_id = #{companyId,jdbcType=BIGINT}
+                 and l.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                 and date_format(l.leave_time, '%Y-%m-%d') = date_format(sysdate(), '%Y-%m-%d')) +
+              (SELECT IFNULL(sum(le.number), 0)
+               FROM pig_piggy_leave le
+               WHERE le.del = 0
+                 AND le.type = 1
+                 and le.company_id = #{companyId,jdbcType=BIGINT}
+                 and le.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                 and date_format(le.leave_time, '%Y-%m-%d') = date_format(sysdate(), '%Y-%m-%d')) +
+              (SELECT IFNULL(sum(lea.number), 0)
+               FROM pig_pork_leave lea
+               WHERE lea.del = 0
+                 AND lea.type = 1
+                 and lea.company_id = #{companyId,jdbcType=BIGINT}
+                 and lea.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                 and date_format(lea.leave_time, '%Y-%m-%d') = date_format(sysdate(), '%Y-%m-%d')) AS dead,
+              ifnull((SELECT ifnull(SUM(bo.weak_number), 0) + ifnull(SUM(bo.healthy_number), 0) +
+                             ifnull(SUM(bo.deformity_number), 0)
+                      FROM pig_labor bo
+                      WHERE bo.del = 0
+                        and bo.company_id = #{companyId,jdbcType=BIGINT}
+                        and bo.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                        and date_format(bo.labor_date, '%Y-%m-%d') = date_format(sysdate(), '%Y-%m-%d')) /
+                     (SELECT COUNT(id)
+                      FROM pig_labor b
+                      WHERE b.del = 0
+                        and b.company_id = #{companyId,jdbcType=BIGINT}
+                        and b.pig_farm_id = #{pigFarmId,jdbcType=BIGINT}
+                        and date_format(b.labor_date, '%Y-%m-%d') = date_format(sysdate(), '%Y-%m-%d')),
+                     0)                                                                            AS translate
+    </select>
+
+    <select id="wantGoOutCount" parameterType="long" resultType="integer">
+        SELECT COUNT(*) from (SELECT
+	timestampdiff( DAY, p.birth_date, NOW( ) ) dayAge
+FROM
+	pig_pork_stock p
+WHERE
+	p.del = '0'
+	and p.pork_number != 0
+	and p.type = 1
+HAVING
+	dayAge &gt;= #{dayAge}) temp
+    </select>
+
+    <select id="hogCount" resultType="integer">
+        SELECT
+	sum( pork_number )
+    FROM
+	pig_pork_stock
+    WHERE
+	del = '0' and type = 1
+    </select>
+
+    <select id="wantGoOut" resultType="com.zmu.cloud.commons.vo.PigPorkStockListVO">
+        select p.id,
+        p.pork_number                                                   porkNumber,
+        phc.name                                                        pigColumns,
+        phr.name                                                        pigRows,
+        ph.name                                                         pigHouse,
+        ph.id                                                         pigHouseId,
+        timestampdiff(DAY, pp.birth_date, now())  dayAge,
+        pg.name                                                         groupName,
+        pg.id                                                         groupId,
+        pp.approach_time                                               approachTime,
+        pp.birth_date                               birthDate,
+        phc.position
+        from pig_pork_stock p
+        left join pig_house_columns phc on p.pig_house_columns_id = phc.id
+        left join pig_house_rows phr on phc.pig_house_rows_id = phr.id
+        left join pig_house ph on p.pig_house_id = ph.id
+        left join pig_group pg on p.pig_group_id = pg.id
+        left join pig_pork pp on pp.stock_id = p.id
+        <where>
+            p.type = 1
+            <if test="pigHouseId != null and pigHouseId != ''">
+                and ph.id = #{pigHouseId,jdbcType=BIGINT}
+            </if>
+
+            <if test="pigHouseColumnId != null and pigHouseColumnId != ''">
+                and p.pig_house_columns_id = #{pigHouseColumnId,jdbcType=BIGINT}
+            </if>
+
+
+            <if test="pigHouseRowId != null and pigHouseRowId != ''">
+                and phc.pig_house_rows_id = #{pigHouseRowId,jdbcType=BIGINT}
+            </if>
+
+            <if test="pigGroupId != null">
+                and pg.id = #{pigGroupId,jdbcType=BIGINT}
+            </if>
+            <if test="pigGroupName != null">
+                and pg.name like concat('%', #{pigGroupName,jdbcType=VARCHAR}, '%')
+            </if>
+            and p.del = 0
+            and p.pork_number != 0
+        </where>
+        <if test="dayAge != null">
+            having dayAge &gt;= #{dayAge}
+        </if>
+        order by pp.approach_time desc
+    </select>
+</mapper>

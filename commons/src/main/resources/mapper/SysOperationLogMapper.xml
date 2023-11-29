@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.SysOperationLogMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.admin.SysOperationLog">
+        <!--@mbg.generated-->
+        <!--@Table sys_operation_log-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="business_type" jdbcType="VARCHAR" property="businessType"/>
+        <result column="method" jdbcType="VARCHAR" property="method"/>
+        <result column="request_method" jdbcType="VARCHAR" property="requestMethod"/>
+        <result column="oper_name" jdbcType="VARCHAR" property="operName"/>
+        <result column="dept_name" jdbcType="VARCHAR" property="deptName"/>
+        <result column="oper_url" jdbcType="VARCHAR" property="operUrl"/>
+        <result column="oper_ip" jdbcType="VARCHAR" property="operIp"/>
+        <result column="oper_location" jdbcType="VARCHAR" property="operLocation"/>
+        <result column="oper_param" jdbcType="VARCHAR" property="operParam"/>
+        <result column="json_result" jdbcType="LONGVARCHAR" property="jsonResult"/>
+        <result column="client_type" jdbcType="VARCHAR" property="clientType"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="error_msg" jdbcType="VARCHAR" property="errorMsg"/>
+        <result column="oper_time" jdbcType="TIMESTAMP" property="operTime"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, title, business_type, `method`, request_method, oper_name,
+        dept_name, oper_url, oper_ip, oper_location, oper_param, json_result,client_type, `status`, error_msg,
+        oper_time, del, remark, create_by, update_by, create_time, update_time
+    </sql>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_operation_log
+        <where>
+            del = false
+            <if test="name != null and name != ''">
+                and title like concat('%', #{name}, '%')
+            </if>
+            <if test="operator != null and operator != ''">
+                and oper_name like concat('%', #{operator}, '%')
+            </if>
+            <if test="ip != null and ip != ''">
+                and oper_ip = #{ip}
+            </if>
+            <if test="location != null and location != ''">
+                and oper_location like concat('%', #{location}, '%')
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="startTime != null and endTime != null">
+                and oper_time between #{startTime} and #{endTime}
+            </if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

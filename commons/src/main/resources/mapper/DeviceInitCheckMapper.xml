@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.DeviceInitCheckMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.DeviceInitCheck">
+    <!--@mbg.generated-->
+    <!--@Table device_init_check-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="tower_id" jdbcType="BIGINT" property="towerId" />
+    <result column="device_num" jdbcType="VARCHAR" property="deviceNum" />
+    <result column="check_count" jdbcType="INTEGER" property="checkCount" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="volume" jdbcType="BIGINT" property="volume" />
+    <result column="check_status" jdbcType="INTEGER" property="checkStatus" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="handle" jdbcType="INTEGER" property="handle" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="run_count" jdbcType="INTEGER" property="runCount" />
+    <result column="err_count" jdbcType="INTEGER" property="errCount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, tower_id, device_num, check_count, start_time, end_time, volume, check_status,
+    company_id, pig_farm_id, create_time, update_time, handle, remark, run_count, err_count
+  </sql>
+  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from device_init_check
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from device_init_check
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zmu.cloud.commons.entity.DeviceInitCheck" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into device_init_check (tower_id, device_num, check_count,
+      start_time, end_time, volume, check_status,
+      company_id, pig_farm_id, create_time, 
+      update_time, handle, remark, run_count, err_count)
+    values (#{towerId,jdbcType=BIGINT}, #{deviceNum,jdbcType=VARCHAR}, #{checkCount,jdbcType=INTEGER}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{volume,jdbcType=BIGINT}, 
+      #{checkStatus,jdbcType=INTEGER}, #{companyId,jdbcType=BIGINT}, #{pigFarmId,jdbcType=BIGINT},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{handle,jdbcType=INTEGER},
+      #{remark,jdbcType=VARCHAR}, #{runCount,jdbcType=INTEGER}, #{errCount,jdbcType=INTEGER})
+  </insert>
+
+  <select id="list" parameterType="com.zmu.cloud.commons.entity.DeviceInitCheck" resultMap="BaseResultMap">
+    SELECT
+    t1.*
+    FROM
+    device_init_check t1
+    INNER JOIN ( SELECT MAX( id ) AS id FROM device_init_check GROUP BY device_num ) t2 ON t1.id = t2.id
+    where 1=1
+    <if test="checkStatus != null">
+      and t1.check_status = #{checkStatus,jdbcType=INTEGER}
+    </if>
+    <if test="deviceNum != null and deviceNum != ''">
+      and t1.device_num = #{deviceNum,jdbcType=VARCHAR}
+    </if>
+    order by t1.create_time desc
+
+  </select>
+
+  <select id="selectByIdIn" parameterType="long" resultMap="BaseResultMap">
+    SELECT
+    *
+    FROM
+    device_init_check
+    where id = #{initId}
+  </select>
+
+</mapper>

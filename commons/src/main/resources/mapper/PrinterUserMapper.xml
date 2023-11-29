@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PrinterUserMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PrinterUser">
+    <!--@mbg.generated-->
+    <!--@Table printer_user-->
+    <id column="user_id" jdbcType="BIGINT" property="userId" />
+    <id column="printer_id" jdbcType="BIGINT" property="printerId" />
+    <result column="is_default" jdbcType="INTEGER" property="isDefault" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    user_id, printer_id, is_default
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from printer_user
+    where user_id = #{userId,jdbcType=BIGINT}
+      and printer_id = #{printerId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    <!--@mbg.generated-->
+    delete from printer_user
+    where user_id = #{userId,jdbcType=BIGINT}
+      and printer_id = #{printerId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.zmu.cloud.commons.entity.PrinterUser">
+    <!--@mbg.generated-->
+    insert into printer_user (user_id, printer_id, is_default
+      )
+    values (#{userId,jdbcType=BIGINT}, #{printerId,jdbcType=BIGINT}, #{isDefault,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zmu.cloud.commons.entity.PrinterUser">
+    <!--@mbg.generated-->
+    insert into printer_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="printerId != null">
+        printer_id,
+      </if>
+      <if test="isDefault != null">
+        is_default,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="printerId != null">
+        #{printerId,jdbcType=BIGINT},
+      </if>
+      <if test="isDefault != null">
+        #{isDefault,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zmu.cloud.commons.entity.PrinterUser">
+    <!--@mbg.generated-->
+    update printer_user
+    <set>
+      <if test="isDefault != null">
+        is_default = #{isDefault,jdbcType=INTEGER},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=BIGINT}
+      and printer_id = #{printerId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zmu.cloud.commons.entity.PrinterUser">
+    <!--@mbg.generated-->
+    update printer_user
+    set is_default = #{isDefault,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=BIGINT}
+      and printer_id = #{printerId,jdbcType=BIGINT}
+  </update>
+</mapper>

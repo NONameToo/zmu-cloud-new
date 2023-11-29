@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FarmFeedingStrategyRecordMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FarmFeedingStrategyRecord">
+    <!--@mbg.generated-->
+    <!--@Table farm_feeding_strategy_record-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="pig_type_id" jdbcType="BIGINT" property="pigTypeId" />
+    <result column="pig_type" jdbcType="BIGINT" property="pigType" />
+    <result column="name" jdbcType="BIGINT" property="name" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="storage_path" jdbcType="VARCHAR" property="storagePath" />
+    <result column="del" jdbcType="CHAR" property="del" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, pig_farm_id, pig_type_id, pig_type, name, operator_id, file_name, storage_path, del, remark, create_by,
+    update_by, create_time, update_time
+  </sql>
+
+</mapper>

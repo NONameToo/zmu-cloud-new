@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.PigPiggyMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.PigPiggy">
+        <!--@mbg.generated-->
+        <!--@Table pig_piggy-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="pig_house_id" jdbcType="BIGINT" property="pigHouseId"/>
+        <result column="pig_breeding_id" jdbcType="BIGINT" property="pigBreedingId"/>
+        <result column="number" jdbcType="INTEGER" property="number"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, pig_house_id, pig_breeding_id, `number`, del,
+        remark, create_by, update_by, create_time, update_time
+    </sql>
+
+    <select id="selectByList" resultType="com.zmu.cloud.commons.vo.PigPiggyListVO">
+        select p.id,
+           sow.sowNumber,
+           p.number,
+           ph.id   pigHouseId,
+           ph.name pigHouse
+    from pig_piggy p
+             left join pig_house ph on p.pig_house_id = ph.id
+             left join (select b.pig_house_id, count(*) sowNumber
+                    from pig_breeding b
+                    where b.pig_status = 7
+                      and b.presence_status = 1
+                      and b.del = '0'
+                    group by b.pig_house_id) sow on sow.pig_house_id = p.pig_house_id
+        <where>
+            <if test="pigHouseId != null">
+                and p.pig_house_id = #{pigHouseId,jdbcType=BIGINT}
+            </if>
+            <if test="pigHouseName != null">
+                and ph.name like concat('%', #{pigHouseName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="type == 0">
+                and p.number > 0
+            </if>
+            <if test="type == 1">
+                and sow.sowNumber > 0
+            </if>
+            and p.del = 0
+        </where>
+        order by find_in_set(ph.name,'一,二,三,四,五,六,七,八,九,十')
+    </select>
+</mapper>

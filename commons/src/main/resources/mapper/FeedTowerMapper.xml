@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FeedTowerMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FeedTower">
+    <!--@mbg.generated-->
+    <!--@Table feed_tower-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="device_no" jdbcType="VARCHAR" property="deviceNo" />
+    <result column="enable" jdbcType="INTEGER" property="enable" />
+    <result column="capacity" jdbcType="BIGINT" property="capacity" />
+    <result column="warning" jdbcType="INTEGER" property="warning" />
+    <result column="feed_type_id" jdbcType="BIGINT" property="feedTypeId" />
+    <result column="feed_type" jdbcType="VARCHAR" property="feedType" />
+    <result column="density" jdbcType="BIGINT" property="density" />
+    <result column="init" jdbcType="TINYINT" property="init" />
+    <result column="init_volume" jdbcType="BIGINT" property="initVolume" />
+    <result column="residual_volume" jdbcType="BIGINT" property="residualVolume" />
+    <result column="residual_weight" jdbcType="BIGINT" property="residualWeight" />
+    <result column="residual_date" jdbcType="TIMESTAMP" property="residualDate" />
+    <result column="house_type" jdbcType="INTEGER" property="houseType" />
+    <result column="houses" jdbcType="VARCHAR" property="houses" />
+    <result column="data_status" jdbcType="INTEGER" property="dataStatus" />
+    <result column="iccid" jdbcType="VARCHAR" property="iccid" />
+    <result column="init_time" jdbcType="TIMESTAMP" property="initTime" />
+    <result column="del" jdbcType="INTEGER" property="del" />
+    <result column="temp" jdbcType="INTEGER" property="temp" />
+    <result column="bd_optimization" jdbcType="INTEGER" property="bdOptimization" />
+    <result column="bd_weight" jdbcType="BIGINT" property="bdWeight" />
+    <result column="we_bd_weight" jdbcType="BIGINT" property="weBdWeight" />
+    <result column="gap_weight" jdbcType="BIGINT" property="gapWeight" />
+    <result column="correct_empty_tower_volume" jdbcType="BIGINT" property="correctEmptyTowerVolume" />
+    <result column="switch_feed_add_expansion" jdbcType="BIGINT" property="switchFeedAddExpansion" />
+    <result column="feed_add_expansion_value" jdbcType="DOUBLE" property="feedAddExpansionValue" />
+    <result column="bd_init_time" jdbcType="TIMESTAMP" property="bdInitTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, company_id, pig_farm_id, `name`, device_no, `enable`, capacity, warning, feed_type_id, 
+    feed_type, density, init, init_volume, residual_volume, residual_weight, residual_date, 
+    house_type, houses, data_status, iccid, init_time, del, `temp`, bd_optimization, 
+    bd_weight, we_bd_weight, gap_weight, correct_empty_tower_volume, switch_feed_add_expansion, 
+    feed_add_expansion_value, bd_init_time
+  </sql>
+
+
+  <select id="findByCompanyId" resultMap="BaseResultMap">
+    select * from feed_tower where del = 0 and company_id = #{companyId} and feed_type_id = #{feedTypeId}
+  </select>
+
+  <update id="updateFeedTypeById">
+    update feed_tower set feed_type_id = #{feedTypeId,jdbcType=BIGINT}, feed_type = #{feedType,jdbcType=VARCHAR},
+        density = #{density,jdbcType=BIGINT} ,residual_weight = #{residualWeight,jdbcType=BIGINT} where id = #{towerId,jdbcType=BIGINT}
+</update>
+
+  <select id="findTowerByFarmIdAndDeviceNo" resultMap="BaseResultMap">
+    select * from feed_tower where del = 0 and pig_farm_id = #{farmId}
+     <if test="deviceNo != null and deviceNo != ''">
+           and  device_no = #{deviceNo}
+    </if>
+  </select>
+
+  <select id="getCountByFarmId" parameterType="long" resultType="long">
+    select count(*) from feed_tower where del = 0 and temp != 1 and pig_farm_id = #{farmId}
+  </select>
+
+  <select id="getybdByFarmId" parameterType="long" resultMap="BaseResultMap">
+    select * from feed_tower where del = 0 and temp != 1 and pig_farm_id = #{farmId} and LENGTH(device_no) &gt; 0
+  </select>
+
+  <select id="getywbdByFarmId" parameterType="long" resultMap="BaseResultMap">
+    select * from feed_tower where del = 0 and temp != 1 and pig_farm_id = #{farmId} and (device_no is null or LENGTH(device_no) = 0)
+  </select>
+
+  <update id="unBindFeedTower" parameterType="string">
+UPDATE feed_tower SET device_no = null
+<if test="isReset != null and isReset == 1">
+    , init = 0
+    , init_volume = (CASE WHEN (capacity is not null and capacity &gt; 0) THEN capacity*2 ELSE NULL END)
+    , residual_volume = 0
+    , residual_weight = 0
+</if>
+where del = 0 and device_no = #{deviceNo}
+  </update>
+
+
+  <select id="exceptionView" resultType="com.zmu.cloud.commons.vo.TowerExceptionViewVo">
+SELECT
+	c.`name` AS 'farmName',
+	b.`name` AS 'towerName',
+	a.device_no AS 'deviceNo',
+	a.remark AS 'exception',
+    if(a.completed_time is not null, a.completed_time, a.create_time) AS 'time'
+FROM
+	feed_tower_log a
+	LEFT JOIN feed_tower b ON a.tower_id = b.id
+	LEFT JOIN pig_farm c ON c.id = b.pig_farm_id
+WHERE
+	b.del = 0
+	AND c.del = '0'
+	AND a.`status` NOT IN ( 'running', 'completed', 'starting' )
+    <if test="startTime != null">
+      and if(a.completed_time is not null, a.completed_time, a.create_time) &gt; #{startTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="endTime != null">
+      and if(a.completed_time is not null, a.completed_time, a.create_time) &lt; #{endTime,jdbcType=TIMESTAMP}
+    </if>
+      order by if(a.completed_time is not null, a.completed_time, a.create_time) desc limit #{start},#{end}
+  </select>
+
+<select id="exceptionViewConut" resultType="long">
+    SELECT
+    count(a.id)
+    FROM
+    feed_tower_log a
+    LEFT JOIN feed_tower b ON a.tower_id = b.id
+    LEFT JOIN pig_farm c ON c.id = b.pig_farm_id
+    WHERE
+    b.del = 0
+    AND c.del = '0'
+    AND a.`status` NOT IN ( 'running', 'completed', 'starting' )
+    <if test="startTime != null">
+        and if(a.completed_time is not null, a.completed_time, a.create_time) &gt; #{startTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="endTime != null">
+        and if(a.completed_time is not null, a.completed_time, a.create_time) &lt; #{endTime,jdbcType=TIMESTAMP}
+    </if>
+    order by if(a.completed_time is not null, a.completed_time, a.create_time) desc
+</select>
+
+  <select id="selectTowerDetails" resultType="com.zmu.cloud.commons.vo.TowerDetailLogVo">
+SELECT
+	b.device_no AS 'deviceNo',
+	b.id AS 'towerId',
+	b.`name` AS 'towerName',
+	b.residual_volume AS 'volume',
+	b.residual_weight AS 'weight',
+	b.init_volume AS 'initVolume',
+	b.density AS 'density'
+FROM
+	feed_tower b
+WHERE
+	b.del = 0
+    <if test="deviceNo != null and deviceNo != ''">
+      and b.device_no = #{deviceNo}
+    </if>
+      <if test="farmId != null">
+          and b.pig_farm_id = #{farmId}
+      </if>
+      and b.device_no is not null
+      and b.device_no != '0'
+	GROUP BY b.id
+	ORDER BY b.id DESC
+  </select>
+
+    <select id="selectTowerDetailsByDate" resultType="com.zmu.cloud.commons.vo.TowerDetailLogVo">
+    SELECT
+    b.device_no AS 'deviceNo',
+    b.id AS 'towerId',
+    b.`name` AS 'towerName',
+    b.residual_volume AS 'volume',
+    b.residual_weight AS 'weight',
+    b.density AS 'density'
+    FROM
+    feed_tower_log a
+    LEFT JOIN feed_tower b ON a.tower_id = b.id
+    WHERE
+    b.del = 0
+    and a.status = 'completed'
+    and a.device_no = b.device_no
+    <if test="deviceNo != null and deviceNo != ''">
+        and b.device_no = #{deviceNo}
+    </if>
+    <if test="farmId != null">
+        and b.pig_farm_id = #{farmId}
+    </if>
+    <if test="startTime != null">
+        and a.completed_time &gt; #{startTime,jdbcType=VARCHAR}
+    </if>
+    <if test="endTime != null">
+        and a.completed_time &lt; DATE_ADD(#{endTime,jdbcType=VARCHAR},INTERVAL 1 DAY)
+    </if>
+    and b.device_no is not null
+    and b.device_no != '0'
+    GROUP BY b.id
+    ORDER BY b.id DESC
+    </select>
+
+    <update id="updateTowerById">
+        update feed_tower set residual_weight = #{residualWeight},residual_volume = #{residualVolume} where id = #{id}
+    </update>
+
+    <update id="updateTowerAllInfoByIdIn">
+        UPDATE feed_tower
+        SET
+            company_id = #{companyId},
+            pig_farm_id = #{pigFarmId},
+            name = #{name},
+            device_no = #{deviceNo},
+            enable = #{enable},
+            capacity = #{capacity},
+            warning = #{warning},
+            feed_type_id = #{feedTypeId},
+            feed_type = #{feedType},
+            density = #{density},
+            init = #{init},
+            init_volume = #{initVolume},
+            residual_volume = #{residualVolume},
+            residual_weight = #{residualWeight},
+            residual_date = #{residualDate},
+            house_type = #{houseType},
+            houses = #{houses},
+            data_status = #{dataStatus},
+            iccid = #{iccid},
+            init_time = #{initTime},
+            del = #{del},
+            temp = #{temp},
+            bd_optimization = #{bdOptimization},
+            bd_weight = #{bdWeight},
+            we_bd_weight = #{weBdWeight},
+            gap_weight = #{gapWeight},
+            correct_empty_tower_volume = #{correctEmptyTowerVolume},
+            switch_feed_add_expansion = #{switchFeedAddExpansion},
+            feed_add_expansion_value = #{feedAddExpansionValue},
+            bd_init_time = #{bdInitTime}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectTowerById" resultMap="BaseResultMap">
+        select * from feed_tower where del = 0 and id = #{id}
+    </select>
+
+    <select id="listIn" resultMap="BaseResultMap">
+        select * from feed_tower where del = 0 and pig_farm_id = #{farmId}
+        <if test="deviceNo != null and deviceNo != ''">
+            and device_no like concat('%',#{deviceNo},'%')
+        </if>
+        <if test="name != null and name != ''">
+            and name like concat('%',#{name},'%')
+        </if>
+        order by name
+    </select>
+
+    <select id="selectByIdIn" parameterType="long" resultMap="BaseResultMap">
+        select * from feed_tower where id = #{towerId}
+    </select>
+
+    <select id="deviceInfoByNo" parameterType="string" resultType="com.zmu.cloud.commons.vo.FarmTowerDeviceVo">
+        SELECT
+	 a.device_no as 'deviceNo',
+	 a.pig_farm_id as 'farmId',
+	 b.`name` as 'farmName',
+	 a.id as 'towerId',
+	 a.`name` as 'towerName'
+FROM
+	feed_tower a
+	LEFT JOIN pig_farm b ON a.pig_farm_id = b.id
+	where a.device_no = #{deviceNo} limit 1
+    </select>
+
+</mapper>

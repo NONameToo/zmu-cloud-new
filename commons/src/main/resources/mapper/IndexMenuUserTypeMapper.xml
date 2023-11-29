@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.IndexMenuUserTypeMapper">
+  <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.IndexMenuUserType">
+    <!--@mbg.generated-->
+    <!--@Table index_menu_user_type-->
+    <id column="user_id" jdbcType="BIGINT" property="userId" />
+    <id column="type_id" jdbcType="BIGINT" property="typeId" />
+    <result column="is_default" jdbcType="TINYINT" property="isDefault" />
+    <result column="app" jdbcType="VARCHAR" property="app" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    user_id, type_id, is_default, app
+  </sql>
+
+  <select id="countUserByTypeId" resultType="int">
+        select count(*)
+        from index_menu_user_type sur
+                 inner join sys_user su on sur.user_id = su.id
+        where sur.type_id = #{typeId,jdbcType=BIGINT}
+          and su.del = '0'
+    </select>
+    <delete id="deleteByTypeId">
+        delete
+        from index_menu_user_type
+        where type_id = #{typeId}
+    </delete>
+
+
+    <insert id="batchInsert">
+        insert into index_menu_user_type(user_id, type_id, app) values
+        <foreach collection="records" index="index" item="item" separator=",">
+            (#{item.userId}, #{item.typeId}, #{item.app})
+        </foreach>
+    </insert>
+    <delete id="deleteByUserId">
+        delete
+        from index_menu_user_type
+        where user_id = #{userId,jdbcType=BIGINT} and app = #{app,jdbcType=VARCHAR}
+    </delete>
+    <select id="listUserIdByTypeId" resultType="java.lang.Long">
+        select sur.user_id
+        from index_menu_user_type sur
+                 inner join sys_user u on u.id = sur.user_id
+        where sur.type_id = #{typeId}
+          and u.del = false
+    </select>
+<!--        &amp;amp;amp;lt;select id="getUserRidByFarmIdAndMessageTypeKey" resultType="com.zmu.cloud.commons.entity.SphEmploy"&amp;amp;amp;gt;-->
+<!--        SELECT-->
+<!--            a.id,a.login_name,a.rid-->
+<!--        FROM-->
+<!--            sys_user AS a-->
+<!--            INNER JOIN sys_user_farm AS b ON b.user_id = a.id-->
+<!--            INNER JOIN index_menu_user_type AS c ON c.user_id = a.id-->
+<!--            INNER JOIN index_menu_type AS d ON c.type_id = d.id-->
+<!--        WHERE-->
+<!--            a.`status` = 1-->
+<!--            AND a.del = 0-->
+<!--            AND a.rid is not null-->
+<!--            AND b.farm_id = #{farmId}-->
+<!--            AND d.menu_type_key = #{indexMenuTypeKey}-->
+<!--    &amp;amp;amp;lt;/select&amp;amp;amp;gt;-->
+</mapper>

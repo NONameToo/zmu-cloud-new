@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmu.cloud.commons.mapper.FinancialDataMapper">
+    <resultMap id="BaseResultMap" type="com.zmu.cloud.commons.entity.FinancialData">
+        <!--@mbg.generated-->
+        <!--@Table financial_data-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="pig_farm_id" jdbcType="BIGINT" property="pigFarmId"/>
+        <result column="number" jdbcType="INTEGER" property="number"/>
+        <result column="unit_price" jdbcType="DECIMAL" property="unitPrice"/>
+        <result column="total_price" jdbcType="DECIMAL" property="totalPrice"/>
+        <result column="data_type_id" jdbcType="BIGINT" property="dataTypeId"/>
+        <result column="income" jdbcType="INTEGER" property="income"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="del" jdbcType="CHAR" property="del"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, company_id, pig_farm_id, `number`, unit_price, total_price, data_type_id, income,
+        `status`, del, remark, create_by, update_by, create_time, update_time
+    </sql>
+
+    <select id="list" resultType="com.zmu.cloud.commons.vo.FinancialDataVO">
+        select fd.create_time createTime,
+               fd.remark,
+               fd.number,
+               fd.unit_price  unitPrice,
+               fd.total_price totalPrice,
+               fdt.name       dataType,
+               fd.income,
+               fd.status
+        from financial_data fd
+            left join financial_data_type fdt on fdt.id = fd.data_type_id
+        <if test="dataTypeId != null">
+            and fdt.id = #{dataTypeId}
+        </if>
+        where fd.del = '0'
+        <if test="income != null">
+            and fd.income = #{income}
+        </if>
+        <if test="status != null">
+            and fd.status = #{status}
+        </if>
+        <if test="startDate != null and endDate != null">
+            and fd.create_time between #{startDate} and #{endDate}
+        </if>
+        order by fd.create_time desc
+    </select>
+
+    <select id="profitAnalysis" resultType="com.zmu.cloud.commons.vo.FinancialDataProfitVO">
+        SELECT (date_format(fd.create_time, '%m') + 0)                            `month`,
+               convert(SUM(IF(fd.income = 1, fd.total_price, 0)), DECIMAL(18, 2)) income,
+               convert(SUM(IF(fd.income = 2, fd.total_price, 0)), DECIMAL(18, 2)) outcome,
+               convert(SUM(IF(fd.income = 1, fd.total_price, 0)) -
+                       SUM(IF(fd.income = 2, fd.total_price, 0)), DECIMAL(18, 2)) totalProfit,
+               convert((SUM(IF(fd.income = 1, fd.total_price, 0)) - SUM(IF(fd.income = 2, fd.total_price, 0))) /
+                       sum(fd.number), DECIMAL(18, 2))                            avgProfit
+        FROM financial_data fd
+        WHERE fd.del = '0'
+          AND DATE_FORMAT(fd.create_time, '%Y') = #{year}
+        GROUP BY `month`
+        order by month
+    </select>
+
+    <select id="exportDataExcel" resultType="com.zmu.cloud.commons.dto.FinanceDataExcel">
+        select fd.id,
+               fd.status,
+               date_format(fd.create_time, '%Y-%m-%d')             `date`,
+               fd.remark,
+               fdt.suject_code                                     subjectCode,
+               fdt.suject_name                                     subjectName,
+               fd.number,
+               format(fd.unit_price, 2)                            price,
+               if(fdt.loan_type = 1, format(fd.total_price, 2), 0) borrow,
+               if(fdt.loan_type = 2, format(fd.total_price, 2), 0) loans
+        from financial_data fd
+                 left join financial_data_type fdt on fdt.id = fd.data_type_id and fdt.del = '0'
+        where fd.del = '0'
+        <if test="dataTypeId != null">
+            and fdt.id = #{dataTypeId}
+        </if>
+        <if test="income != null">
+            and fd.income = #{income}
+        </if>
+        <if test="status != null">
+            and fd.status = #{status}
+        </if>
+        <if test="startDate != null and endDate != null">
+            and fd.create_time between #{startDate} and #{endDate}
+        </if>
+        order by fd.create_time desc
+    </select>
+
+    <select id="exportIncomeAndExpenditure" resultType="com.zmu.cloud.commons.dto.FinanceIncomeAndExpenditureExcel">
+        select fd.id,
+               fd.status,
+               date_format(fd.create_time, '%Y-%m-%d') `date`,
+               fd.remark,
+               fd.number,
+               format(fd.unit_price, 2)                price,
+               format(fd.total_price, 2)               totalPrice,
+               fdt.name                                dataTypeName,
+               if(fd.income = 1, '收入', '支出')           income,
+               if(fd.status = 1, '已导出', '未导出')         statusStr
+        from financial_data fd
+            left join financial_data_type fdt on fdt.id = fd.data_type_id
+        <if test="dataTypeId != null">
+            and fdt.id = #{dataTypeId}
+        </if>
+        where fd.del = '0'
+        <if test="income != null">
+            and fd.income = #{income}
+        </if>
+        <if test="status != null">
+            and fd.status = #{status}
+        </if>
+        <if test="startDate != null and endDate != null">
+            and fd.create_time between #{startDate} and #{endDate}
+        </if>
+        order by fd.create_time desc
+    </select>
+</mapper>
