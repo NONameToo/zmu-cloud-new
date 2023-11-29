@@ -10,12 +10,12 @@
 
     <parent>
         <artifactId>webapps</artifactId>
-        <groupId>com.springboot.cloud</groupId>
+        <groupId>com.zmu.cloud</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <modules>
-        <module>tower-emq-handle</module>
+        <module>tower-emq-handler</module>
     </modules>
 
     <dependencies>

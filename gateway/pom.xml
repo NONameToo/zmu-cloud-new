@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.springboot.cloud</groupId>
+        <groupId>com.zmu.cloud</groupId>
         <artifactId>cloud</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.springboot.cloud</groupId>
+    <groupId>com.zmu.cloud</groupId>
     <artifactId>gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>

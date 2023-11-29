@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: zmu-cloud-tower-emq-handle-v2
+    name: tower-emq-handler
   datasource:
     dynamic:
       druid:

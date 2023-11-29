@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.springboot.cloud</groupId>
+        <groupId>com.zmu.cloud</groupId>
         <artifactId>object-storage</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -52,7 +52,7 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.springboot.cloud</groupId>
+            <groupId>com.zmu.cloud</groupId>
             <artifactId>web</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

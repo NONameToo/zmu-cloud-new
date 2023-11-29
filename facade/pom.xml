@@ -10,7 +10,7 @@
     <name>facade</name>
 
     <parent>
-        <groupId>com.springboot.cloud</groupId>
+        <groupId>com.zmu.cloud</groupId>
         <artifactId>cloud</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>

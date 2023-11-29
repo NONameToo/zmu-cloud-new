@@ -8,9 +8,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <groupId>com.zmu.cloud</groupId>
-    <artifactId>tower-emq-handle</artifactId>
+    <artifactId>tower-emq-handler</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>tower-emq-handle</name>
+    <name>tower-emq-handler</name>
    
 
     <dependencies>
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.zmu.cloud.commons</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
