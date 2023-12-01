@@ -15,13 +15,13 @@
         <module>auth</module>
         <module>center</module>
         <module>common</module>
-        <module>commons</module>
         <module>gateway</module>
         <module>webapps</module>
         <module>monitor</module>
         <module>sysadmin</module>
         <module>demos</module>
         <module>facade</module>
+        <module>module-parent</module>
     </modules>
 
     <profiles>

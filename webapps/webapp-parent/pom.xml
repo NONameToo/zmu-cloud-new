@@ -15,7 +15,6 @@
     </parent>
 
     <modules>
-        <module>tower-emq-handler</module>
     </modules>
 
     <dependencies>
